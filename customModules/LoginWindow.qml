@@ -16,8 +16,8 @@ Rectangle
         anchors.top: parent.top;
         anchors.horizontalCenter: parent.horizontalCenter;
 
-        width: parent.width * 0.6;
-        height: width;
+        width: 350;
+        height: 350;
 
         source: "qrc:/QML_modules/ClientApp/icons/welcome_icon.png";
     }
@@ -149,6 +149,8 @@ Rectangle
  
     Row 
     {
+        id: rowLayout;
+        
         spacing: 10;
 
         Text 
@@ -187,4 +189,36 @@ Rectangle
         anchors.topMargin: 30;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
+
+    Rectangle 
+    {
+        id: chatWindowButton;
+        color: "transparent";
+
+        height: 20;
+        width: question.width * .5;
+
+        Text 
+        {
+            id: chatWindowText;
+            text: "Chat Window";
+            color: "red";
+            font.bold: true;
+            leftPadding: 5;
+
+            anchors.centerIn: parent;
+        }
+
+        MouseArea 
+        {
+            anchors.fill: parent;
+            onClicked: stackView.push(chatListWindow);
+        }
+
+        anchors.top: rowLayout.bottom;
+        anchors.topMargin: 10;
+        anchors.left: rowLayout.left;
+        anchors.right: rowLayout.right;
+    }
+
 }

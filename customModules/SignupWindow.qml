@@ -2,124 +2,157 @@ import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Window;
 
-Rectangle {
+Rectangle 
+{
     id: root;
 
-    Image {
+    Image 
+    {
         id: welcomeImage;
+
         mipmap: true;
         fillMode: Image.PreserveAspectFit;
+
         anchors.top: parent.top;
         anchors.horizontalCenter: parent.horizontalCenter;
+
         width: parent.width * 0.6;
         height: width;
+
         source: "qrc:/QML_modules/ClientApp/icons/welcome_icon.png";
     }
 
-    Text {
+    Text 
+    {
         id: textWelcome;
+
         text: "GET ON BOARD,";
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere;
         font.bold: true;
         font.pixelSize: 30;
+
         leftPadding: 15;
         rightPadding: 15;
+
         anchors.top: welcomeImage.bottom;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Text {
+    Text 
+    {
         id: textAboutUs;
         text: "Create your Profile and Start the Journey with US";
+
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere;
         font.bold: true;
         font.pixelSize: 10;
+
         leftPadding: 15;
         rightPadding: 15;
+
         anchors.top: textWelcome.bottom;
         anchors.topMargin: 5;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField {
+    InputField 
+    {
         id: signUpFirstName;
-        objectName: "inputFieldFirstName";
         image1Source: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
+
         echoMode: 0;
         placeHolder: "First Name";
         width: parent.width * 0.6;
+
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField {
+    InputField 
+    {
         id: signUpLastName;
-        objectName: "inputFieldLastName";
         image1Source: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
+
         echoMode: 0;
         placeHolder: "Last Name";
         width: parent.width * 0.6;
+
         anchors.top: signUpFirstName.bottom;
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField {
+    InputField 
+    {
         id: signUpPhoneNumber;
-        objectName: "inputFieldPhoneNumber";
         image1Source: "qrc:/QML_modules/ClientApp/icons/phone_icon.png";
+
         echoMode: 0;
         placeHolder: "Phone Number";
         width: parent.width * 0.6;
+
         anchors.top: signUpLastName.bottom;
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField {
+    InputField 
+    {
         id: signUpPassword;
-        objectName: "inputFieldPassword";
         image1Source: "qrc:/QML_modules/ClientApp/icons/hide_icon.png";
         image2Source: "qrc:/QML_modules/ClientApp/icons/see_icon.png";
+
         echoMode: 2;
         placeHolder: "Password";
         width: parent.width * 0.6;
+
         anchors.top: signUpPhoneNumber.bottom;
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField {
+    InputField 
+    {
         id: signUpPasswordConfirmation;
-        objectName: "inputFieldPasswordConfirmation";
         image1Source: "qrc:/QML_modules/ClientApp/icons/hide_icon.png";
         image2Source: "qrc:/QML_modules/ClientApp/icons/see_icon.png";
+
         echoMode: 2;
         placeHolder: "Password Confirmation";
         width: parent.width * 0.6;
+
         anchors.top: signUpPassword.bottom;
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Rectangle {
+    Rectangle 
+    {
         id: signUpButton;
         color: "black";
+
         radius: 5;
         width: parent.width * 0.6;
         height: 50;
 
-        Text {
+        Text 
+        {
             text: "SIGN UP";
             color: "white";
+
             anchors.centerIn: parent;
         }
 
-        MouseArea {
+        MouseArea 
+        {
             anchors.fill: parent;
+
             onPressed: parent.color = "gray";
             onReleased: parent.color = "black";
+
+
+            // FIXME: handle click button correctly
             onClicked: console.log("Sign Up Button Click");
         }
 
@@ -127,32 +160,40 @@ Rectangle {
         anchors.topMargin: 30;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
-
-    Row {
+ 
+    Row 
+    {
         spacing: 10;
 
-        Text {
+        Text 
+        {
             id: question;
             text: "Already have an Account?";
         }
 
-        Rectangle {
+        Rectangle 
+        {
             id: signUp;
             color: "transparent";
+
             width: question.width * .5;
             height: 20;
 
-            Text {
+            Text 
+            {
                 id: signUpText;
                 text: "LOGIN";
                 color: "blue";
                 font.bold: true;
                 leftPadding: 5;
+
                 anchors.centerIn: parent;
             }
 
-            MouseArea {
+            MouseArea 
+            {
                 anchors.fill: parent;
+
                 onClicked: stackView.replace(loginWindow, StackView.PopTransition);
             }
         }

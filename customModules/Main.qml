@@ -6,8 +6,8 @@ import ClientApp;
 ApplicationWindow
 {
     id: root;
-    width: 480;
-    height: 700
+    width: 400;
+    height: 500
     visible: true;
     title: "Chat App";
 
@@ -35,11 +35,17 @@ ApplicationWindow
         SignUpWindow{}
     }
 
-    ChatWindow
-    {id: chatWindow}
+    Component
+    {
+        id: chatListWindow;
+        ChatListWindow{}
+    }
 
-    ConversationWindow
-    {id: conversationWindow}
+    Component
+    {
+        id: conversationWindow;
+        ConversationWindow{}
+    }
 
     StackView
     {
@@ -48,5 +54,6 @@ ApplicationWindow
         anchors.fill: parent;
 
         initialItem: loginWindow;
+        // initialItem: chatListWindow;
     }
 }

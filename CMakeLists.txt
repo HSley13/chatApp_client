@@ -25,11 +25,13 @@ qt_add_qml_module(app
 
                     QML_FILES
                     customModules/Main.qml
-                    customModules/ChatWindow.qml 
+                    customModules/ChatListWindow.qml
                     customModules/LoginWindow.qml 
                     customModules/SignUpWindow.qml 
                     customModules/ConversationWindow.qml 
                     customModules/InputField.qml
+                    customModules/IconText.qml
+                    customModules/ImageText.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
@@ -49,4 +51,7 @@ qt_add_qml_module(app
                     icons/phone_icon.png
                     icons/name_icon.png
                     icons/password_icon.png
+                    icons/search_icon.png
+                    icons/back_icon.png
+                    icons/menu_icon.png
                     icons/send_icon.png)
