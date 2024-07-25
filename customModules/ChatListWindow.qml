@@ -13,6 +13,28 @@ Rectangle
         width: parent.width;
         height: 130; 
 
+
+        Image
+        {
+            id: returnImage;
+            source: "qrc:/QML_modules/ClientApp/icons/back_icon.png";
+            mipmap: true;
+            fillMode: Image.PreserveAspectFit;
+            width: parent.height * 0.2;
+            height: parent.height * 0.2;
+
+            MouseArea
+            {
+                anchors.fill: parent;
+                onClicked: stackView.pop();
+            }
+
+            anchors.top: parent.top;
+            anchors.topMargin: 30;
+            anchors.left: parent.left;
+            anchors.leftMargin: 30;
+        }
+
         Text
         {
             id: chatText;
@@ -29,7 +51,7 @@ Rectangle
 
             anchors.top: parent.top;
             anchors.topMargin: 30;
-            anchors.left: parent.left;
+            anchors.horizontalCenter: parent.horizontalCenter;
         }
 
         Rectangle
@@ -54,6 +76,9 @@ Rectangle
             MouseArea
             {
                 anchors.fill: parent;
+
+                onPressed: rectangle_new.color = "#ed7bb4";
+                onReleased: rectangle_new.color = "#f5daef";
 
                 onClicked:
                 {
@@ -100,8 +125,15 @@ Rectangle
 
         Text
         {
-            text: "Main Section";
-            color: "black";
+            text: "Chat Conversation";
+            color: "red";
+            font.bold: true;
+
+            MouseArea
+            {
+                anchors.fill: parent;
+                onClicked: stackView.push(conversationWindow);
+            }
 
             anchors.centerIn: parent;
         }

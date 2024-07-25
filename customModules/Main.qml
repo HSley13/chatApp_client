@@ -52,8 +52,7 @@ ApplicationWindow
         id: stackView;
 
         anchors.fill: parent;
-
+        
         initialItem: loginWindow;
-        // initialItem: chatListWindow;
     }
 }

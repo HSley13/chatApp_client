@@ -1,7 +1,7 @@
-
 import QtQuick;
+import QtQuick.Controls;
 
-Column 
+Column
 {
     id: root;
 
@@ -13,28 +13,50 @@ Column
     spacing: 2;
     width: chatBottomBar.width / 3;
 
-    Image 
+    Rectangle
     {
-        id: profile;
-        source: root.imageSource;
+        id: circle;
 
-        mipmap: true;
-        fillMode: Image.PreserveAspectFit;
-        width: parent.width;
         height: chatBottomBar.height * 0.8;
+        width: height;
+        radius: width / 2;
 
-        MouseArea 
+        color: "transparent";
+        
+        anchors.horizontalCenter: parent.horizontalCenter;
+
+        Image
+        {
+            id: profile;
+
+            source: root.imageSource;
+            mipmap: true;
+            fillMode: Image.PreserveAspectFit;
+
+            width: parent.width * 0.9;
+            height: parent.height * 0.9;
+            anchors.centerIn: parent;
+        }
+
+        MouseArea
         {
             anchors.fill: parent;
+
+            onPressed: circle.color = "gray";
+            onReleased: circle.color = "transparent";
             onClicked: root.itemClicked();
+
         }
     }
 
-    Text 
+    Text
     {
-        text: text;
+        id: label;
+        text: root.text;
+
         color: "black";
         font.pixelSize: 10;
+
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 }
