@@ -14,12 +14,13 @@ Rectangle
         fillMode: Image.PreserveAspectFit;
 
         anchors.top: parent.top;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
 
         width: parent.width * 0.6;
         height: width;
 
-        source: "qrc:/QML_modules/ClientApp/icons/welcome_icon.png";
+        source: "qrc:/QML_modules/ClientApp/icons/hi_icon.png";
     }
 
     Text 
@@ -148,7 +149,7 @@ Rectangle
         {
             anchors.fill: parent;
 
-            onPressed: parent.color = "gray";
+            onPressed: parent.color = "#ed7bb4";
             onReleased: parent.color = "black";
 
 
@@ -183,7 +184,7 @@ Rectangle
             {
                 id: signUpText;
                 text: "LOGIN";
-                color: "blue";
+                color: "#DE02B5";
                 font.bold: true;
                 leftPadding: 5;
 

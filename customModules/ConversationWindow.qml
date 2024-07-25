@@ -1,9 +1,11 @@
 import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Window;
+import ClientApp;
 
 Rectangle
 {
+
     id: root;
     visible: true;
 
@@ -60,10 +62,26 @@ Rectangle
         {
             id: chatSettings;
             source: "qrc:/QML_modules/ClientApp/icons/menu_icon.png";
+            property string source2: "qrc:/QML_modules/ClientApp/icons/cancel_menu.png";
             mipmap: true;
             fillMode: Image.PreserveAspectFit;
             width: parent.height * 0.4;
             height: parent.height * 0.4;
+
+            MouseArea
+            {
+                anchors.fill: parent;
+
+                onClicked: 
+                {
+                    parent.source = (parent.source.toString() === parent.source2) ? "qrc:/QML_modules/ClientApp/icons/menu_icon.png" : parent.source2;
+
+
+                    // FIXME: handle click button correctly
+                    console.log("Menu Button Click");
+                    
+                }
+            }
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right;
@@ -143,6 +161,46 @@ Rectangle
             height: 50;
 
             // FIXME: add columns --> insert & send message / files / audio  
+
+            IconText
+            {
+                id: plus;
+                imageSource: "qrc:/QML_modules/ClientApp/icons/plus_icon.png";
+                image2Source: "qrc:/QML_modules/ClientApp/icons/cancel_icon.png";
+                text: "";
+                cWidth: parent.width * .2
+
+                onItemClicked:
+                {
+                    // FIXME: Handle this click Properly;
+                    console.log("Plus Icon Clicked");
+                }
+            }
+
+            InputField
+            {
+                id: new_message;
+
+                image1Source: "";
+
+                echoMode: 0;
+                placeHolder: "Type message...";
+                width: parent.width * 0.6;
+            }
+
+            IconText
+            {
+                id: sendMessage;
+                imageSource: "qrc:/QML_modules/ClientApp/icons/send_icon.png";
+                text: "";
+                cWidth: parent.width * .2
+
+                onItemClicked:
+                {
+                    // FIXME: Handle this click Properly;
+                    console.log("Send Icon Clicked");
+                }
+            }
 
             anchors.top: convRectan.bottom;
             anchors.topMargin: 5; 

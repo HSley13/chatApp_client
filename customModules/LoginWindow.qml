@@ -14,12 +14,13 @@ Rectangle
         fillMode: Image.PreserveAspectFit;
 
         anchors.top: parent.top;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
 
-        width: 350;
-        height: 350;
+        width: 300;
+        height: 300;
 
-        source: "qrc:/QML_modules/ClientApp/icons/welcome_icon.png";
+        source: "qrc:/QML_modules/ClientApp/icons/hi_icon.png";
     }
 
     Text 
@@ -97,7 +98,7 @@ Rectangle
             anchors.centerIn: parent;
             text: "Forget Password";
             font.bold: true;
-            color: "blue";
+            color: "#DE02B5";
         }
 
         MouseArea 
@@ -118,7 +119,7 @@ Rectangle
         id: loginButton;
         color: "black";
 
-        radius: 5;
+        radius: 20;
         width: parent.width * 0.6;
         height: 50;
 
@@ -134,7 +135,7 @@ Rectangle
         {
             anchors.fill: parent;
 
-            onPressed: parent.color = "gray";
+            onPressed: parent.color = "#ed7bb4";
             onReleased: parent.color = "black";
 
             // FIXME: handle click button correctly
@@ -171,7 +172,7 @@ Rectangle
             {
                 id: signUpText;
                 text: "SIGN UP";
-                color: "blue";
+                color: "#DE02B5";
                 font.bold: true;
                 leftPadding: 5;
 
@@ -202,7 +203,7 @@ Rectangle
         {
             id: chatWindowText;
             text: "Chat Window";
-            color: "red";
+            color: "#DE02B5";
             font.bold: true;
             leftPadding: 5;
 

@@ -6,18 +6,20 @@ Column
     id: root;
 
     required property string imageSource;
+    property string image2Source: "";
     required property string text;
+    property int cWidth: 400 / 3;
 
     signal itemClicked();
 
     spacing: 2;
-    width: chatBottomBar.width / 3;
+    width: cWidth;
 
     Rectangle
     {
         id: circle;
 
-        height: chatBottomBar.height * 0.8;
+        height: 50 * 0.8;
         width: height;
         radius: width / 2;
 
@@ -42,9 +44,15 @@ Column
         {
             anchors.fill: parent;
 
-            onPressed: circle.color = "gray";
+            onPressed: circle.color = "#ed7bb4";
             onReleased: circle.color = "transparent";
-            onClicked: root.itemClicked();
+            onClicked: 
+            {
+                if(root.image2Source !== "")
+                     profile.source = (profile.source.toString() === root.imageSource) ? root.image2Source : root.imageSource;
+
+                root.itemClicked();
+            }
 
         }
     }

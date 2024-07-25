@@ -13,7 +13,6 @@ Rectangle
         width: parent.width;
         height: 130; 
 
-
         Image
         {
             id: returnImage;
@@ -30,9 +29,9 @@ Rectangle
             }
 
             anchors.top: parent.top;
-            anchors.topMargin: 30;
+            anchors.topMargin: 10;
             anchors.left: parent.left;
-            anchors.leftMargin: 30;
+            anchors.leftMargin: 10;
         }
 
         Text
@@ -50,7 +49,7 @@ Rectangle
             rightPadding: 15;
 
             anchors.top: parent.top;
-            anchors.topMargin: 30;
+            anchors.topMargin: 10;
             anchors.horizontalCenter: parent.horizontalCenter;
         }
 
@@ -67,7 +66,7 @@ Rectangle
             {
                 id: rectangle_new_text;
                 text: "+ New";
-                color: "#c4089c";
+                color: "#DE02B5";
                 font.bold: true;
 
                 anchors.centerIn: parent;
@@ -88,9 +87,9 @@ Rectangle
             }
 
             anchors.top: parent.top;
-            anchors.topMargin: 30;
+            anchors.topMargin: 10;
             anchors.right: parent.right;
-            anchors.rightMargin: 30;
+            anchors.rightMargin: 10;
         }
 
         InputField
@@ -128,6 +127,8 @@ Rectangle
             text: "Chat Conversation";
             color: "red";
             font.bold: true;
+
+            // FIXME: chat item implementation
 
             MouseArea
             {

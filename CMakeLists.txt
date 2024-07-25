@@ -47,11 +47,14 @@ qt_add_qml_module(app
                     icons/send_file_icon.png
                     icons/hide_icon.png
                     icons/see_icon.png
-                    icons/welcome_icon.png
+                    icons/hi_icon.png
                     icons/phone_icon.png
                     icons/name_icon.png
                     icons/password_icon.png
                     icons/search_icon.png
                     icons/back_icon.png
+                    icons/plus_icon.png
+                    icons/cancel_icon.png
                     icons/menu_icon.png
+                    icons/cancel_menu.png
                     icons/send_icon.png)
