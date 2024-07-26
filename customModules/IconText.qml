@@ -53,7 +53,6 @@ Column
 
                 root.itemClicked();
             }
-
         }
     }
 

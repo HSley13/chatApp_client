@@ -66,7 +66,7 @@ Rectangle
         width: parent.width * 0.6;
 
         anchors.top: textAboutUs.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -80,7 +80,7 @@ Rectangle
         width: parent.width * 0.6;
 
         anchors.top: signUpFirstName.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -94,7 +94,7 @@ Rectangle
         width: parent.width * 0.6;
 
         anchors.top: signUpLastName.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -109,7 +109,7 @@ Rectangle
         width: parent.width * 0.6;
 
         anchors.top: signUpPhoneNumber.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -124,7 +124,7 @@ Rectangle
         width: parent.width * 0.6;
 
         anchors.top: signUpPassword.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -158,7 +158,7 @@ Rectangle
         }
 
         anchors.top: signUpPasswordConfirmation.bottom;
-        anchors.topMargin: 30;
+        anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
  
@@ -200,7 +200,7 @@ Rectangle
         }
 
         anchors.top: signUpButton.bottom;
-        anchors.topMargin: 30;
+        anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 }

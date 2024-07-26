@@ -48,14 +48,14 @@ void ChatInfo::set_status(const QString &new_status)
     emit status_changed();
 }
 
-const QUrl &ChatInfo::image() const
+const QString &ChatInfo::image() const
 {
     return _image;
 }
 
-void ChatInfo::set_image(const QUrl &new_image)
+void ChatInfo::set_image(const QString &new_image)
 {
-    if (_image == new_image)
+    if (!_image.compare(new_image))
         return;
 
     _image = new_image;
@@ -63,14 +63,14 @@ void ChatInfo::set_image(const QUrl &new_image)
     emit image_changed();
 }
 
-const int &ChatInfo::message_count() const
+const QString &ChatInfo::message_count() const
 {
     return _message_count;
 }
 
-void ChatInfo::set_message_count(const int &new_message_count)
+void ChatInfo::set_message_count(const QString &new_message_count)
 {
-    if (_message_count == new_message_count)
+    if (!_message_count.compare(new_message_count))
         return;
 
     _message_count = new_message_count;
@@ -91,4 +91,19 @@ void ChatInfo::set_last_message(const QString &new_last_message)
     _last_message = new_last_message;
 
     emit last_message_changed();
+}
+
+const int &ChatInfo::conversation_ID() const
+{
+    return _conversation_ID;
+}
+
+void ChatInfo::set_conversation_ID(const int &new_ID)
+{
+    if (_conversation_ID == new_ID)
+        return;
+
+    _conversation_ID = new_ID;
+
+    emit conversation_ID_changed();
 }

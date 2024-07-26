@@ -11,7 +11,7 @@ Rectangle
     {
         id: chatHeaderSection;
         width: parent.width;
-        height: 130; 
+        height: 105; 
 
         Image
         {
@@ -120,28 +120,12 @@ Rectangle
     {
         id: chatMainSection;
         width: root.width;
-        height: root.height - chatHeaderSection.height - chatBottomSection.height - 20;
 
-        Text
-        {
-            text: "Chat Conversation";
-            color: "red";
-            font.bold: true;
-
-            // FIXME: chat item implementation
-
-            MouseArea
-            {
-                anchors.fill: parent;
-                onClicked: stackView.push(conversationWindow);
-            }
-
-            anchors.centerIn: parent;
-        }
+        ChatMainSection
+        { id: try_me; }
 
         anchors.top: chatHeaderSection.bottom;
         anchors.bottom: chatBottomSection.top;
-        anchors.horizontalCenter: parent.horizontalCenter;
     }
 
     Rectangle 
@@ -191,7 +175,7 @@ Rectangle
             width: parent.width;
             height: 50; 
 
-            spacing: 5;
+            spacing: 10;
 
             IconText
             {

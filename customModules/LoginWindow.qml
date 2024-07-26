@@ -81,7 +81,7 @@ Rectangle
         width: parent.width * 0.6;
 
         anchors.top: loginPhoneNumber.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -110,7 +110,7 @@ Rectangle
         }
 
         anchors.top: loginPassword.bottom;
-        anchors.topMargin: 30;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -143,10 +143,9 @@ Rectangle
         }
 
         anchors.top: passwordForgotten.bottom;
-        anchors.topMargin: 30;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
-
  
     Row 
     {
@@ -187,7 +186,7 @@ Rectangle
         }
 
         anchors.top: loginButton.bottom;
-        anchors.topMargin: 30;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
@@ -221,5 +220,4 @@ Rectangle
         anchors.left: rowLayout.left;
         anchors.right: rowLayout.right;
     }
-
 }

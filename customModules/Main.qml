@@ -41,12 +41,6 @@ ApplicationWindow
         ChatListWindow{}
     }
 
-    Component
-    {
-        id: conversationWindow;
-        ConversationWindow{}
-    }
-
     StackView
     {
         id: stackView;
@@ -56,5 +50,6 @@ ApplicationWindow
         initialItem: loginWindow;
         // initialItem: chatListWindow;
         // initialItem: conversationWindow;
+        // initialItem: chatMainSection;
     }
 }

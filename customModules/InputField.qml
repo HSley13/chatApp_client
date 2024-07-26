@@ -77,6 +77,6 @@ Rectangle
             }
         }
     }
-
+    
     Component.onCompleted: textInput.focus = false;
 }

@@ -32,6 +32,7 @@ qt_add_qml_module(app
                     customModules/InputField.qml
                     customModules/IconText.qml
                     customModules/ImageText.qml
+                    customModules/ChatMainSection.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
@@ -57,4 +58,7 @@ qt_add_qml_module(app
                     icons/cancel_icon.png
                     icons/menu_icon.png
                     icons/cancel_menu.png
+                    icons/image.jpg
+                    icons/online_icon.png
+                    icons/offline_icon.png
                     icons/send_icon.png)

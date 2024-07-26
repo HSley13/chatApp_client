@@ -8,6 +8,9 @@ Rectangle
 
     id: root;
     visible: true;
+    required property string source;
+    required property string name;
+    required property string onOffline;
 
     Rectangle
     {
@@ -38,24 +41,58 @@ Rectangle
 
         Rectangle
         {
-            // FIXME: module to create
             id: iconNameStatus;
-            color: "transparent";
-            width: parent.width - returnImage.width - chatSettings.width - 40;
-            height: parent.height;
+            width: 40;
+            height: 40;
 
-            Text
+            IconText
             {
-                text: "Icon/Name/Status";
-                color: "black";
-                anchors.centerIn: parent;
+                id: customImage;
+                imageSource: root.source;
+                text: "";
+                cWidth: 40;
+
+                onItemClicked:
+                {
+                    // FIXME: Handle this click properly;
+                    console.log("Chat Icon Clicked");
+                }
+
+                anchors.fill: parent;
+            }
+
+            Column
+            {
+                spacing: 2;
+                width: parent.width * 0.6; 
+
+                Text 
+                {
+                    id: name;
+                    text: root.name;
+                    color: "black";
+                    font.pixelSize: 16;
+                    font.bold: true;
+                    elide: Text.ElideRight;
+                }
+
+                Text 
+                {
+                    id: onOffline;
+                    text: root.onOffline;
+                    color: (text === "Online") ? "green" : "red";
+                    font.pixelSize: 10;
+                    elide: Text.ElideRight;
+                    font.bold: true;
+                }
+
+                anchors.left: customImage.right;
+                anchors.right: parent.right;
             }
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.left: returnImage.right;
-            anchors.leftMargin: 10;
-            anchors.right: chatSettings.left;
-            anchors.rightMargin: 10;
+            anchors.leftMargin: 5;
         }
 
         Image
@@ -91,9 +128,42 @@ Rectangle
         anchors.top: parent.top;
         anchors.left: parent.left;
         anchors.right: parent.right;
+
+        Rectangle
+        {
+            id: rectan1;
+            width: parent.width;
+            height: 2; 
+            color: "#e3e1e2"; 
+
+            anchors.top: parent.bottom;
+            anchors.horizontalCenter: parent.horizontalCenter;
+        }
+
+        Rectangle
+        {
+            id: shadowEffect1;
+            width: parent.width;
+            height: 10;
+
+            gradient: Gradient
+            {
+                GradientStop
+                {
+                    position: 0;
+                    color: "#e3e1e2";
+                }
+                GradientStop
+                {
+                    position: 1;
+                    color: "transparent";
+                }
+            }
+
+            anchors.top: rectan1.bottom;
+            anchors.horizontalCenter: parent.horizontalCenter;
+        }
     }
-
-
 
     Rectangle 
     {
@@ -153,7 +223,6 @@ Rectangle
             anchors.horizontalCenter: parent.horizontalCenter;
         }
 
-
         Row
         {
             id: conversationBottomBar;
@@ -210,5 +279,4 @@ Rectangle
         anchors.horizontalCenter: parent.horizontalCenter;
         anchors.bottomMargin: 10;
     }
-
 }
