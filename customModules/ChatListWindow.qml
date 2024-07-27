@@ -97,7 +97,7 @@ Rectangle
             id: chatWindowSearch;
             image1Source: "qrc:/QML_modules/ClientApp/icons/search_icon.png";
 
-            echoMode: 2;
+            echoMode: 0;
             placeHolder: "Search...";
             width: parent.width * 0.8;
 
@@ -121,8 +121,7 @@ Rectangle
         id: chatMainSection;
         width: root.width;
 
-        ChatMainSection
-        { id: try_me; }
+        ChatMainSection {}
 
         anchors.top: chatHeaderSection.bottom;
         anchors.bottom: chatBottomSection.top;
@@ -169,13 +168,11 @@ Rectangle
             anchors.horizontalCenter: parent.horizontalCenter;
         }
 
-        Row 
+        Rectangle 
         {
             id: chatBottomBar;
             width: parent.width;
             height: 50; 
-
-            spacing: 10;
 
             IconText
             {
@@ -188,6 +185,9 @@ Rectangle
                     // FIXME: Handle this click Properly;
                     console.log("Chat Icon Clicked");
                 }
+
+                anchors.left: parent.left;
+                anchors.verticalCenter: parent.verticalCenter;
             }
 
             IconText
@@ -201,6 +201,8 @@ Rectangle
                     // FIXME: Handle this click Properly;
                     console.log("Group Icon Clicked");
                 }
+
+                anchors.centerIn: parent;
             }
 
             IconText
@@ -214,10 +216,14 @@ Rectangle
                     // FIXME: Handle this click Properly;
                     console.log("Profile Icon Clicked");
                 }
+
+                anchors.right: parent.right;
+                anchors.verticalCenter: parent.verticalCenter;
             }
 
             anchors.top: rectan.bottom;
             anchors.topMargin: 5; 
+            anchors.right: parent.right;
         }
 
         anchors.bottom: parent.bottom;

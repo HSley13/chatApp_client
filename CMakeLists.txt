@@ -33,6 +33,7 @@ qt_add_qml_module(app
                     customModules/IconText.qml
                     customModules/ImageText.qml
                     customModules/ChatMainSection.qml
+                    customModules/ConversationMainSection.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h

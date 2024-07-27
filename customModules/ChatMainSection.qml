@@ -11,9 +11,9 @@ Rectangle
     {
         id: listView
         anchors.fill: parent;
-        anchors.margins: 20;
+        anchors.margins: 5;
 
-        spacing: 10;
+        spacing: 5;
         clip: true;
         model: chatListModel;
         visible: true;

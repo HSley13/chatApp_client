@@ -14,6 +14,8 @@ class ChatInfo : public QObject
     Q_PROPERTY(QString image READ image WRITE set_image NOTIFY image_changed)
     Q_PROPERTY(QString message_count READ message_count WRITE set_message_count NOTIFY message_count_changed)
     Q_PROPERTY(QString last_message READ last_message WRITE set_last_message NOTIFY last_message_changed)
+    Q_PROPERTY(QString message READ message WRITE set_message NOTIFY message_changed)
+    // Q_PROPERTY(QString is_mine READ is_mine WRITE set_is_mine NOTIFY is_mine_changed)
 
 public:
     explicit ChatInfo(QObject *parent = nullptr);
@@ -39,6 +41,9 @@ public:
     const QString &last_message() const;
     void set_last_message(const QString &new_last_message);
 
+    const QString &message() const;
+    void set_message(const QString &new_message);
+
 private:
     QString _name{};
     int _phone_number{0};
@@ -47,6 +52,7 @@ private:
     QString _message_count{};
     QString _last_message{};
     int _conversation_ID{0};
+    QString _message{};
 
 signals:
     void name_changed();
@@ -56,4 +62,5 @@ signals:
     void message_count_changed();
     void last_message_changed();
     void conversation_ID_changed();
+    void message_changed();
 };

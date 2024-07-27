@@ -17,8 +17,8 @@ Rectangle
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
 
-        width: parent.width * 0.6;
-        height: width;
+        width: 300;
+        height: 300;
 
         source: "qrc:/QML_modules/ClientApp/icons/hi_icon.png";
     }

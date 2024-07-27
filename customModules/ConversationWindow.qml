@@ -168,18 +168,13 @@ Rectangle
     Rectangle 
     {
         id: conversationMainSection;
+        width: root.width;
 
-        Text
-        {
-            text: "Main Section";
-            color: "black";
-
-            anchors.centerIn: parent;
-        }
+        ConversationMainSection {}
 
         anchors.top: conversationHeaderSection.bottom;
         anchors.bottom: conversationBottomSection.bottom;
-        anchors.horizontalCenter: parent.horizontalCenter;
+        anchors.margins: 10;
     }
 
     Rectangle 

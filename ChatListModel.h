@@ -22,7 +22,8 @@ public:
         ImageRole,
         MessageCountRole,
         LastMessageRole,
-        LastSeen
+        LastSeen,
+        MessageRole
     };
 
     ChatListModel(QObject *parent = nullptr);

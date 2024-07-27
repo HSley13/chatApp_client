@@ -107,3 +107,18 @@ void ChatInfo::set_conversation_ID(const int &new_ID)
 
     emit conversation_ID_changed();
 }
+
+const QString &ChatInfo::message() const
+{
+    return _message;
+}
+
+void ChatInfo::set_message(const QString &new_message)
+{
+    if (!_message.compare(new_message))
+        return;
+
+    _message = new_message;
+
+    emit message_changed();
+}

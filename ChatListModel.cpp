@@ -12,6 +12,7 @@ ChatListModel::ChatListModel(QObject *parent)
     chatInfo1->set_image("qrc:/QML_modules/ClientApp/icons/name_icon.png");
     chatInfo1->set_last_message("Hello World");
     chatInfo1->set_message_count("1");
+    chatInfo1->set_message("Hello How are u doing?");
 
     ChatInfo *chatInfo2 = new ChatInfo(this);
     chatInfo2->set_conversation_ID(12346);
@@ -58,6 +59,8 @@ QVariant ChatListModel::data(const QModelIndex &index, int role) const
             return chatInfo->last_message();
         case LastSeen:
             return "Now";
+        case MessageRole:
+            return chatInfo->message();
         }
     }
 
@@ -75,8 +78,7 @@ QHash<int, QByteArray> ChatListModel::roleNames() const
     roles[ImageRole] = "image";
     roles[MessageCountRole] = "message_count";
     roles[LastMessageRole] = "last_message";
-
-    // FIXME: To Implement
+    roles[MessageRole] = "message";
 
     return roles;
 }

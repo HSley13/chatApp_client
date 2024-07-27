@@ -11,7 +11,7 @@ Rectangle
     required property string image1Source;
     property string image2Source;
     required property string placeHolder;
-    required property int echoMode;
+    property alias echoMode: textInput.echoMode;
 
     signal accepted(string value);
 
