@@ -5,7 +5,7 @@ ChatListModel::ChatListModel(QObject *parent)
 {
     ChatInfo *chatInfo1 = new ChatInfo(this);
 
-    chatInfo1->set_conversation_ID(12345);
+    chatInfo1->set_conversation_ID("12345");
     chatInfo1->set_phone_number(1111);
     chatInfo1->set_name("Sley");
     chatInfo1->set_status("qrc:/QML_modules/ClientApp/icons/online_icon.png");
@@ -13,15 +13,17 @@ ChatListModel::ChatListModel(QObject *parent)
     chatInfo1->set_last_message("Hello World");
     chatInfo1->set_message_count("1");
     chatInfo1->set_message("Hello How are u doing?");
+    chatInfo1->set_message_list(QStringList({"Hello How are u doing?", "How's everything?"}));
 
     ChatInfo *chatInfo2 = new ChatInfo(this);
-    chatInfo2->set_conversation_ID(12346);
+    chatInfo2->set_conversation_ID("12346");
     chatInfo2->set_phone_number(2222);
     chatInfo2->set_name("Naruto");
     chatInfo2->set_status("qrc:/QML_modules/ClientApp/icons/offline_icon.png");
     chatInfo2->set_image("qrc:/QML_modules/ClientApp/icons/name_icon.png");
     chatInfo2->set_last_message("Hello Sasuke");
     chatInfo2->set_message_count("2");
+    chatInfo2->set_message_list(QStringList("Yow Broh Naruto"));
 
     // FIXME: To Implement
     // chatInfo->set_last_seen("Now");
@@ -61,6 +63,10 @@ QVariant ChatListModel::data(const QModelIndex &index, int role) const
             return "Now";
         case MessageRole:
             return chatInfo->message();
+        case MessageListRole:
+            return chatInfo->message_list();
+        default:
+            return QVariant();
         }
     }
 
@@ -79,6 +85,7 @@ QHash<int, QByteArray> ChatListModel::roleNames() const
     roles[MessageCountRole] = "message_count";
     roles[LastMessageRole] = "last_message";
     roles[MessageRole] = "message";
+    roles[MessageListRole] = "Message_list";
 
     return roles;
 }
@@ -121,4 +128,29 @@ void ChatListModel::add_friend(const int &phone_number, const QString &name)
     _friend_list.insert(phone_number, name);
 
     emit friend_list_changed();
+}
+
+QStringList ChatListModel::get_messages(const QString &id)
+{
+    QStringList messages;
+    for (const ChatInfo *chat : _conversations)
+    {
+        if (chat->conversation_ID() == id)
+        {
+            messages = chat->message_list();
+            return messages;
+        }
+    }
+    return messages;
+}
+
+int ChatListModel::get_index(const QString &conversation_ID) const
+{
+    for (int i = 0; i < _conversations.size(); i++)
+    {
+        if (_conversations.at(i)->conversation_ID() == conversation_ID)
+            return i;
+    }
+
+    return -1;
 }

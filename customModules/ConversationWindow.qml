@@ -5,12 +5,12 @@ import ClientApp;
 
 Rectangle
 {
-
     id: root;
     visible: true;
     required property string source;
     required property string name;
     required property string onOffline;
+    required property string conversation_ID;
 
     Rectangle
     {
@@ -170,7 +170,7 @@ Rectangle
         id: conversationMainSection;
         width: root.width;
 
-        ConversationMainSection {}
+        ConversationMainSection { conversation_ID: root.conversation_ID }
 
         anchors.top: conversationHeaderSection.bottom;
         anchors.bottom: conversationBottomSection.bottom;

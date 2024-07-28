@@ -212,7 +212,7 @@ Rectangle
         MouseArea 
         {
             anchors.fill: parent;
-            onClicked: stackView.push(chatListWindow);
+            onClicked: stackView.push(chatWindow);
         }
 
         anchors.top: rowLayout.bottom;

@@ -6,7 +6,21 @@ Rectangle
 {
     id: root;
     anchors.fill: parent;
-    color: "white";
+    color: "#dedede";
+    required property string conversation_ID;
+    property var messageModel: ListModel 
+    {
+        id: messageModel
+    }
+
+    Component.onCompleted: 
+    {
+        var messages = chatListModel.get_messages(root.conversation_ID);
+        messages.forEach((message) =>
+        {
+            messageModel.append({ messageText: message });
+        });
+    }
 
     ListView
     {
@@ -14,21 +28,18 @@ Rectangle
         anchors.fill: parent;
         anchors.margins: 5;
 
-
         spacing: 5;
         clip: true;
-        model: chatListModel;
+        model: messageModel;
         visible: true;
 
         delegate: Rectangle
         {
-            id: chatListDelegate;
-            required property string message;
-
+            id: messageDelegate;
 
             width: listView.width;
             height: 30;
-            color: "white";
+            color: "#dedede";
 
             Rectangle
             {
@@ -36,15 +47,17 @@ Rectangle
                 height: 30;
                 radius: 15;
 
-                color: "gray";
-                anchors.right: parent.right;
+                color: "white";
+                anchors.left: parent.left;
 
                 Text
                 {
-                    id: textMessge;
                     anchors.centerIn: parent;
 
-                    text: chatListDelegate.message;
+                    id: textMessge;
+                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere;
+
+                    text: messageText;
                     color: "black";
                     font.pixelSize: 12;
                     font.bold: true;

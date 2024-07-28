@@ -22,6 +22,8 @@ Rectangle
         {
             id: chatListDelegate;
 
+            required property string conversation_ID;
+            required property string phone_number;
             required property string image;
             required property string name;
             required property string last_message;
@@ -54,6 +56,7 @@ Rectangle
                                     '  source: "' + chatListDelegate.image + '"; ' +
                                     '  name: "' + chatListDelegate.name + '"; ' +
                                     '  onOffline: "' +chatListDelegate.onOffline + '"; ' +
+                                    ' conversation_ID:  "' + chatListDelegate.conversation_ID + '";  ' +
                                     '}';
 
                     var convWindow = Qt.createQmlObject(qmlCode, stackView);

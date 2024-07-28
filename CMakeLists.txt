@@ -25,7 +25,7 @@ qt_add_qml_module(app
 
                     QML_FILES
                     customModules/Main.qml
-                    customModules/ChatListWindow.qml
+                    customModules/ChatWindow.qml
                     customModules/LoginWindow.qml 
                     customModules/SignUpWindow.qml 
                     customModules/ConversationWindow.qml 

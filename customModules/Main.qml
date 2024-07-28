@@ -37,8 +37,8 @@ ApplicationWindow
 
     Component
     {
-        id: chatListWindow;
-        ChatListWindow{}
+        id: chatWindow;
+        ChatWindow{}
     }
 
     StackView
@@ -48,8 +48,6 @@ ApplicationWindow
         anchors.fill: parent;
 
         initialItem: loginWindow;
-        // initialItem: chatListWindow;
-        // initialItem: conversationWindow;
-        // initialItem: chatMainSection;
+        // initialItem: chatWindow;
     }
 }

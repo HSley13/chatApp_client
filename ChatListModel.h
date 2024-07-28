@@ -23,7 +23,8 @@ public:
         MessageCountRole,
         LastMessageRole,
         LastSeen,
-        MessageRole
+        MessageRole,
+        MessageListRole
     };
 
     ChatListModel(QObject *parent = nullptr);
@@ -40,6 +41,9 @@ public:
     const QHash<int, QString> &friend_list() const;
     void set_friend_list(const QHash<int, QString> &friends);
     void add_friend(const int &phone_number, const QString &name);
+
+    Q_INVOKABLE QStringList get_messages(const QString &index);
+    Q_INVOKABLE int get_index(const QString &conversation_ID) const;
 
 public slots:
 

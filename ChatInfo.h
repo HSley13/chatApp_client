@@ -7,7 +7,7 @@ class ChatInfo : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(int conversation_ID READ conversation_ID WRITE set_conversation_ID NOTIFY conversation_ID_changed)
+    Q_PROPERTY(QString conversation_ID READ conversation_ID WRITE set_conversation_ID NOTIFY conversation_ID_changed)
     Q_PROPERTY(QString name READ name WRITE set_name NOTIFY name_changed)
     Q_PROPERTY(int phone_number READ phone_number WRITE set_phone_number NOTIFY phone_number_changed)
     Q_PROPERTY(QString status READ status WRITE set_status NOTIFY status_changed)
@@ -15,13 +15,12 @@ class ChatInfo : public QObject
     Q_PROPERTY(QString message_count READ message_count WRITE set_message_count NOTIFY message_count_changed)
     Q_PROPERTY(QString last_message READ last_message WRITE set_last_message NOTIFY last_message_changed)
     Q_PROPERTY(QString message READ message WRITE set_message NOTIFY message_changed)
-    // Q_PROPERTY(QString is_mine READ is_mine WRITE set_is_mine NOTIFY is_mine_changed)
 
 public:
     explicit ChatInfo(QObject *parent = nullptr);
 
-    const int &conversation_ID() const;
-    void set_conversation_ID(const int &new_ID);
+    const QString &conversation_ID() const;
+    void set_conversation_ID(const QString &new_ID);
 
     const QString &name() const;
     void set_name(const QString &new_name);
@@ -44,6 +43,9 @@ public:
     const QString &message() const;
     void set_message(const QString &new_message);
 
+    QStringList message_list() const;
+    void set_message_list(const QStringList &list);
+
 private:
     QString _name{};
     int _phone_number{0};
@@ -51,8 +53,10 @@ private:
     QString _image{};
     QString _message_count{};
     QString _last_message{};
-    int _conversation_ID{0};
+    QString _conversation_ID{};
     QString _message{};
+
+    QStringList _message_list{};
 
 signals:
     void name_changed();
@@ -63,4 +67,6 @@ signals:
     void last_message_changed();
     void conversation_ID_changed();
     void message_changed();
+
+    void message_list_changed();
 };

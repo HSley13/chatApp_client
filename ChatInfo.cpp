@@ -93,12 +93,12 @@ void ChatInfo::set_last_message(const QString &new_last_message)
     emit last_message_changed();
 }
 
-const int &ChatInfo::conversation_ID() const
+const QString &ChatInfo::conversation_ID() const
 {
     return _conversation_ID;
 }
 
-void ChatInfo::set_conversation_ID(const int &new_ID)
+void ChatInfo::set_conversation_ID(const QString &new_ID)
 {
     if (_conversation_ID == new_ID)
         return;
@@ -121,4 +121,19 @@ void ChatInfo::set_message(const QString &new_message)
     _message = new_message;
 
     emit message_changed();
+}
+
+QStringList ChatInfo::message_list() const
+{
+    return _message_list;
+}
+
+void ChatInfo::set_message_list(const QStringList &list)
+{
+    if (_message_list == list)
+        return;
+
+    _message_list = list;
+
+    emit message_list_changed();
 }
