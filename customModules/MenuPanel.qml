@@ -1,14 +1,11 @@
-import QtQuick
+import QtQuick 2.15;
 
 Rectangle
 {
     id: root;
 
-    property string option1: "";
-    property string option2: "";
-    property string option3: "";
-
     property bool hidden: true;
+    property string animationDirection: "horizontal";
     width: 160;
     height: 120;
 
@@ -17,9 +14,7 @@ Rectangle
         anchors.fill: parent;
 
         model: ListModel 
-        {
-            id: listModel;
-        }
+        { id: listModel; }
 
         delegate: Item 
         {
@@ -33,10 +28,38 @@ Rectangle
                 color: index % 2 === 0 ? "lightgrey" : "white";
                 border.color: "grey";
 
-                Text 
+                Row
                 {
-                    anchors.centerIn: parent;
-                    text: model.text;
+                    anchors.fill: parent;
+                    spacing: 10;
+                    anchors.margins: 5;
+
+                    Text 
+                    {
+                        text: model.text;
+                        verticalAlignment: Text.AlignVCenter;
+                        anchors.verticalCenter: parent.verticalCenter;
+                    }
+
+                    Rectangle
+                    {
+                        width: 30;
+                        height: 30;
+                        radius: 15; 
+                        color: "transparent";
+                        
+                        Image 
+                        {
+                            id: itemImage;
+                            source: model.image_source;
+                            visible: model.image_source !== "";
+                            fillMode: Image.PreserveAspectFit;
+                            clip: true;
+                            width: parent.width * 0.9;
+                            height: parent.height * 0.9;
+                            anchors.centerIn: parent;
+                        }
+                    }
                 }
 
                 MouseArea 
@@ -44,7 +67,7 @@ Rectangle
                     anchors.fill: parent;
                     onClicked: 
                     {
-                        console.log("Selected: " + listModel.text);
+                        console.log("Selected: " + model.text);
                     }
                 }
             }
@@ -65,6 +88,11 @@ Rectangle
         listModel.clear();
         
         for (var i = 0; i < options.length; i++)
-            listModel.append({"text": options[i]});
+        {
+            var text = options[i].text || "";
+            var image_source = options[i].image_source || "";
+
+            listModel.append({"text": text, "image_source": image_source});
+        }
     }
 }

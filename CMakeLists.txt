@@ -41,12 +41,13 @@ qt_add_qml_module(app
                     ChatProtocol.cpp ChatProtocol.h
                     ClientManager.cpp ClientManager.h
                     ChatInfo.cpp ChatInfo.h
+                    AudioRecorder.cpp AudioRecorder.h
      
                     RESOURCES
                     icons/chat_icon.png
                     icons/file_icon.png
                     icons/group_icon.png 
-                    icons/record_icon.png 
+                    icons/voice_icon.png 
                     icons/send_file_icon.png
                     icons/hide_icon.png
                     icons/see_icon.png

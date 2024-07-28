@@ -5,14 +5,14 @@ Rectangle
 {
     id: root;
     color: "white";
-    anchors.fill: parent;
 
     required property string source;
-    required property string onOffLine;
+    property string onOffLine: "";
     required property string name;
     required property string last_message;
-    property string last_seen: "Yesterday";
-    required property string message_count;
+    property string last_seen: "";
+    property string message_count: "";
+    property string colorM: "gray";
 
     Rectangle
     {
@@ -81,7 +81,7 @@ Rectangle
             {
                 id: last_message;
                 text: root.last_message;
-                color: "gray";
+                color: root.colorM;
                 font.pixelSize: 10;
                 elide: Text.ElideRight;
                 width: parent.width; 

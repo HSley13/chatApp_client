@@ -19,7 +19,7 @@ Column
     {
         id: circle;
 
-        height: 50 * 0.8;
+        height: 50 * 0.7;
         width: height;
         radius: width / 2;
 

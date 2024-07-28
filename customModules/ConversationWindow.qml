@@ -15,7 +15,6 @@ Rectangle
     Rectangle
     {
         id: conversationHeaderSection;
-
         width: parent.width;
         height: 50;
 
@@ -37,92 +36,29 @@ Rectangle
             anchors.verticalCenter: parent.verticalCenter;
             anchors.left: parent.left;
             anchors.leftMargin: 10;
+            anchors.rightMargin: 10;
+            anchors.topMargin: 30;
         }
 
         Rectangle
         {
-            id: iconNameStatus;
-            width: 40;
-            height: 40;
+            width: parent.width - returnImage.width;
+            height: parent.height;
 
-            IconText
+            ImageText
             {
-                id: customImage;
-                imageSource: root.source;
-                text: "";
-                cWidth: 40;
-
-                onItemClicked:
-                {
-                    // FIXME: Handle this click properly;
-                    console.log("Chat Icon Clicked");
-                }
+                id: iconNameStatus;
+                source: root.source;
+                name: root.name;
+                last_message: root.onOffline; 
+                colorM: (last_message === "Online") ? "green" : "red";
 
                 anchors.fill: parent;
             }
 
-            Column
-            {
-                spacing: 2;
-                width: parent.width * 0.6; 
-
-                Text 
-                {
-                    id: name;
-                    text: root.name;
-                    color: "black";
-                    font.pixelSize: 16;
-                    font.bold: true;
-                    elide: Text.ElideRight;
-                }
-
-                Text 
-                {
-                    id: onOffline;
-                    text: root.onOffline;
-                    color: (text === "Online") ? "green" : "red";
-                    font.pixelSize: 10;
-                    elide: Text.ElideRight;
-                    font.bold: true;
-                }
-
-                anchors.left: customImage.right;
-                anchors.right: parent.right;
-            }
-
-            anchors.verticalCenter: parent.verticalCenter;
             anchors.left: returnImage.right;
             anchors.leftMargin: 5;
-        }
-
-        Image
-        {
-            id: chatSettings;
-            source: "qrc:/QML_modules/ClientApp/icons/menu_icon.png";
-            property string source2: "qrc:/QML_modules/ClientApp/icons/cancel_menu.png";
-            mipmap: true;
-            fillMode: Image.PreserveAspectFit;
-            width: parent.height * 0.4;
-            height: parent.height * 0.4;
-
-            MouseArea
-            {
-                anchors.fill: parent;
-
-                onClicked: 
-                {
-                    parent.source = (parent.source.toString() === parent.source2) ? "qrc:/QML_modules/ClientApp/icons/menu_icon.png" : parent.source2;
-                    menuPanel.hidden = !menuPanel.hidden;
-
-                    // FIXME: handle click button correctly
-                    console.log("Menu Button Click");
-                    
-                }
-            }
-
             anchors.verticalCenter: parent.verticalCenter;
-            anchors.right: parent.right;
-            anchors.rightMargin: menuPanel.hidden ? 10 : menuPanel.width;
         }
 
         anchors.top: parent.top;
@@ -138,16 +74,16 @@ Rectangle
         ConversationMainSection { conversation_ID: root.conversation_ID }
 
         anchors.top: conversationHeaderSection.bottom;
-        anchors.bottom: conversationBottomSection.bottom;
+        anchors.bottom: conversationBottomSection.top;
     }
 
     Rectangle 
     {
         id: conversationBottomSection;
         width: parent.width;
-        height: 50; 
+        height: 50;
 
-            // FIXME: add columns --> insert & send message / files / audio  
+        // FIXME: add columns --> insert & send message / files / audio  
 
         IconText
         {
@@ -155,7 +91,7 @@ Rectangle
             imageSource: "qrc:/QML_modules/ClientApp/icons/plus_icon.png";
             image2Source: "qrc:/QML_modules/ClientApp/icons/cancel_icon.png";
             text: "";
-            cWidth: parent.width * .2;
+            cWidth: parent.width * 0.1;
 
             onItemClicked:
             {
@@ -163,8 +99,9 @@ Rectangle
                 console.log("Plus Icon Clicked");
             }
 
-            anchors.left: parent.left;     
+            anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;
+            anchors.rightMargin: 5;
         }
 
         InputField
@@ -175,8 +112,9 @@ Rectangle
             placeHolder: "Type message...";
             width: parent.width * 0.6;
 
-            anchors.centerIn: parent;
+            anchors.left: plus.right;
             anchors.verticalCenter: parent.verticalCenter;
+            anchors.rightMargin: 5;
         }
 
         IconText
@@ -184,7 +122,7 @@ Rectangle
             id: sendMessage;
             imageSource: "qrc:/QML_modules/ClientApp/icons/send_icon.png";
             text: "";
-            cWidth: parent.width * .2;
+            cWidth: parent.width * 0.1;
 
             onItemClicked:
             {
@@ -192,27 +130,63 @@ Rectangle
                 console.log("Send Icon Clicked");
             }
 
+            anchors.left: new_message.right;
+            anchors.verticalCenter: parent.verticalCenter;
+            anchors.rightMargin: 5;
+        }
+
+        IconText
+        {
+            id: sendVoice;
+            imageSource: "qrc:/QML_modules/ClientApp/icons/voice_icon.png";
+            text: "";
+            cWidth: parent.width * 0.2;
+
+            onItemClicked:
+            {
+                voiceCounter.visible = !voiceCounter.visible;
+                voiceCounter.record = !voiceCounter.record;
+
+                if(voiceCounter.visible)
+                {
+                    voiceCounter.anchors.left = sendVoice.right;
+                    voiceCounter.anchors.verticalCenter = parent.verticalCenter;
+
+                    sendVoice.anchors.right = parent.right;
+                    sendVoice.anchors.rightMargin = voiceCounter.width + 5;
+                }
+                else
+                {
+                    sendVoice.anchors.right = parent.right;
+                    sendVoice.anchors.rightMargin = 5;
+                }
+
+                voiceCounter.record ? audioRecorder.record() : audioRecorder.stop();
+
+                // FIXME: Handle this click properly
+                console.log("Send Icon Clicked");
+            }
+
+            anchors.left: sendMessage.right;
+            anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right;
+        }
+
+        Text
+        {
+            property bool record: false;
+
+            id: voiceCounter;
+
+            text: audioRecorder.time_display;
+            color: "black";
+            visible: false;
+
+            width: 50;  // Adjust this value as needed
+            height: parent.height * 0.5;
             anchors.verticalCenter: parent.verticalCenter;
         }
 
         anchors.bottom: parent.bottom;
-    }
-
-    MenuPanel 
-    {
-        id: menuPanel;
-
-        anchors.right: chatSettings.left
-        anchors.top: chatSettings.bottom;
-
-
-        Component.onCompleted:
-        {
-            var options = ["Call", "Video Call", "Block"];
-            menuPanel.update_options(options);
-        }
-
-        x: hidden ? parent.width : parent.width - width;
     }
 }

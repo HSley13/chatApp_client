@@ -175,7 +175,11 @@ Rectangle
 
         Component.onCompleted:
         {
-            var options = ["New Conversation", "New Group", "Chat with An Agent"];
+            var options = [
+                            {text: "New Conversation"}, 
+                            {text: "New Group"}, 
+                            {text: "Chat with An Agent"}
+                        ];
             menuPanel.update_options(options);
         }
 

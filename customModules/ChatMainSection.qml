@@ -43,10 +43,8 @@ Rectangle
                 name: chatListDelegate.name;
                 last_message: chatListDelegate.last_message;
                 message_count: chatListDelegate.message_count;
-                
-                anchors.left: parent.left;
-                anchors.leftMargin: 5;
-                anchors.verticalCenter: parent.verticalCenter;
+
+                anchors.fill: parent;
             }
 
             MouseArea

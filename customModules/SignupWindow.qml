@@ -14,11 +14,11 @@ Rectangle
         fillMode: Image.PreserveAspectFit;
 
         anchors.top: parent.top;
-        anchors.topMargin: 10;
+        anchors.topMargin: 5;
         anchors.horizontalCenter: parent.horizontalCenter;
 
-        width: 300;
-        height: 300;
+        width: 250;
+        height: 250;
 
         source: "qrc:/QML_modules/ClientApp/icons/hi_icon.png";
     }
@@ -133,9 +133,9 @@ Rectangle
         id: signUpButton;
         color: "black";
 
-        radius: 5;
         width: parent.width * 0.6;
         height: 50;
+        radius: 15;
 
         Text 
         {
@@ -200,7 +200,7 @@ Rectangle
         }
 
         anchors.top: signUpButton.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 }

@@ -6,8 +6,8 @@ import ClientApp;
 ApplicationWindow
 {
     id: root;
-    width: 500;
-    height: 400;
+    width: 400;
+    height: 500;
     visible: true;
     title: "Chat App";
 
@@ -22,6 +22,9 @@ ApplicationWindow
 
     ClientManager
     {id: clientManager}
+
+    AudioRecorder
+    {id: audioRecorder}
 
     Component
     {
