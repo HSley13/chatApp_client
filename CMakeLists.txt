@@ -34,6 +34,7 @@ qt_add_qml_module(app
                     customModules/ImageText.qml
                     customModules/ChatMainSection.qml
                     customModules/ConversationMainSection.qml
+                    customModules/MenuPanel.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h

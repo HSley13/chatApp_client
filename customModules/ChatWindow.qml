@@ -11,7 +11,7 @@ Rectangle
     {
         id: chatHeaderSection;
         width: parent.width;
-        height: 105; 
+        height: 60; 
 
         Image
         {
@@ -19,8 +19,8 @@ Rectangle
             source: "qrc:/QML_modules/ClientApp/icons/back_icon.png";
             mipmap: true;
             fillMode: Image.PreserveAspectFit;
-            width: parent.height * 0.2;
-            height: parent.height * 0.2;
+            width: parent.height * 0.4;
+            height: width;
 
             MouseArea
             {
@@ -34,19 +34,19 @@ Rectangle
             anchors.leftMargin: 10;
         }
 
-        Text
+        InputField
         {
-            id: chatText;
+            id: chatWindowSearch;
+            image1Source: "qrc:/QML_modules/ClientApp/icons/search_icon.png";
 
-            text: "CHATS";
-            color: "black";
+            echoMode: 0;
+            placeHolder: "Search...";
+            width: parent.width * 0.6;
 
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere;
-            font.bold: true;
-            font.pixelSize: 20;
-
-            leftPadding: 15;
-            rightPadding: 15;
+            onAccepted: (value) => 
+            {
+                console.log("Text Searched: " + value);
+            }
 
             anchors.top: parent.top;
             anchors.topMargin: 10;
@@ -59,7 +59,7 @@ Rectangle
             color: "#f5daef";
 
             radius: 10;
-            width: chatText.width * .6;
+            width: rectangle_new_text.width * 1.2;
             height: 30;
 
             Text
@@ -79,8 +79,10 @@ Rectangle
                 onPressed: rectangle_new.color = "#ed7bb4";
                 onReleased: rectangle_new.color = "#f5daef";
 
+
                 onClicked:
                 {
+                     menuPanel.hidden = !menuPanel.hidden;
                     // FIXME: Handle this click Properly;
                     console.log("+ New Button Clicked");;
                 }
@@ -89,26 +91,7 @@ Rectangle
             anchors.top: parent.top;
             anchors.topMargin: 10;
             anchors.right: parent.right;
-            anchors.rightMargin: 10;
-        }
-
-        InputField
-        {
-            id: chatWindowSearch;
-            image1Source: "qrc:/QML_modules/ClientApp/icons/search_icon.png";
-
-            echoMode: 0;
-            placeHolder: "Search...";
-            width: parent.width * 0.8;
-
-            onAccepted: (value) => 
-            {
-                console.log("Text Searched: " + value);
-            }
-
-            anchors.top: chatText.bottom;
-            anchors.topMargin: 20;
-            anchors.horizontalCenter: parent.horizontalCenter;
+            anchors.rightMargin: menuPanel.hidden ? 10 : menuPanel.width;
         }
 
         anchors.top: parent.top;
@@ -133,101 +116,69 @@ Rectangle
         width: parent.width;
         height: 50; 
 
-        Rectangle
-        {
-            id: rectan;
-            width: parent.width;
-            height: 2; 
-            color: "#e3e1e2"; 
+        color: "#dedede";
 
-            anchors.top: parent.top;
-            anchors.horizontalCenter: parent.horizontalCenter;
+        IconText
+        {
+            id: chatList;
+            imageSource: "qrc:/QML_modules/ClientApp/icons/chat_icon.png";
+            text: "Chats";
+            onItemClicked:
+            {
+                // FIXME: Handle this click Properly;
+                console.log("Chat Icon Clicked");
+            }
+            anchors.left: parent.left;
+            anchors.verticalCenter: parent.verticalCenter;
         }
 
-        Rectangle
+        IconText
         {
-            id: shadowEffect;
-            width: parent.width;
-            height: 10;
+            id: chatGroup;
+            imageSource: "qrc:/QML_modules/ClientApp/icons/group_icon.png";
+            text: "Groups";
 
-            gradient: Gradient
+            onItemClicked:
             {
-                GradientStop
-                {
-                    position: 0;
-                    color: "#e3e1e2";
-                }
-                GradientStop
-                {
-                    position: 1;
-                    color: "transparent";
-                }
+                // FIXME: Handle this click Properly;
+                console.log("Group Icon Clicked");
             }
 
-            anchors.top: rectan.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
+            anchors.centerIn: parent;
         }
 
-        Rectangle 
+        IconText
         {
-            id: chatBottomBar;
-            width: parent.width;
-            height: 50; 
+            id: profile;
+            imageSource: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
+            text: "Profile";
 
-            IconText
+            onItemClicked:
             {
-                id: chatList;
-                imageSource: "qrc:/QML_modules/ClientApp/icons/chat_icon.png";
-                text: "Chats";
-
-                onItemClicked:
-                {
-                    // FIXME: Handle this click Properly;
-                    console.log("Chat Icon Clicked");
-                }
-
-                anchors.left: parent.left;
-                anchors.verticalCenter: parent.verticalCenter;
+                // FIXME: Handle this click Properly;
+                console.log("Profile Icon Clicked");
             }
 
-            IconText
-            {
-                id: chatGroup;
-                imageSource: "qrc:/QML_modules/ClientApp/icons/group_icon.png";
-                text: "Groups";
-
-                onItemClicked:
-                {
-                    // FIXME: Handle this click Properly;
-                    console.log("Group Icon Clicked");
-                }
-
-                anchors.centerIn: parent;
-            }
-
-            IconText
-            {
-                id: profile;
-                imageSource: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
-                text: "Profile";
-
-                onItemClicked:
-                {
-                    // FIXME: Handle this click Properly;
-                    console.log("Profile Icon Clicked");
-                }
-
-                anchors.right: parent.right;
-                anchors.verticalCenter: parent.verticalCenter;
-            }
-
-            anchors.top: rectan.bottom;
-            anchors.topMargin: 5; 
             anchors.right: parent.right;
+            anchors.verticalCenter: parent.verticalCenter;
         }
 
         anchors.bottom: parent.bottom;
-        anchors.horizontalCenter: parent.horizontalCenter;
-        anchors.bottomMargin: 10;
+    }
+
+    MenuPanel 
+    {
+        id: menuPanel;
+
+        anchors.right: rectangle_new.left
+        anchors.top: rectangle_new.bottom;
+
+        Component.onCompleted:
+        {
+            var options = ["New Conversation", "New Group", "Chat with An Agent"];
+            menuPanel.update_options(options);
+        }
+
+        x: hidden ? parent.width : parent.width - width;
     }
 }

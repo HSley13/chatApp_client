@@ -6,8 +6,8 @@ import ClientApp;
 ApplicationWindow
 {
     id: root;
-    width: 400;
-    height: 500
+    width: 500;
+    height: 400;
     visible: true;
     title: "Chat App";
 

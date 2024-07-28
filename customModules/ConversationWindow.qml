@@ -112,7 +112,7 @@ Rectangle
                 onClicked: 
                 {
                     parent.source = (parent.source.toString() === parent.source2) ? "qrc:/QML_modules/ClientApp/icons/menu_icon.png" : parent.source2;
-
+                    menuPanel.hidden = !menuPanel.hidden;
 
                     // FIXME: handle click button correctly
                     console.log("Menu Button Click");
@@ -122,47 +122,12 @@ Rectangle
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right;
-            anchors.rightMargin: 10;
+            anchors.rightMargin: menuPanel.hidden ? 10 : menuPanel.width;
         }
 
         anchors.top: parent.top;
         anchors.left: parent.left;
         anchors.right: parent.right;
-
-        Rectangle
-        {
-            id: rectan1;
-            width: parent.width;
-            height: 2; 
-            color: "#e3e1e2"; 
-
-            anchors.top: parent.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
-
-        Rectangle
-        {
-            id: shadowEffect1;
-            width: parent.width;
-            height: 10;
-
-            gradient: Gradient
-            {
-                GradientStop
-                {
-                    position: 0;
-                    color: "#e3e1e2";
-                }
-                GradientStop
-                {
-                    position: 1;
-                    color: "transparent";
-                }
-            }
-
-            anchors.top: rectan1.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
     }
 
     Rectangle 
@@ -174,7 +139,6 @@ Rectangle
 
         anchors.top: conversationHeaderSection.bottom;
         anchors.bottom: conversationBottomSection.bottom;
-        anchors.margins: 10;
     }
 
     Rectangle 
@@ -183,95 +147,72 @@ Rectangle
         width: parent.width;
         height: 50; 
 
-        Rectangle
-        {
-            id: convRectan;
-            width: parent.width;
-            height: 2; 
-            color: "#e3e1e2"; 
-
-            anchors.top: parent.top;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
-
-        Rectangle
-        {
-            id: shadowEffect;
-            width: parent.width;
-            height: 10;
-
-            gradient: Gradient
-            {
-                GradientStop
-                {
-                    position: 0;
-                    color: "#e3e1e2";
-                }
-                GradientStop
-                {
-                    position: 1;
-                    color: "transparent";
-                }
-            }
-
-            anchors.top: convRectan.bottom;
-            anchors.horizontalCenter: parent.horizontalCenter;
-        }
-
-        Row
-        {
-            id: conversationBottomBar;
-            width: parent.width;
-            height: 50;
-
             // FIXME: add columns --> insert & send message / files / audio  
 
-            IconText
-            {
-                id: plus;
-                imageSource: "qrc:/QML_modules/ClientApp/icons/plus_icon.png";
-                image2Source: "qrc:/QML_modules/ClientApp/icons/cancel_icon.png";
-                text: "";
-                cWidth: parent.width * .2
+        IconText
+        {
+            id: plus;
+            imageSource: "qrc:/QML_modules/ClientApp/icons/plus_icon.png";
+            image2Source: "qrc:/QML_modules/ClientApp/icons/cancel_icon.png";
+            text: "";
+            cWidth: parent.width * .2;
 
-                onItemClicked:
-                {
-                    // FIXME: Handle this click Properly;
-                    console.log("Plus Icon Clicked");
-                }
+            onItemClicked:
+            {
+                // FIXME: Handle this click Properly;
+                console.log("Plus Icon Clicked");
             }
 
-            InputField
+            anchors.left: parent.left;     
+            anchors.verticalCenter: parent.verticalCenter;
+        }
+
+        InputField
+        {
+            id: new_message;
+            image1Source: "";
+            echoMode: 0;
+            placeHolder: "Type message...";
+            width: parent.width * 0.6;
+
+            anchors.centerIn: parent;
+            anchors.verticalCenter: parent.verticalCenter;
+        }
+
+        IconText
+        {
+            id: sendMessage;
+            imageSource: "qrc:/QML_modules/ClientApp/icons/send_icon.png";
+            text: "";
+            cWidth: parent.width * .2;
+
+            onItemClicked:
             {
-                id: new_message;
-
-                image1Source: "";
-
-                echoMode: 0;
-                placeHolder: "Type message...";
-                width: parent.width * 0.6;
+                // FIXME: Handle this click Properly;
+                console.log("Send Icon Clicked");
             }
 
-            IconText
-            {
-                id: sendMessage;
-                imageSource: "qrc:/QML_modules/ClientApp/icons/send_icon.png";
-                text: "";
-                cWidth: parent.width * .2
-
-                onItemClicked:
-                {
-                    // FIXME: Handle this click Properly;
-                    console.log("Send Icon Clicked");
-                }
-            }
-
-            anchors.top: convRectan.bottom;
-            anchors.topMargin: 5; 
+            anchors.right: parent.right;
+            anchors.verticalCenter: parent.verticalCenter;
         }
 
         anchors.bottom: parent.bottom;
-        anchors.horizontalCenter: parent.horizontalCenter;
-        anchors.bottomMargin: 10;
+    }
+
+    MenuPanel 
+    {
+        id: menuPanel;
+
+        anchors.right: chatSettings.left
+        anchors.top: chatSettings.bottom;
+
+
+        Component.onCompleted:
+        {
+            var options = ["Call", "Video Call", "Block"];
+            menuPanel.update_options(options);
+        }
+
+        x: hidden ? parent.width : parent.width - width;
     }
 }

@@ -11,7 +11,7 @@ Rectangle
     required property string onOffLine;
     required property string name;
     required property string last_message;
-    property string last_seen: "Now";
+    property string last_seen: "Yesterday";
     required property string message_count;
 
     Rectangle
@@ -54,15 +54,13 @@ Rectangle
         }
     }
 
-    Row
+    Rectangle
     {
         anchors.left: container.right;
         anchors.right: parent.right;
         anchors.top: parent.top;
         anchors.bottom: parent.bottom;
         anchors.margins: 5;
-
-        spacing: 50; 
 
         Column
         {
@@ -88,6 +86,47 @@ Rectangle
                 elide: Text.ElideRight;
                 width: parent.width; 
             }
+
+            anchors.left: parent.left;
+        }
+
+        Column
+        {
+            spacing: 5;
+
+            Text
+            {
+                id: text_seen;
+
+                text: root.last_seen;
+                color: "#DE02B5";
+                font.pixelSize: 10;
+                font.bold: true;
+                elide: Text.ElideRight;
+            }
+
+            Rectangle 
+            {
+                width: text_count.width * 2;
+                height: width;
+                color: "#DE02B5";
+                radius: width / 2;
+
+                Text 
+                {
+                    id: text_count;
+                    text: root.message_count;
+                    color: "white";
+                    font.pixelSize: 10;
+                    font.bold: true;
+                    elide: Text.ElideRight;
+                    anchors.centerIn: parent;
+                }
+
+                anchors.horizontalCenter: text_seen.horizontalCenter;
+            }
+
+            anchors.right: parent.right;
         }
     }
 }
