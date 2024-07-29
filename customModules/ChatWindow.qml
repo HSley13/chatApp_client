@@ -1,6 +1,7 @@
 import QtQuick;
 import QtQuick.Window;
 import QtQuick.Controls;
+import ClientApp;
 
 Rectangle
 {
@@ -42,7 +43,8 @@ Rectangle
             echoMode: 0;
             placeHolder: "Search...";
             width: parent.width * 0.6;
-
+            customHeight: 40;
+            
             onAccepted: (value) => 
             {
                 console.log("Text Searched: " + value);
@@ -82,7 +84,10 @@ Rectangle
 
                 onClicked:
                 {
-                     menuPanel.hidden = !menuPanel.hidden;
+                    menuPanel.hidden = !menuPanel.hidden;
+                    
+                    (dialog.open()) ? dialog.close() : dialog.open();
+
                     // FIXME: Handle this click Properly;
                     console.log("+ New Button Clicked");;
                 }
@@ -104,7 +109,45 @@ Rectangle
         id: chatMainSection;
         width: root.width;
 
-        ChatMainSection {}
+        Component
+        {
+            id: chatSection;        
+            ChatMainSection{}
+        }
+
+        StackView
+        {
+            id: stackView2;
+
+            anchors.fill: parent;
+
+            // initialItem: loginWindow;
+            initialItem: chatSection;
+
+            ListDialog
+            {
+                id: dialog
+                input: true;
+                titles: "Hello World";
+                width: 300;
+
+                names: ["Are u sure U wanna delete it? "];
+
+                onDialogAccepted:
+                {
+                    console.log("Dialog Accepted");
+                    console.log("input: " + dialog.inputField);
+                }
+
+                onDialogRejected:
+                {
+                    console.log("Dialog Rejected");
+                    console.log("input: " + dialog.inputField);
+                }
+
+                anchors.centerIn: parent;
+            }
+        }
 
         anchors.top: chatHeaderSection.bottom;
         anchors.bottom: chatBottomSection.top;
@@ -125,9 +168,11 @@ Rectangle
             text: "Chats";
             onItemClicked:
             {
-                // FIXME: Handle this click Properly;
+                // Check if the current module ain't the one I wanna push to it. 
+                stackView2.push(chatSection);
                 console.log("Chat Icon Clicked");
             }
+            
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;
         }
@@ -140,7 +185,9 @@ Rectangle
 
             onItemClicked:
             {
+
                 // FIXME: Handle this click Properly;
+                // stackView2.push(loginWindow);
                 console.log("Group Icon Clicked");
             }
 

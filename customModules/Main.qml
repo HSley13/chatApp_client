@@ -1,6 +1,7 @@
 import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Window;
+import QtQuick.VirtualKeyboard
 import ClientApp;
 
 ApplicationWindow
@@ -23,8 +24,8 @@ ApplicationWindow
     ClientManager
     {id: clientManager}
 
-    AudioRecorder
-    {id: audioRecorder}
+    AudioController
+    {id: audioController}
 
     Component
     {
@@ -50,7 +51,7 @@ ApplicationWindow
 
         anchors.fill: parent;
 
-        initialItem: loginWindow;
-        // initialItem: chatWindow;
+        // initialItem: loginWindow;
+        initialItem: chatWindow;
     }
 }

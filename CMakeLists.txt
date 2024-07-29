@@ -35,13 +35,14 @@ qt_add_qml_module(app
                     customModules/ChatMainSection.qml
                     customModules/ConversationMainSection.qml
                     customModules/MenuPanel.qml
+                    customModules/ListDialog.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
                     ChatProtocol.cpp ChatProtocol.h
                     ClientManager.cpp ClientManager.h
                     ChatInfo.cpp ChatInfo.h
-                    AudioRecorder.cpp AudioRecorder.h
+                    AudioController.cpp AudioController.h
      
                     RESOURCES
                     icons/chat_icon.png
@@ -61,7 +62,6 @@ qt_add_qml_module(app
                     icons/cancel_icon.png
                     icons/menu_icon.png
                     icons/cancel_menu.png
-                    icons/image.jpg
                     icons/online_icon.png
                     icons/offline_icon.png
                     icons/send_icon.png)

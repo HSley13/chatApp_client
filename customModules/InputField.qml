@@ -12,10 +12,11 @@ Rectangle
     property string image2Source;
     required property string placeHolder;
     property alias echoMode: textInput.echoMode;
+    property int customHeight: 50;
 
     signal accepted(string value);
 
-    height: 50;
+    height: customHeight;
 
     radius: 20;
     border.color: textInput.focus ? "#a10e7a" : "black";

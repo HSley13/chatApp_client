@@ -111,6 +111,7 @@ Rectangle
             echoMode: 0;
             placeHolder: "Type message...";
             width: parent.width * 0.6;
+            customHeight: 40;
 
             anchors.left: plus.right;
             anchors.verticalCenter: parent.verticalCenter;
@@ -161,7 +162,7 @@ Rectangle
                     sendVoice.anchors.rightMargin = 5;
                 }
 
-                voiceCounter.record ? audioRecorder.record() : audioRecorder.stop();
+                voiceCounter.record ? audioController.record() : audioController.stop();
 
                 // FIXME: Handle this click properly
                 console.log("Send Icon Clicked");
@@ -178,11 +179,11 @@ Rectangle
 
             id: voiceCounter;
 
-            text: audioRecorder.time_display;
+            text: audioController.time_display;
             color: "black";
             visible: false;
 
-            width: 50;  // Adjust this value as needed
+            width: 40;
             height: parent.height * 0.5;
             anchors.verticalCenter: parent.verticalCenter;
         }

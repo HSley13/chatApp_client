@@ -12,8 +12,6 @@ ChatListModel::ChatListModel(QObject *parent)
     chatInfo1->set_image("qrc:/QML_modules/ClientApp/icons/name_icon.png");
     chatInfo1->set_last_message("Hello World");
     chatInfo1->set_message_count("1");
-    chatInfo1->set_message("Hello How are u doing?");
-    chatInfo1->set_message_list(QStringList({"Hello How are u doing?", "How's everything?"}));
 
     ChatInfo *chatInfo2 = new ChatInfo(this);
     chatInfo2->set_conversation_ID("12346");
@@ -22,11 +20,10 @@ ChatListModel::ChatListModel(QObject *parent)
     chatInfo2->set_status("qrc:/QML_modules/ClientApp/icons/offline_icon.png");
     chatInfo2->set_image("qrc:/QML_modules/ClientApp/icons/name_icon.png");
     chatInfo2->set_last_message("Hello Sasuke");
-    chatInfo2->set_message_count("2");
-    chatInfo2->set_message_list(QStringList("Yow Broh Naruto"));
 
     // FIXME: To Implement
     // chatInfo->set_last_seen("Now");
+
     _conversations << chatInfo1;
     _conversations << chatInfo2;
 }
@@ -130,18 +127,14 @@ void ChatListModel::add_friend(const int &phone_number, const QString &name)
     emit friend_list_changed();
 }
 
-QStringList ChatListModel::get_messages(const QString &id)
+QStringList ChatListModel::get_messages(const QString &ID)
 {
-    QStringList messages;
-    for (const ChatInfo *chat : _conversations)
-    {
-        if (chat->conversation_ID() == id)
-        {
-            messages = chat->message_list();
-            return messages;
-        }
-    }
-    return messages;
+    int i = get_index(ID);
+
+    if (i != -1)
+        return _conversations.at(i)->message_list();
+
+    return QStringList();
 }
 
 int ChatListModel::get_index(const QString &conversation_ID) const
@@ -153,4 +146,19 @@ int ChatListModel::get_index(const QString &conversation_ID) const
     }
 
     return -1;
+}
+
+void ChatListModel::new_message_received(const QString &conversation_ID, const QString &time, const QString &text)
+{
+    emit newTextReceived(conversation_ID, time, text);
+}
+
+void ChatListModel::new_audio_received(const QString &conversation_ID, const QString &time, bool is_audio, const QString &audio_source)
+{
+    emit newAudioReceived(conversation_ID, time, is_audio, audio_source);
+}
+
+void ChatListModel::new_file_received(const QString &conversation_ID, const QString &time, bool is_file, const QString &file_path)
+{
+    emit newFileReceived(conversation_ID, time, is_file, file_path);
 }
