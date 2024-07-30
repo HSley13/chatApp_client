@@ -20,7 +20,7 @@ Rectangle
         width: 250;
         height: 250;
 
-        source: "qrc:/QML_modules/ClientApp/icons/hi_icon.png";
+        source: "qrc:/QML/ClientApp/icons/hi_icon.png";
     }
 
     Text 
@@ -59,7 +59,7 @@ Rectangle
     InputField 
     {
         id: signUpFirstName;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
 
         echoMode: 0;
         placeHolder: "First Name";
@@ -73,7 +73,7 @@ Rectangle
     InputField 
     {
         id: signUpLastName;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
 
         echoMode: 0;
         placeHolder: "Last Name";
@@ -87,7 +87,7 @@ Rectangle
     InputField 
     {
         id: signUpPhoneNumber;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/phone_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
 
         echoMode: 0;
         placeHolder: "Phone Number";
@@ -101,8 +101,8 @@ Rectangle
     InputField 
     {
         id: signUpPassword;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/hide_icon.png";
-        image2Source: "qrc:/QML_modules/ClientApp/icons/see_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
+        image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
         echoMode: 2;
         placeHolder: "Password";
@@ -116,8 +116,8 @@ Rectangle
     InputField 
     {
         id: signUpPasswordConfirmation;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/hide_icon.png";
-        image2Source: "qrc:/QML_modules/ClientApp/icons/see_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
+        image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
         echoMode: 2;
         placeHolder: "Password Confirmation";
@@ -131,7 +131,7 @@ Rectangle
     Rectangle 
     {
         id: signUpButton;
-        color: "black";
+        color: mouseArea.pressed ? "#ed7bb4" : "black";
 
         width: parent.width * 0.6;
         height: 50;
@@ -147,11 +147,8 @@ Rectangle
 
         MouseArea 
         {
+            id: mouseArea;
             anchors.fill: parent;
-
-            onPressed: parent.color = "#ed7bb4";
-            onReleased: parent.color = "black";
-
 
             // FIXME: handle click button correctly
             onClicked: console.log("Sign Up Button Click");

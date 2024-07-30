@@ -1,8 +1,6 @@
 #pragma once
 
-#include <QtQml>
 #include <QtQuick>
-
 class ChatProtocol : public QObject
 {
     Q_OBJECT

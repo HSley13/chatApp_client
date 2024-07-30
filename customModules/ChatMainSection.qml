@@ -29,11 +29,10 @@ Rectangle
             required property string last_message;
             required property string message_count;
             required property string status;
-            property string onOffline: (chatListDelegate.status.toString() === "qrc:/QML_modules/ClientApp/icons/online_icon.png") ? "Online" : "Offline";
+            property string onOffline: (chatListDelegate.status === "qrc:/QML/ClientApp/icons/online_icon.png") ? "Online" : "Offline";
 
             width: listView.width;
             height: 50;
-            color: "white";
 
             ImageText
             {
@@ -49,6 +48,8 @@ Rectangle
 
             MouseArea
             {
+                id: mouseArea;
+
                 anchors.fill: parent;
 
                 onClicked: 
@@ -60,12 +61,39 @@ Rectangle
                                     '  onOffline: "' +chatListDelegate.onOffline + '"; ' +
                                     ' conversation_ID:  "' + chatListDelegate.conversation_ID + '";  ' +
                                     '}';
-
+                                    
                     var convWindow = Qt.createQmlObject(qmlCode, stackView);
-            
+
                     stackView.push(convWindow);
                 }
             }
         }
+    }
+
+    function loadConversation(conversation_ID)
+    {
+        var existingLoader = clientManager.get_conversation_loader(conversation_ID);
+        
+        if (!existingLoader)
+        {
+            var qmlCode =   'ConversationWindow ' +
+                                    '{' +
+                                    '  source: "' + chatListDelegate.image + '"; ' +
+                                    '  name: "' + chatListDelegate.name + '"; ' +
+                                    '  onOffline: "' +chatListDelegate.onOffline + '"; ' +
+                                    ' conversation_ID:  "' + chatListDelegate.conversation_ID + '";  ' +
+                                    '}';
+                                    
+            var loader = Qt.createQmlObject(qmlCode, stackView);
+
+            clientManager.add_conversation_loader(conversation_ID, loader);
+
+            loader.statusChanged.connect(function() {
+                if (loader.status === Loader.Ready) 
+                    stackView.push(loader.item);
+            });
+        }
+        else
+            stackView.push(existingLoader);
     }
 }

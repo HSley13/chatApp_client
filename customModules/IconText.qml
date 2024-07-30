@@ -23,7 +23,7 @@ Column
         width: height;
         radius: width / 2;
 
-        color: "transparent";
+        color: mouseArea.pressed ? "#ed7bb4" : "transparent";
         
         anchors.horizontalCenter: parent.horizontalCenter;
 
@@ -42,10 +42,9 @@ Column
 
         MouseArea
         {
+            id: mouseArea;
             anchors.fill: parent;
 
-            onPressed: circle.color = "#ed7bb4";
-            onReleased: circle.color = "transparent";
             onClicked: 
             {
                 if(root.image2Source !== "")

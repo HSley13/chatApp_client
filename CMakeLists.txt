@@ -4,16 +4,14 @@ project(ClientApp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Qml Multimedia WebSockets)
+find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia)
 qt_standard_project_setup()
 
 qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp)
 
 target_link_libraries(app PRIVATE 
                                 Qt6::Quick 
-                                Qt6::Qml
-                                Qt6::Multimedia
-                                Qt6::WebSockets)
+                                Qt6::Multimedia)
 
 qt6_policy(SET QTP0001 NEW)
 
@@ -21,7 +19,7 @@ qt_add_qml_module(app
                     URI ClientApp
                     VERSION 1.0
 
-                    RESOURCE_PREFIX "/QML_modules"
+                    RESOURCE_PREFIX "/QML"
 
                     QML_FILES
                     customModules/Main.qml
@@ -65,3 +63,8 @@ qt_add_qml_module(app
                     icons/online_icon.png
                     icons/offline_icon.png
                     icons/send_icon.png)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1")
+endif()

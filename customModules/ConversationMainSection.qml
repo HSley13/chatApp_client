@@ -44,16 +44,15 @@ Rectangle
             {
                 width: parent.width;
                 height: parent.height;
-                color: "#dedede";
+                color: mouseArea.pressed ? "gray" : "white";
                 radius: 5;
 
                 MouseArea
                 {
                     id: mouseArea;
                     anchors.fill: parent;
+                    
                     onClicked: handleItemClicked(model.time, model.isText, model.isAudio, model.audioSource, model.isFile, model.filePath);
-                    onPressed: item.color = "gray";
-                    onReleased: item.color = "white";
 
                     Rectangle
                     {
@@ -101,7 +100,7 @@ Rectangle
 
                         Image
                         {
-                            source: model.isAudio ? (isPlaying ? "qrc:/QML_modules/ClientApp/icons/pause_icon.png" : "qrc:/QML_modules/ClientApp/icons/play_icon.png") : (model.isFile ? "qrc:/QML_modules/ClientApp/icons/file_icon.png" : "");
+                            source: model.isAudio ? (isPlaying ? "qrc:/QML/ClientApp/icons/pause_icon.png" : "qrc:/QML/ClientApp/icons/play_icon.png") : (model.isFile ? "qrc:/QML/ClientApp/icons/file_icon.png" : "");
                             visible: (model.isAudio || model.isFile) ? true : false;
                             width: 24;
                             height: 24;

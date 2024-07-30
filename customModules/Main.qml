@@ -1,7 +1,6 @@
 import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Window;
-import QtQuick.VirtualKeyboard
 import ClientApp;
 
 ApplicationWindow
@@ -45,13 +44,19 @@ ApplicationWindow
         ChatWindow{}
     }
 
+    Component
+    {
+        id: conversationWindow
+        ConversationWindow{}
+    }
+
     StackView
     {
         id: stackView;
 
         anchors.fill: parent;
 
-        // initialItem: loginWindow;
-        initialItem: chatWindow;
+        initialItem: loginWindow;
+        // initialItem: chatWindow;
     }
 }

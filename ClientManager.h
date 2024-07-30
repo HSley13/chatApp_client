@@ -1,10 +1,6 @@
 #pragma once
 
-#include <QtQml>
 #include <QtQuick>
-#include <QtMultimedia>
-#include <QWebSocket>
-#include <QtCore>
 class ClientManager : public QObject
 {
     Q_OBJECT
@@ -17,8 +13,13 @@ public:
 
     Q_INVOKABLE void open_file(const QString &file_path);
 
+    Q_INVOKABLE QObject *get_conversation_loader(const QString &conversation_ID) const;
+    Q_INVOKABLE void add_conversation_loader(const QString &conversation_ID, QQmlComponent *loader);
+
 public slots:
 
 private:
+    QHash<QString, QQmlComponent *> conversation_loaders;
+
 signals:
 };

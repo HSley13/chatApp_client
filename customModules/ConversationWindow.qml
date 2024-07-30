@@ -1,7 +1,6 @@
 import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Window;
-import ClientApp;
 
 Rectangle
 {
@@ -21,7 +20,7 @@ Rectangle
         Image
         {
             id: returnImage;
-            source: "qrc:/QML_modules/ClientApp/icons/back_icon.png";
+            source: "qrc:/QML/ClientApp/icons/back_icon.png";
             mipmap: true;
             fillMode: Image.PreserveAspectFit;
             width: parent.height * 0.4;
@@ -83,13 +82,20 @@ Rectangle
         width: parent.width;
         height: 50;
 
+        gradient: Gradient
+        {
+            GradientStop { position: 0.0;  color: "white";}
+
+            GradientStop { position: 1.0;  color: "gray";}
+        }
+
         // FIXME: add columns --> insert & send message / files / audio  
 
         IconText
         {
             id: plus;
-            imageSource: "qrc:/QML_modules/ClientApp/icons/plus_icon.png";
-            image2Source: "qrc:/QML_modules/ClientApp/icons/cancel_icon.png";
+            imageSource: "qrc:/QML/ClientApp/icons/plus_icon.png";
+            image2Source: "qrc:/QML/ClientApp/icons/cancel_icon.png";
             text: "";
             cWidth: parent.width * 0.1;
 
@@ -121,7 +127,7 @@ Rectangle
         IconText
         {
             id: sendMessage;
-            imageSource: "qrc:/QML_modules/ClientApp/icons/send_icon.png";
+            imageSource: "qrc:/QML/ClientApp/icons/send_icon.png";
             text: "";
             cWidth: parent.width * 0.1;
 
@@ -139,7 +145,7 @@ Rectangle
         IconText
         {
             id: sendVoice;
-            imageSource: "qrc:/QML_modules/ClientApp/icons/voice_icon.png";
+            imageSource: "qrc:/QML/ClientApp/icons/voice_icon.png";
             text: "";
             cWidth: parent.width * 0.2;
 

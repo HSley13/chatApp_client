@@ -20,7 +20,7 @@ Rectangle
         width: 300;
         height: 300;
 
-        source: "qrc:/QML_modules/ClientApp/icons/hi_icon.png";
+        source: "qrc:/QML/ClientApp/icons/hi_icon.png";
     }
 
     Text 
@@ -59,7 +59,7 @@ Rectangle
     InputField 
     {
         id: loginPhoneNumber;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/phone_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
 
         echoMode: 0;
         placeHolder: "Phone Number";
@@ -73,8 +73,8 @@ Rectangle
     InputField 
     {
         id: loginPassword;
-        image1Source: "qrc:/QML_modules/ClientApp/icons/hide_icon.png";
-        image2Source: "qrc:/QML_modules/ClientApp/icons/see_icon.png";
+        image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
+        image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
         echoMode: 2;
         placeHolder: "Password";
@@ -117,7 +117,7 @@ Rectangle
     Rectangle 
     {
         id: loginButton;
-        color: "black";
+        color: mouseArea.pressed ? "#ed7bb4" : "black";
 
         radius: 20;
         width: parent.width * 0.6;
@@ -133,10 +133,8 @@ Rectangle
 
         MouseArea 
         {
+            id: mouseArea;
             anchors.fill: parent;
-
-            onPressed: parent.color = "#ed7bb4";
-            onReleased: parent.color = "black";
 
             // FIXME: handle click button correctly
             onClicked: console.log("Login Button Click");

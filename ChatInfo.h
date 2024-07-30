@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QtQml>
 #include <QtQuick>
 class ChatInfo : public QObject
 {

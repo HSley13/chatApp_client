@@ -1,9 +1,7 @@
 #pragma once
 
-#include <QtQml>
 #include <QtQuick>
 #include <QMediaPlayer>
-
 class AudioController : public QObject
 {
     Q_OBJECT

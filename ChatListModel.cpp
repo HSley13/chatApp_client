@@ -8,8 +8,8 @@ ChatListModel::ChatListModel(QObject *parent)
     chatInfo1->set_conversation_ID("12345");
     chatInfo1->set_phone_number(1111);
     chatInfo1->set_name("Sley");
-    chatInfo1->set_status("qrc:/QML_modules/ClientApp/icons/online_icon.png");
-    chatInfo1->set_image("qrc:/QML_modules/ClientApp/icons/name_icon.png");
+    chatInfo1->set_status("qrc:/QML/ClientApp/icons/online_icon.png");
+    chatInfo1->set_image("qrc:/QML/ClientApp/icons/name_icon.png");
     chatInfo1->set_last_message("Hello World");
     chatInfo1->set_message_count("1");
 
@@ -17,9 +17,10 @@ ChatListModel::ChatListModel(QObject *parent)
     chatInfo2->set_conversation_ID("12346");
     chatInfo2->set_phone_number(2222);
     chatInfo2->set_name("Naruto");
-    chatInfo2->set_status("qrc:/QML_modules/ClientApp/icons/offline_icon.png");
-    chatInfo2->set_image("qrc:/QML_modules/ClientApp/icons/name_icon.png");
+    chatInfo2->set_status("qrc:/QML/ClientApp/icons/offline_icon.png");
+    chatInfo2->set_image("qrc:/QML/ClientApp/icons/name_icon.png");
     chatInfo2->set_last_message("Hello Sasuke");
+    chatInfo2->set_message_count("2");
 
     // FIXME: To Implement
     // chatInfo->set_last_seen("Now");

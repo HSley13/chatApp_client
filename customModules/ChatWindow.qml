@@ -1,7 +1,6 @@
 import QtQuick;
 import QtQuick.Window;
 import QtQuick.Controls;
-import ClientApp;
 
 Rectangle
 {
@@ -17,7 +16,7 @@ Rectangle
         Image
         {
             id: returnImage;
-            source: "qrc:/QML_modules/ClientApp/icons/back_icon.png";
+            source: "qrc:/QML/ClientApp/icons/back_icon.png";
             mipmap: true;
             fillMode: Image.PreserveAspectFit;
             width: parent.height * 0.4;
@@ -38,7 +37,7 @@ Rectangle
         InputField
         {
             id: chatWindowSearch;
-            image1Source: "qrc:/QML_modules/ClientApp/icons/search_icon.png";
+            image1Source: "qrc:/QML/ClientApp/icons/search_icon.png";
 
             echoMode: 0;
             placeHolder: "Search...";
@@ -58,7 +57,7 @@ Rectangle
         Rectangle
         {
             id: rectangle_new;
-            color: "#f5daef";
+            color: mouseArea.pressed ? "#ed7bb4" : "#f5daef";
 
             radius: 10;
             width: rectangle_new_text.width * 1.2;
@@ -76,11 +75,9 @@ Rectangle
 
             MouseArea
             {
+                id: mouseArea;
+
                 anchors.fill: parent;
-
-                onPressed: rectangle_new.color = "#ed7bb4";
-                onReleased: rectangle_new.color = "#f5daef";
-
 
                 onClicked:
                 {
@@ -159,12 +156,17 @@ Rectangle
         width: parent.width;
         height: 50; 
 
-        color: "#dedede";
+        gradient: Gradient
+        {
+            GradientStop { position: 0.0;  color: "gray";}
+
+            GradientStop { position: 1.0;  color: "white";}
+        }
 
         IconText
         {
             id: chatList;
-            imageSource: "qrc:/QML_modules/ClientApp/icons/chat_icon.png";
+            imageSource: "qrc:/QML/ClientApp/icons/chat_icon.png";
             text: "Chats";
             onItemClicked:
             {
@@ -180,7 +182,7 @@ Rectangle
         IconText
         {
             id: chatGroup;
-            imageSource: "qrc:/QML_modules/ClientApp/icons/group_icon.png";
+            imageSource: "qrc:/QML/ClientApp/icons/group_icon.png";
             text: "Groups";
 
             onItemClicked:
@@ -197,7 +199,7 @@ Rectangle
         IconText
         {
             id: profile;
-            imageSource: "qrc:/QML_modules/ClientApp/icons/name_icon.png";
+            imageSource: "qrc:/QML/ClientApp/icons/name_icon.png";
             text: "Profile";
 
             onItemClicked:
