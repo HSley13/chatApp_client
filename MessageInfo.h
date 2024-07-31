@@ -24,3 +24,5 @@ private:
     const QString _time{};
     const int _sender_ID{0};
 };
+
+Q_DECLARE_METATYPE(MessageInfo *)

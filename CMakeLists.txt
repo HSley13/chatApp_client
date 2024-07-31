@@ -45,6 +45,7 @@ qt_add_qml_module(app
                     AudioController.cpp AudioController.h
                     MessageInfo.cpp MessageInfo.h
                     ContactList.cpp ContactList.h
+                    ContactProxyList.cpp ContactProxyList.h
      
                     RESOURCES
                     icons/chat_icon.png

@@ -1,32 +1,31 @@
-import QtQuick
-import QtQuick.Layouts
+import QtQuick;
+import QtQuick.Layouts;
 
 Rectangle
 {
     color: "transparent";
     radius: 100;
 
-    property var contactData: contactListView.model[index];
+    property string statusIconSource: status ? "qrc:/QML/ClientApp/icons/online_icon.png" : "qrc:/QML/ClientApp/icons/offline_icon.png";
 
     Rectangle
     {
         id: hoverBackground;
-
-        width: mouseAra.containsMouse ? parent.width : 0;
+        width: mouseArea.containsMouse ? parent.width : 0;
         height: parent.height;
 
         anchors.left: parent.left;
         anchors.leftMargin: profileImage.width / 2;
 
-        Behavior on width {SmoothedAnimation {duration: 450;}}
+        Behavior on width { SmoothedAnimation { duration: 450; } }
 
         gradient: Gradient
         {
             orientation: Gradient.Horizontal;
 
-            GradientStop {position: 0.0; color: "transparent"}
-            GradientStop {position: 0.5; color: "#ed7bb4"}
-            GradientStop {position: 1.0; color: "transparent"}
+            GradientStop { position: 0.0; color: "transparent"; }
+            GradientStop { position: 0.5; color: "#ed7bb4"; }
+            GradientStop { position: 1.0; color: "transparent"; }
         }
     }
 
@@ -34,19 +33,33 @@ Rectangle
     {
         width: parent.width;
         height: parent.height;
+        spacing: 10;
 
-        spacing: 2;
-
-        Image
+        Item
         {
-            id: profileImage;
-            source: contactData.image_url;
-            Layout.preferredHeight: parent.height
-            Layout.preferredWidth: parent.width * 0.15;
+            width: 50;
+            height: 50;
 
-            asynchronous: true;
-            fillMode: Image.PreserveAspectFit;
-            mipmap: true;
+            Image
+            {
+                id: profileImage;
+                source: image_url;
+                width: parent.width;
+                height: parent.height;
+                fillMode: Image.PreserveAspectFit;
+                mipmap: true;
+            }
+
+            Image
+            {
+                id: statusDot;
+                source: statusIconSource;
+                width: 15;
+                height: 15;
+                anchors.bottom: profileImage.bottom;
+                anchors.right: profileImage.right;
+                anchors.margins: 2;
+            }
         }
 
         ColumnLayout
@@ -54,42 +67,79 @@ Rectangle
             Layout.fillWidth: true;
             Layout.preferredHeight: parent.height;
             Layout.leftMargin: 4;
-            spacing: 0;
+            spacing: 2;
             Layout.topMargin: 3;
 
             Text
             {
-                text: contactData.name;
+                text: name;
                 color: "black";
                 font.pixelSize: 14;
                 Layout.fillWidth: true;
                 Layout.fillHeight: true;
-                verticalAlignment: Qt.AlignTop;
+                verticalAlignment: Text.AlignTop;
             }
 
             Text
             {
-                text: contactData.messages.length === 0 ? " " : contactData.messages[contactData.messages.length - 1].contents;
+                text: (messages.count === 0) ? " " : messages.at(contact_list.contact_proxy_list.get(index).messages.count - 1).contents;
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
                 Layout.fillHeight: true;
-                verticalAlignment: Qt.AlignTop;
+                verticalAlignment: Text.AlignTop;
                 elide: Text.ElideRight;
+            }
+        }
+
+        ColumnLayout
+        {
+            Layout.fillWidth: true;
+            Layout.alignment: Qt.AlignRight;
+            Layout.preferredHeight: parent.height;
+            spacing: 5;
+
+            Rectangle 
+            {
+                width: 30;
+                height: 30;
+                radius: 15;
+                color: "#e6e8e8";
+
+                Text
+                {
+                    id: count;
+                    text: unread_message > 0 ? unread_message.toString() : "";
+                    color: "red";
+                    font.pixelSize: 12;
+                    font.bold: true;
+                    visible: unread_message > 0;
+
+                    anchors.centerIn: parent;
+                }
+            }
+
+            Text
+            {
+                text: (messages.count === 0) ? " " : messages.at(contact_list.contact_proxy_list.get(index).messages.count - 1).time;
+                color: "gray";
+                font.bold: true;
+                font.pixelSize: 12;
+                horizontalAlignment: Text.AlignRight;
             }
         }
     }
 
     MouseArea
     {
-        id: mouseAra;
-        hoverEnabled: true;
+        id: mouseArea;
         anchors.fill: parent;
+        hoverEnabled: true;
 
         onClicked:
         {
-            contact_list.open_chat_user = contactData;
+            contact_list.open_chat_user = contact_list.contact_proxy_list.get(index);
             stackView.push(chatWindow);
-        } 
+        }
     }
 }

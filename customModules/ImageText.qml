@@ -1,132 +1,64 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
+import QtQuick;
+import QtQuick.Window;
 
 Rectangle
 {
-    id: root
-    color: "white"
+    id: root;
+    width: 200;
+    height: 50;
+    color: "white";
 
-    property string source
-    property string onOffLine: ""
-    property string name
-    property string last_message
-    property string last_seen: ""
-    property string message_count: ""
-    property string colorM: "gray"
+    property string source;
+    property bool onOffLine: false;
+    property string name;
 
-    Rectangle
+    Row
     {
-        id: container
-        anchors.left: parent.left
-        anchors.leftMargin: 5
-        anchors.verticalCenter: parent.verticalCenter
-        width: 40
-        height: 40
+        anchors.fill: parent;
+        anchors.margins: 5;
+        spacing: 10;
 
-        IconText
+        Rectangle
         {
-            id: customImage
-            imageSource: root.source
-            text: ""
-            cWidth: 40
+            id: container;
+            width: 40;
+            height: 40;
+            radius: 20;
+            clip: true;
 
-            onItemClicked:
+            Image
             {
-                // FIXME: Handle this click properly;
-                console.log("Chat Icon Clicked")
+                id: profileImage;
+                source: root.source;
+                anchors.fill: parent;
+                fillMode: Image.PreserveAspectFit;
+                asynchronous: true;
             }
-
-            anchors.fill: parent
-        }
-
-        Image
-        {
-            id: onOffLine
-            source: root.onOffLine
-            mipmap: true
-            fillMode: Image.PreserveAspectFit
-
-            width: 15
-            height: 15
-
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-        }
-    }
-
-    Rectangle
-    {
-        anchors.left: container.right
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.margins: 5
-
-        Column
-        {
-            spacing: 5
-            width: parent.width * 0.6
-
-            Text 
-            {
-                id: name
-                text: root.name
-                color: "black"
-                font.pixelSize: 16
-                font.bold: true
-                elide: Text.ElideRight
-            }
-
-            Text 
-            {
-                id: last_message
-                text: root.last_message
-                color: root.colorM
-                font.pixelSize: 10
-                elide: Text.ElideRight
-                width: parent.width
-            }
-
-            anchors.left: parent.left
         }
 
         Column
         {
-            spacing: 5
+            spacing: 5;
 
             Text
             {
-                id: text_seen
-
-                text: root.last_seen
-                color: "#DE02B5"
-                font.pixelSize: 10
-                font.bold: true
-                elide: Text.ElideRight
+                id: userName;
+                text: root.name;
+                color: "black";
+                font.pixelSize: 16;
+                font.bold: true;
+                verticalAlignment: Text.AlignVCenter;
+                elide: Text.ElideRight;
             }
 
-            Rectangle 
+            Text
             {
-                width: text_count.width * 2
-                height: width
-                color: "#DE02B5"
-                radius: width / 2
-
-                Text 
-                {
-                    id: text_count
-                    text: root.message_count
-                    color: "white"
-                    font.pixelSize: 10
-                    font.bold: true
-                    elide: Text.ElideRight
-                    anchors.centerIn: parent
-                }
-
-                anchors.horizontalCenter: text_seen.horizontalCenter
+                id: statusText;
+                text: root.onOffLine ? "Online" : "Offline";
+                color: root.onOffLine ? "green" : "red";
+                font.pixelSize: 12;
+                verticalAlignment: Text.AlignVCenter;
             }
-
-            anchors.right: parent.right
         }
     }
 }

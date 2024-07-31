@@ -1,165 +1,64 @@
-// #include "ChatListModel.h"
+#include "ChatListModel.h"
 
-// ChatListModel::ChatListModel(QObject *parent)
-//     : QAbstractListModel(parent), _is_searching(false)
-// {
-//     ChatInfo *chatInfo1 = new ChatInfo(this);
+ChatListModel::ChatListModel(QObject *parent)
+    : QAbstractListModel(parent) {}
 
-//     chatInfo1->set_conversation_ID("12345");
-//     chatInfo1->set_phone_number(1111);
-//     chatInfo1->set_name("Sley");
-//     chatInfo1->set_status("qrc:/QML/ClientApp/icons/online_icon.png");
-//     chatInfo1->set_image("qrc:/QML/ClientApp/icons/name_icon.png");
-//     chatInfo1->set_last_message("Hello World");
-//     chatInfo1->set_message_count("1");
+int ChatListModel::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+    return _messages.count();
+}
 
-//     ChatInfo *chatInfo2 = new ChatInfo(this);
-//     chatInfo2->set_conversation_ID("12346");
-//     chatInfo2->set_phone_number(2222);
-//     chatInfo2->set_name("Naruto");
-//     chatInfo2->set_status("qrc:/QML/ClientApp/icons/offline_icon.png");
-//     chatInfo2->set_image("qrc:/QML/ClientApp/icons/name_icon.png");
-//     chatInfo2->set_last_message("Hello Sasuke");
-//     chatInfo2->set_message_count("2");
+QVariant ChatListModel::data(const QModelIndex &index, int role) const
+{
+    if (index.row() < 0 || index.row() >= _messages.count())
+        return QVariant();
 
-//     // FIXME: To Implement
-//     // chatInfo->set_last_seen("Now");
+    MessageInfo *message = _messages.at(index.row());
 
-//     _conversations << chatInfo1;
-//     _conversations << chatInfo2;
-// }
+    switch (ChatRoles(role))
+    {
+    case PhoneNumberRole:
+        return message->sender_ID();
+    case ContentRole:
+        return message->contents();
+    case TimeRole:
+        return message->time();
+    default:
+        return QVariant();
+    }
+}
 
-// int ChatListModel::rowCount(const QModelIndex &parent) const
-// {
-//     Q_UNUSED(parent)
-//     return _conversations.count();
-// }
+QHash<int, QByteArray> ChatListModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
 
-// QVariant ChatListModel::data(const QModelIndex &index, int role) const
-// {
-//     if (index.isValid() && index.row() >= 0 && index.row() < _conversations.size())
-//     {
-//         ChatInfo *chatInfo = _conversations.at(index.row());
+    roles[ConversationIDRole] = "conversation_ID";
+    roles[PhoneNumberRole] = "phone_number";
+    roles[ContentRole] = "contents";
+    roles[TimeRole] = "time";
 
-//         switch (ChatRoles(role))
-//         {
-//         case ConversationIdRole:
-//             return chatInfo->conversation_ID();
-//         case NameRole:
-//             return chatInfo->name();
-//         case PhoneNumberRole:
-//             return chatInfo->phone_number();
-//         case StatusRole:
-//             return chatInfo->status();
-//         case ImageRole:
-//             return chatInfo->image();
-//         case MessageCountRole:
-//             return chatInfo->message_count();
-//         case LastMessageRole:
-//             return chatInfo->last_message();
-//         case LastSeen:
-//             return "Now";
-//         case MessageRole:
-//             return chatInfo->message();
-//         case MessageListRole:
-//             return chatInfo->message_list();
-//         default:
-//             return QVariant();
-//         }
-//     }
+    return roles;
+}
 
-//     return QVariant();
-// }
+int ChatListModel::count() const
+{
+    return _messages.count();
+}
 
-// QHash<int, QByteArray> ChatListModel::roleNames() const
-// {
-//     QHash<int, QByteArray> roles;
+void ChatListModel::append(MessageInfo *message)
+{
+    beginInsertRows(QModelIndex(), _messages.count(), _messages.count());
+    _messages.append(message);
+    endInsertRows();
 
-//     roles[ConversationIdRole] = "conversation_ID";
-//     roles[NameRole] = "name";
-//     roles[PhoneNumberRole] = "phone_number";
-//     roles[StatusRole] = "status";
-//     roles[ImageRole] = "image";
-//     roles[MessageCountRole] = "message_count";
-//     roles[LastMessageRole] = "last_message";
-//     roles[MessageRole] = "message";
-//     roles[MessageListRole] = "Message_list";
+    emit count_changed();
+}
 
-//     return roles;
-// }
+MessageInfo *ChatListModel::at(int index) const
+{
+    if (index < 0 || index >= _messages.count())
+        return nullptr;
 
-// bool ChatListModel::is_searching() const
-// {
-//     return _is_searching;
-// }
-
-// void ChatListModel::set_is_searching(bool new_is_searching)
-// {
-//     _is_searching = new_is_searching;
-// }
-
-// void ChatListModel::search_people(const int &phone_number)
-// {
-//     // FIXME: To Implement
-// }
-
-// const QHash<int, QString> &ChatListModel::friend_list() const
-// {
-//     return _friend_list;
-// }
-
-// void ChatListModel::set_friend_list(const QHash<int, QString> &friends)
-// {
-//     if (_friend_list == friends)
-//         return;
-
-//     _friend_list = friends;
-
-//     emit friend_list_changed();
-// }
-
-// void ChatListModel::add_friend(const int &phone_number, const QString &name)
-// {
-//     if (_friend_list.contains(phone_number))
-//         return;
-
-//     _friend_list.insert(phone_number, name);
-
-//     emit friend_list_changed();
-// }
-
-// QStringList ChatListModel::get_messages(const QString &ID)
-// {
-//     int i = get_index(ID);
-
-//     if (i != -1)
-//         return _conversations.at(i)->message_list();
-
-//     return QStringList();
-// }
-
-// int ChatListModel::get_index(const QString &conversation_ID) const
-// {
-//     for (int i = 0; i < _conversations.size(); i++)
-//     {
-//         if (_conversations.at(i)->conversation_ID() == conversation_ID)
-//             return i;
-//     }
-
-//     return -1;
-// }
-
-// void ChatListModel::new_message_received(const QString &conversation_ID, const QString &time, const QString &text)
-// {
-//     emit newTextReceived(conversation_ID, time, text);
-// }
-
-// void ChatListModel::new_audio_received(const QString &conversation_ID, const QString &time, bool is_audio, const QString &audio_source)
-// {
-//     emit newAudioReceived(conversation_ID, time, is_audio, audio_source);
-// }
-
-// void ChatListModel::new_file_received(const QString &conversation_ID, const QString &time, bool is_file, const QString &file_path)
-// {
-//     emit newFileReceived(conversation_ID, time, is_file, file_path);
-// }
+    return _messages.at(index);
+}

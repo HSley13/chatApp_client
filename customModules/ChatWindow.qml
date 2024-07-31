@@ -48,9 +48,8 @@ Rectangle
             {
                 id: iconNameStatus;
                 source: (contact_list.open_chat_user === null) ? "qrc:/QML/ClientApp/icons/name_icon.png" :  contact_list.open_chat_user.image_url;
-                name: (contact_list.open_chat_user) === null ? "" : contact_list.open_chat_user.name;
-                last_message: (contact_list.open_chat_user) === null ? "" : contact_list.open_chat_user.status; 
-                colorM: (last_message === "Online") ? "green" : "red";
+                name: (contact_list.open_chat_user === null) ? "" : contact_list.open_chat_user.name;
+                onOffLine: (contact_list.open_chat_user === null) ? false : contact_list.open_chat_user.status; 
 
                 anchors.fill: parent;
             }

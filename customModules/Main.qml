@@ -12,9 +12,6 @@ ApplicationWindow
     title: "Chat App";
     color: "transparent";
 
-    // ChatListModel
-    // {id: chatListModel}
-
     ContactList
     {id: contact_list}
 

@@ -7,11 +7,9 @@ Item
     height: showTime ? bubble.height + 24 : bubble.height;
     width: bubble.width;
 
-    property bool showTime: chatListView.count - 1 === index ? true : chatListView.model(index + 1).phone_number !== contact_list.main_user.phone_number;
+    property bool showTime: chatListView.count - 1 === index ? true : chatListView.model.at(index + 1).phone_number !== contact_list.main_user.phone_number;
 
-    readonly property var message: chatListView.model[index];
-
-    readonly property bool sender: message.phone_number === contact_list.main_user.phone_number;
+    readonly property bool sender: phone_number === contact_list.main_user.phone_number;
 
     Rectangle
     {
@@ -35,7 +33,7 @@ Item
         Text
         {
             id: messageText;
-            text: message.contents;
+            text: contents;
 
             anchors.fill: parent;
             anchors.margins: 12;
@@ -51,7 +49,7 @@ Item
         Text
         {
             id: timeText;
-            text: message.time;
+            text: time;
 
             anchors.top: bubble.bottom;
             anchors.topMargin: 5;

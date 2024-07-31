@@ -4,34 +4,32 @@ import QtQuick.Layouts;
 
 Rectangle
 {
+    id: root;
+
     visible: true;
     anchors.fill: parent;
+
+    property bool searchToggled: false;
+    onSearchToggledChanged: console.log("Search Toggle Changed");
 
     Rectangle
     {
         id: contactHeader;
         width: parent.width;
-        height: 60;
+        height: 50;
 
-        Image
+        IconText
         {
             id: returnImage;
-            source: "qrc:/QML/ClientApp/icons/back_icon.png";
-            mipmap: true;
-            fillMode: Image.PreserveAspectFit;
-            width: height * 0.4;
-            height: width;
+            imageSource:"qrc:/QML/ClientApp/icons/back_icon.png";
+            text: "";
+            cWidth: parent.height * 0.1;
 
-            MouseArea
-            {
-                anchors.fill: parent;
-                onClicked: stackView2.pop();
-            }
+            onItemClicked: stackView.pop();
 
-            anchors.top: parent.top;
-            anchors.topMargin: 10;
+            anchors.verticalCenter: parent.verticalCenter;
             anchors.left: parent.left;
-            anchors.leftMargin: 10;
+            anchors.leftMargin: 20;
         }
 
         InputField
@@ -42,52 +40,36 @@ Rectangle
             placeHolder: "Search...";
             width: parent.width * 0.6;
             customHeight: 40;
-
-            anchors.top: parent.top;
-            anchors.topMargin: 10;
-            anchors.horizontalCenter: parent.horizontalCenter;
-
+            
             onAccepted: (value) => 
             {
                 console.log("Text Searched: " + value);
             }
-        }
-
-        Rectangle
-        {
-            id: rectangle_new;
-            color: mouseArea.pressed ? "#ed7bb4" : "#f5daef";
-            radius: 10;
-            width: rectangle_new_text.width * 1.2;
-            height: 30;
 
             anchors.top: parent.top;
             anchors.topMargin: 10;
+            anchors.horizontalCenter: parent.horizontalCenter;
+        }
+
+        IconText
+        {
+            id: menu;
+            imageSource: "qrc:/QML/ClientApp/icons/menu_icon.png";
+            image2Source: "qrc:/QML/ClientApp/icons/cancel_menu.png";
+            text: "";
+            cWidth: parent.height * 0.1;
+
+            onItemClicked:
+            {
+                menuPanel.hidden = !menuPanel.hidden;
+                (dialog.open()) ? dialog.close() : dialog.open();
+
+                console.log("+ New Button Clicked");
+            }
+
+            anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right;
             anchors.rightMargin: menuPanel.hidden ? 10 : menuPanel.width;
-
-            Text
-            {
-                id: rectangle_new_text;
-                text: "+ New";
-                color: "#DE02B5";
-                font.bold: true;
-
-                anchors.centerIn: parent;
-            }
-
-            MouseArea
-            {
-                id: mouseArea;
-                anchors.fill: parent;
-
-                onClicked:
-                {
-                    menuPanel.hidden = !menuPanel.hidden;
-                    (dialog.open()) ? dialog.close() : dialog.open();
-                    console.log("+ New Button Clicked");
-                }
-            }
         }
     }
 
@@ -196,8 +178,8 @@ Rectangle
     MenuPanel 
     {
         id: menuPanel;
-        anchors.right: rectangle_new.left;
-        anchors.top: rectangle_new.bottom;
+        anchors.right: menu.left;
+        anchors.top: menu.bottom;
 
         Component.onCompleted:
         {
