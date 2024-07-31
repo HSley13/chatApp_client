@@ -1,7 +1,13 @@
 #include "ChatInfo.h"
 
-ChatInfo::ChatInfo(QObject *parent)
-    : QObject(parent) {}
+ChatInfo::ChatInfo(const int &conversation_ID, const QString &name, const int &phone_number, const QString &status, const QString &image_url, const QString &message_count, const QString &last_message, QObject *parent)
+    : QObject(parent),
+      _conversation_ID(conversation_ID), _name(name),
+      _phone_number(phone_number),
+      _status(status),
+      _image_url(image_url),
+      _message_count(message_count),
+      _last_message(last_message) {}
 
 const QString &ChatInfo::name() const
 {
@@ -48,19 +54,19 @@ void ChatInfo::set_status(const QString &new_status)
     emit status_changed();
 }
 
-const QString &ChatInfo::image() const
+const QString &ChatInfo::image_url() const
 {
-    return _image;
+    return _image_url;
 }
 
-void ChatInfo::set_image(const QString &new_image)
+void ChatInfo::set_image_url(const QString &new_image_url)
 {
-    if (!_image.compare(new_image))
+    if (!_image_url.compare(new_image_url))
         return;
 
-    _image = new_image;
+    _image_url = new_image_url;
 
-    emit image_changed();
+    emit image_url_changed();
 }
 
 const QString &ChatInfo::message_count() const
@@ -93,12 +99,12 @@ void ChatInfo::set_last_message(const QString &new_last_message)
     emit last_message_changed();
 }
 
-const QString &ChatInfo::conversation_ID() const
+const int &ChatInfo::conversation_ID() const
 {
     return _conversation_ID;
 }
 
-void ChatInfo::set_conversation_ID(const QString &new_ID)
+void ChatInfo::set_conversation_ID(const int &new_ID)
 {
     if (_conversation_ID == new_ID)
         return;
@@ -108,32 +114,24 @@ void ChatInfo::set_conversation_ID(const QString &new_ID)
     emit conversation_ID_changed();
 }
 
-const QString &ChatInfo::message() const
+const QList<MessageInfo *> &ChatInfo::messages()
 {
-    return _message;
+    return _messages;
 }
 
-void ChatInfo::set_message(const QString &new_message)
+void ChatInfo::set_messages(QList<MessageInfo *> new_message)
 {
-    if (!_message.compare(new_message))
+    if (_messages == new_message)
         return;
 
-    _message = new_message;
+    _messages = new_message;
 
-    emit message_changed();
+    emit messages_changed();
 }
 
-QStringList ChatInfo::message_list() const
+void ChatInfo::add_message(MessageInfo *message)
 {
-    return _message_list;
-}
+    _messages.append(message);
 
-void ChatInfo::set_message_list(const QStringList &list)
-{
-    if (_message_list == list)
-        return;
-
-    _message_list = list;
-
-    emit message_list_changed();
+    emit messages_changed();
 }

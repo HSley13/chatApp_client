@@ -23,16 +23,18 @@ qt_add_qml_module(app
 
                     QML_FILES
                     customModules/Main.qml
-                    customModules/ChatWindow.qml
                     customModules/LoginWindow.qml 
                     customModules/SignUpWindow.qml 
-                    customModules/ConversationWindow.qml 
                     customModules/InputField.qml
                     customModules/IconText.qml
                     customModules/ImageText.qml
-                    customModules/ChatMainSection.qml
-                    customModules/ConversationMainSection.qml
                     customModules/MenuPanel.qml
+                    customModules/ChatWindow.qml
+                    customModules/ChatList.qml
+                    customModules/ChatListDelegate.qml
+                    customModules/ContactWindow.qml
+                    customModules/ContactList.qml
+                    customModules/ContactListDelegate.qml
                     customModules/ListDialog.qml
 
                     SOURCES
@@ -41,6 +43,8 @@ qt_add_qml_module(app
                     ClientManager.cpp ClientManager.h
                     ChatInfo.cpp ChatInfo.h
                     AudioController.cpp AudioController.h
+                    MessageInfo.cpp MessageInfo.h
+                    ContactList.cpp ContactList.h
      
                     RESOURCES
                     icons/chat_icon.png
@@ -62,7 +66,13 @@ qt_add_qml_module(app
                     icons/cancel_menu.png
                     icons/online_icon.png
                     icons/offline_icon.png
-                    icons/send_icon.png)
+                    icons/send_icon.png
+                    icons/batman_icon.png
+                    icons/batman_icon1.png
+                    icons/ironman_icon.png
+                    icons/superman_icon.png
+                    icons/captain_icon.png
+                    )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto")

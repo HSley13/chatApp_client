@@ -5,26 +5,18 @@ import ClientApp;
 
 ApplicationWindow
 {
-    id: root;
+    id: mainWindow;
     width: 400;
-    height: 500;
+    height: 700;
     visible: true;
     title: "Chat App";
+    color: "transparent";
 
-    ChatListModel
-    {id: chatListModel}
+    // ChatListModel
+    // {id: chatListModel}
 
-    ChatInfo
-    {id: chatInfo}
-
-    ChatProtocol
-    {id: chatProtocol}
-
-    ClientManager
-    {id: clientManager}
-
-    AudioController
-    {id: audioController}
+    ContactList
+    {id: contact_list}
 
     Component
     {
@@ -46,8 +38,8 @@ ApplicationWindow
 
     Component
     {
-        id: conversationWindow
-        ConversationWindow{}
+        id: contactWindow
+        ContactWindow{}
     }
 
     StackView
@@ -55,8 +47,7 @@ ApplicationWindow
         id: stackView;
 
         anchors.fill: parent;
-
+        
         initialItem: loginWindow;
-        // initialItem: chatWindow;
     }
 }

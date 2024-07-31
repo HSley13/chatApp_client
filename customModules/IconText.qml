@@ -3,66 +3,67 @@ import QtQuick.Controls;
 
 Column
 {
-    id: root;
+    id: root
 
-    required property string imageSource;
-    property string image2Source: "";
-    required property string text;
-    property int cWidth: 400 / 3;
+    required property string imageSource
+    property string image2Source: ""
+    required property string text
+    property int cWidth: 400 / 3
 
-    signal itemClicked();
+    signal itemClicked()
 
-    spacing: 2;
-    width: cWidth;
+    width: cWidth
 
     Rectangle
     {
-        id: circle;
+        id: circle
 
-        height: 50 * 0.7;
-        width: height;
-        radius: width / 2;
+        height: 50 * 0.7
+        width: height
+        radius: width / 2
 
-        color: mouseArea.pressed ? "#ed7bb4" : "transparent";
+        color: mouseArea.pressed ? "#edf2aa" : "transparent"
         
-        anchors.horizontalCenter: parent.horizontalCenter;
+        anchors.horizontalCenter: parent.horizontalCenter
 
         Image
         {
-            id: profile;
+            id: profile
 
-            source: root.imageSource;
-            mipmap: true;
-            fillMode: Image.PreserveAspectFit;
+            source: root.imageSource
+            mipmap: true
+            fillMode: Image.PreserveAspectFit
 
-            width: parent.width * 0.9;
-            height: parent.height * 0.9;
-            anchors.centerIn: parent;
+            width: parent.width * 0.9
+            height: parent.height * 0.9
+            anchors.centerIn: parent
         }
 
         MouseArea
         {
-            id: mouseArea;
-            anchors.fill: parent;
+            id: mouseArea
+            anchors.fill: parent
 
             onClicked: 
             {
                 if(root.image2Source !== "")
-                     profile.source = (profile.source.toString() === root.imageSource) ? root.image2Source : root.imageSource;
+                {
+                     profile.source = (profile.source.toString() === root.imageSource) ? root.image2Source : root.imageSource
+                }
 
-                root.itemClicked();
+                root.itemClicked()
             }
         }
     }
 
     Text
     {
-        id: label;
-        text: root.text;
+        id: label
+        text: root.text
 
-        color: "black";
-        font.pixelSize: 10;
+        color: "black"
+        font.pixelSize: 10
 
-        anchors.horizontalCenter: parent.horizontalCenter;
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 }
