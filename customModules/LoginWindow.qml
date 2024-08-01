@@ -64,6 +64,7 @@ Rectangle
         echoMode: 0;
         placeHolder: "Phone Number";
         width: parent.width * 0.6;
+        height: 40;
 
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 20;
@@ -79,6 +80,7 @@ Rectangle
         echoMode: 2;
         placeHolder: "Password";
         width: parent.width * 0.6;
+        height: 40;
 
         anchors.top: loginPhoneNumber.bottom;
         anchors.topMargin: 10;

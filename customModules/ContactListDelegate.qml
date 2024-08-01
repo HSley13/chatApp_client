@@ -82,7 +82,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list.contact_proxy_list.get(index).messages.count - 1).contents;
+                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list.get(index).messages.count - 1).contents;
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
@@ -110,7 +110,7 @@ Rectangle
                 {
                     id: count;
                     text: unread_message > 0 ? unread_message.toString() : "";
-                    color: "red";
+                    color: "#ed7bb4";
                     font.pixelSize: 12;
                     font.bold: true;
                     visible: unread_message > 0;
@@ -121,7 +121,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list.contact_proxy_list.get(index).messages.count - 1).time;
+                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list.get(index).messages.count - 1).time;
                 color: "gray";
                 font.bold: true;
                 font.pixelSize: 12;
@@ -138,7 +138,7 @@ Rectangle
 
         onClicked:
         {
-            contact_list.open_chat_user = contact_list.contact_proxy_list.get(index);
+            contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
             stackView.push(chatWindow);
         }
     }

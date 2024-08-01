@@ -12,8 +12,11 @@ ApplicationWindow
     title: "Chat App";
     color: "transparent";
 
-    ContactList
-    {id: contact_list}
+    AudioController
+    {id: audio_controller}
+
+    ContactListModel
+    {id: contact_list_model}
 
     Component
     {

@@ -12,13 +12,10 @@ Rectangle
     property string image2Source;
     property string placeHolder;
     property alias echoMode: textInput.echoMode;
-    property int customHeight: 50;
-    property bool message: false;
+    property bool isMessage: false;
 
     signal accepted(string value);
-    signal clicked();
 
-    height: customHeight;
     radius: 20;
     border.color: textInput.focus ? "#a10e7a" : "black";
     border.width: textInput.focus ? 4 : 2;
@@ -43,7 +40,7 @@ Rectangle
         rightPadding: sendMessageButton.width;
         verticalAlignment: TextField.AlignVCenter;
 
-        onTextChanged: contact_list.contact_proxy_list.setFilterFixedString(text);
+        onTextChanged: contact_list_model.contact_proxy_list.setFilterFixedString(text);
 
         onAccepted:
         {
@@ -85,13 +82,13 @@ Rectangle
         IconText
         {
             id: sendMessageButton;
-            visible: message;
-            imageSource: "qrc:/QML/ClientApp/icons/send_icon.png";
-            text: "";
-            cWidth: parent.width * 0.15;
+            visible: root.isMessage;
+            imageSource1: "qrc:/QML/ClientApp/icons/send_icon.png";
+            width: 30;
+            height: 30;
 
             onItemClicked: sendMessage();
-
+            
             anchors.right: parent.right;
             anchors.verticalCenter: parent.verticalCenter;
         }
@@ -100,9 +97,9 @@ Rectangle
     function sendMessage()
     {
         if(textInput.text == "")
-        return;
+            return;
 
-        contact_list.send_message(textInput.text);
+        contact_list_model.send_message(textInput.text);
 
         textInput.text = "";
     }

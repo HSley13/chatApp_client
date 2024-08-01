@@ -5,7 +5,7 @@ Rectangle
 {
     id: root;
 
-    anchors.fill: parent;
+    property bool isRecording: false;
 
     Rectangle
     {
@@ -17,26 +17,18 @@ Rectangle
         anchors.left: parent.left;
         anchors.right: parent.right;
 
-        Image
+        IconText
         {
             id: returnImage;
-            source: "qrc:/QML/ClientApp/icons/back_icon.png";
-            mipmap: true;
-            fillMode: Image.PreserveAspectFit;
-            width: parent.height * 0.4;
-            height: parent.height * 0.4;
+            imageSource1:"qrc:/QML/ClientApp/icons/back_icon.png";
+            height: parent.height * 0.5;
+            width: height;
 
-            MouseArea
-            {
-                anchors.fill: parent;
-                onClicked: stackView.pop();
-            }
+            onItemClicked: stackView.pop();
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.left: parent.left;
             anchors.leftMargin: 10;
-            anchors.rightMargin: 10;
-            anchors.topMargin: 30;
         }
 
         Rectangle
@@ -47,9 +39,9 @@ Rectangle
             ImageText
             {
                 id: iconNameStatus;
-                source: (contact_list.open_chat_user === null) ? "qrc:/QML/ClientApp/icons/name_icon.png" :  contact_list.open_chat_user.image_url;
-                name: (contact_list.open_chat_user === null) ? "" : contact_list.open_chat_user.name;
-                onOffLine: (contact_list.open_chat_user === null) ? false : contact_list.open_chat_user.status; 
+                source: (contact_list_model.active_chat === null) ? "qrc:/QML/ClientApp/icons/name_icon.png" :  contact_list_model.active_chat.image_url;
+                name: (contact_list_model.active_chat === null) ? "" : contact_list_model.active_chat.name;
+                onOffLine: (contact_list_model.active_chat === null) ? false : contact_list_model.active_chat.status; 
 
                 anchors.fill: parent;
             }
@@ -85,10 +77,10 @@ Rectangle
         IconText
         {
             id: plus;
-            imageSource: "qrc:/QML/ClientApp/icons/plus_icon.png";
-            image2Source: "qrc:/QML/ClientApp/icons/cancel_icon.png";
-            text: "";
-            cWidth: parent.width * 0.1;
+            imageSource1: "qrc:/QML/ClientApp/icons/plus_icon.png";
+            imageSource2: "qrc:/QML/ClientApp/icons/cancel_icon.png";
+            height: parent.width * 0.1;
+            width: height * 0.8;
 
             onItemClicked:
             {
@@ -97,37 +89,68 @@ Rectangle
 
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;
-            anchors.rightMargin: 10;
+            anchors.leftMargin: 5;
         }
 
         InputField
         {
             id: new_message;
-            image1Source: "";
             echoMode: 0;
             placeHolder: "Type message...";
             width: parent.width * 0.6;
-            customHeight: 40;
-            message: true;
+            height: 40;
+            isMessage: true;
 
-            anchors.left: plus.right;
             anchors.verticalCenter: parent.verticalCenter;
-            anchors.rightMargin: 5;
+            anchors.horizontalCenter: parent.horizontalCenter;
         }
 
         IconText
         {
             id: sendVoice;
-            imageSource: "qrc:/QML/ClientApp/icons/voice_icon.png";
-            text: "";
+            imageSource1: "qrc:/QML/ClientApp/icons/voice_icon.png";
+            height: parent.width * 0.1;
+            width: height * 0.8;
 
             onItemClicked:
             {
-                console.log("Send Voice Icon Clicked");
+                root.isRecording = !root.isRecording
+
+                if(root.isRecording)
+                {
+                    audio_controller.record();
+
+                    voiceCounter.anchors.left = sendVoice.right;
+
+                    sendVoice.anchors.rightMargin = voiceCounter.width + 5;
+                }
+                else
+                {
+                    audio_controller.stop();
+
+                    sendVoice.anchors.rightMargin = 5;
+                }
+
+                // FIXME: Handle this click properly
+                console.log("Send Icon Clicked");
             }
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right;
+            anchors.rightMargin: 5;
+        }
+
+        Text
+        {
+            id: voiceCounter;
+
+            text: audio_controller.time_display;
+            color: "black";
+            visible: root.isRecording;
+
+            width: 40;
+            height: parent.height * 0.5;
+            anchors.verticalCenter: parent.verticalCenter;
         }
 
         anchors.bottom: parent.bottom;

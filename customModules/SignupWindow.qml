@@ -64,6 +64,8 @@ Rectangle
         echoMode: 0;
         placeHolder: "First Name";
         width: parent.width * 0.6;
+        height: 40;
+
 
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 10;
@@ -78,6 +80,7 @@ Rectangle
         echoMode: 0;
         placeHolder: "Last Name";
         width: parent.width * 0.6;
+        height: 40;
 
         anchors.top: signUpFirstName.bottom;
         anchors.topMargin: 10;
@@ -92,6 +95,7 @@ Rectangle
         echoMode: 0;
         placeHolder: "Phone Number";
         width: parent.width * 0.6;
+        height: 40;
 
         anchors.top: signUpLastName.bottom;
         anchors.topMargin: 10;
@@ -107,6 +111,7 @@ Rectangle
         echoMode: 2;
         placeHolder: "Password";
         width: parent.width * 0.6;
+        height: 40;
 
         anchors.top: signUpPhoneNumber.bottom;
         anchors.topMargin: 10;
@@ -122,6 +127,7 @@ Rectangle
         echoMode: 2;
         placeHolder: "Password Confirmation";
         width: parent.width * 0.6;
+        height: 40;
 
         anchors.top: signUpPassword.bottom;
         anchors.topMargin: 10;

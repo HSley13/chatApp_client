@@ -5,7 +5,6 @@ Rectangle
     id: root;
 
     property bool hidden: true;
-    property string animationDirection: "horizontal";
     width: 160;
     height: 120;
 
@@ -25,8 +24,8 @@ Rectangle
             {
                 width: parent.width;
                 height: parent.height;
-                color: index % 2 === 0 ? "lightgrey" : "white";
-                border.color: "grey";
+                color: index % 2 === 0 ? "lightgray" : "white";
+                border.color: "gray";
 
                 Row
                 {
@@ -51,10 +50,15 @@ Rectangle
                         Image 
                         {
                             id: itemImage;
+
                             source: model.image_source;
                             visible: model.image_source !== "";
+
                             fillMode: Image.PreserveAspectFit;
                             clip: true;
+                            mipmap: true;
+                            asynchronous: true;
+
                             width: parent.width * 0.9;
                             height: parent.height * 0.9;
                             anchors.centerIn: parent;

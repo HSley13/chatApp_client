@@ -6,12 +6,6 @@ Rectangle
 {
     id: root;
 
-    visible: true;
-    anchors.fill: parent;
-
-    property bool searchToggled: false;
-    onSearchToggledChanged: console.log("Search Toggle Changed");
-
     Rectangle
     {
         id: contactHeader;
@@ -21,15 +15,15 @@ Rectangle
         IconText
         {
             id: returnImage;
-            imageSource:"qrc:/QML/ClientApp/icons/back_icon.png";
-            text: "";
-            cWidth: parent.height * 0.1;
+            imageSource1:"qrc:/QML/ClientApp/icons/back_icon.png";
+            height: parent.height * 0.5;
+            width: height;
 
             onItemClicked: stackView.pop();
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.left: parent.left;
-            anchors.leftMargin: 20;
+            anchors.leftMargin: 10;
         }
 
         InputField
@@ -39,8 +33,8 @@ Rectangle
             echoMode: TextInput.Normal;
             placeHolder: "Search...";
             width: parent.width * 0.6;
-            customHeight: 40;
-            
+            height: 40;
+
             onAccepted: (value) => 
             {
                 console.log("Text Searched: " + value);
@@ -54,17 +48,17 @@ Rectangle
         IconText
         {
             id: menu;
-            imageSource: "qrc:/QML/ClientApp/icons/menu_icon.png";
-            image2Source: "qrc:/QML/ClientApp/icons/cancel_menu.png";
-            text: "";
-            cWidth: parent.height * 0.1;
+            imageSource1: "qrc:/QML/ClientApp/icons/menu_icon.png";
+            imageSource2: "qrc:/QML/ClientApp/icons/cancel_menu.png";
+            height: parent.height * 0.5;
+            width: height;
 
             onItemClicked:
             {
                 menuPanel.hidden = !menuPanel.hidden;
                 (dialog.open()) ? dialog.close() : dialog.open();
 
-                console.log("+ New Button Clicked");
+                console.log("Menu Clicked");
             }
 
             anchors.verticalCenter: parent.verticalCenter;
@@ -130,8 +124,10 @@ Rectangle
         IconText
         {
             id: chatList;
-            imageSource: "qrc:/QML/ClientApp/icons/chat_icon.png";
-            text: "Chats";
+            imageSource1: "qrc:/QML/ClientApp/icons/chat_icon.png";
+            label: "Chats";
+            height: parent.height * 0.9;
+            width: height;
 
             onItemClicked:
             {
@@ -140,14 +136,17 @@ Rectangle
             }
 
             anchors.left: parent.left;
+            anchors.leftMargin: 10;
             anchors.verticalCenter: parent.verticalCenter;
         }
 
         IconText
         {
             id: chatGroup;
-            imageSource: "qrc:/QML/ClientApp/icons/group_icon.png";
-            text: "Groups";
+            imageSource1: "qrc:/QML/ClientApp/icons/group_icon.png";
+            label: "Groups";
+            height: parent.height * 0.9;
+            width: height;
 
             onItemClicked:
             {
@@ -160,8 +159,10 @@ Rectangle
         IconText
         {
             id: profile;
-            imageSource: "qrc:/QML/ClientApp/icons/name_icon.png";
-            text: "Profile";
+            imageSource1: "qrc:/QML/ClientApp/icons/settings_icon.png";
+            label: "Profile";
+            height: parent.height * 0.9;
+            width: height;
 
             onItemClicked:
             {
@@ -169,6 +170,7 @@ Rectangle
             }
 
             anchors.right: parent.right;
+            anchors.rightMargin: 10;
             anchors.verticalCenter: parent.verticalCenter;
         }
 
@@ -184,10 +186,10 @@ Rectangle
         Component.onCompleted:
         {
             var options = [
-                {text: "New Conversation"},
-                {text: "New Group"},
-                {text: "Chat with An Agent"}
+                {text: "New Conversation", image_source: "qrc:/QML/ClientApp/icons/chat_icon.png"},
+                {text: "New Group", image_source: "qrc:/QML/ClientApp/icons/group_icon.png"}
             ];
+            
             menuPanel.update_options(options);
         }
 

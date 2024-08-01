@@ -1,68 +1,48 @@
 import QtQuick;
 import QtQuick.Controls;
 
-Column
+Rectangle
 {
     id: root;
 
-    required property string imageSource;
-    property string image2Source: "";
-    required property string text;
-    property int cWidth: 400 / 3;
+    required property string imageSource1;
+    property string imageSource2: "";
+    property string label: "";
 
     signal itemClicked();
 
-    width: cWidth;
+    radius: width / 2;
+    color: mouseArea.pressed ? "gray" : "transparent";
+    
+    anchors.top: parent.top;
+    anchors.topMargin: 5;
 
-    Rectangle
+    Image
     {
-        id: circle;
+        id: profile;
+        source: root.imageSource1;
+        mipmap: true;
 
-        height: 50 * 0.6;
-        width: height;
-        radius: width / 2;
+        fillMode: Image.PreserveAspectFit;
+        asynchronous: true;
 
-        color: mouseArea.pressed ? "#ed7bb4" : "transparent";
-        
-        anchors.horizontalCenter: parent.horizontalCenter;
+        width: parent.width * 0.8;
+        height: parent.height * 0.8;
 
-        Image
-        {
-            id: profile;
-
-            source: root.imageSource;
-            mipmap: true;
-            fillMode: Image.PreserveAspectFit;
-            asynchronous: true;
-
-            width: parent.width * 0.9;
-            height: parent.height * 0.9;
-            anchors.centerIn: parent;
-        }
-
-        MouseArea
-        {
-            id: mouseArea;
-            anchors.fill: parent;
-
-            onClicked: 
-            {
-                if(root.image2Source !== "")
-                    profile.source = (profile.source.toString() === root.imageSource) ? root.image2Source : root.imageSource;
-
-                root.itemClicked();
-            }
-        }
+        anchors.centerIn: parent;
     }
 
-    Text
+    MouseArea
     {
-        id: label;
-        text: root.text;
+        id: mouseArea;
+        anchors.fill: parent;
 
-        color: "black";
-        font.pixelSize: 10;
+        onClicked: 
+        {
+            if(root.imageSource2 !== "")
+                profile.source = (profile.source.toString() === root.imageSource1) ? root.imageSource2 : root.imageSource1;
 
-        anchors.horizontalCenter: parent.horizontalCenter;
+            root.itemClicked();
+        }
     }
 }

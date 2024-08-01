@@ -25,26 +25,26 @@ qt_add_qml_module(app
                     customModules/Main.qml
                     customModules/LoginWindow.qml 
                     customModules/SignUpWindow.qml 
-                    customModules/InputField.qml
-                    customModules/IconText.qml
-                    customModules/ImageText.qml
-                    customModules/MenuPanel.qml
                     customModules/ChatWindow.qml
                     customModules/ChatList.qml
                     customModules/ChatListDelegate.qml
                     customModules/ContactWindow.qml
                     customModules/ContactList.qml
                     customModules/ContactListDelegate.qml
+                    customModules/InputField.qml
+                    customModules/IconText.qml
+                    customModules/ImageText.qml
+                    customModules/MenuPanel.qml
                     customModules/ListDialog.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
+                    MessageInfo.cpp MessageInfo.h
                     ChatProtocol.cpp ChatProtocol.h
                     ClientManager.cpp ClientManager.h
-                    ChatInfo.cpp ChatInfo.h
+                    ContactInfo.cpp ContactInfo.h
                     AudioController.cpp AudioController.h
-                    MessageInfo.cpp MessageInfo.h
-                    ContactList.cpp ContactList.h
+                    ContactListModel.cpp ContactListModel.h
                     ContactProxyList.cpp ContactProxyList.h
      
                     RESOURCES
@@ -73,6 +73,7 @@ qt_add_qml_module(app
                     icons/ironman_icon.png
                     icons/superman_icon.png
                     icons/captain_icon.png
+                    icons/settings_icon.png
                     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")

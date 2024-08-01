@@ -15,7 +15,7 @@ Rectangle
         anchors.fill: parent;
 
         anchors.margins: 5;
-        model: contact_list.open_chat_user.messages;
+        model: contact_list_model.active_chat.messages;
 
         spacing: 8;
         clip: true;

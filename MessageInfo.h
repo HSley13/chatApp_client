@@ -13,6 +13,7 @@ class MessageInfo : public QObject
     Q_PROPERTY(int sender_ID READ sender_ID CONSTANT)
 
 public:
+    MessageInfo(QObject *parent = nullptr);
     MessageInfo(const QString &contents, const int &sender_ID, QObject *parent = nullptr);
 
     const QString &contents();
@@ -24,5 +25,3 @@ private:
     const QString _time{};
     const int _sender_ID{0};
 };
-
-Q_DECLARE_METATYPE(MessageInfo *)

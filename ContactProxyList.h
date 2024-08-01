@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtQuick>
-#include "ChatInfo.h"
+#include "ContactInfo.h"
 
 class ContactProxyList : public QSortFilterProxyModel
 {
@@ -11,7 +11,7 @@ class ContactProxyList : public QSortFilterProxyModel
 public:
     ContactProxyList(QObject *parent = nullptr);
 
-    Q_INVOKABLE ChatInfo *get(const int &index);
+    Q_INVOKABLE ContactInfo *get(const int &index);
 
 private:
 signals:
