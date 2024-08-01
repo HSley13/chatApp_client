@@ -6,6 +6,7 @@ Rectangle
     id: root;
 
     property bool isRecording: false;
+    property bool onOffLine: (contact_list_model.active_chat === null) ? false : contact_list_model.active_chat.status; 
 
     Rectangle
     {
@@ -31,24 +32,45 @@ Rectangle
             anchors.leftMargin: 10;
         }
 
-        Rectangle
+        Row
         {
-            width: parent.width - returnImage.width;
-            height: parent.height;
-
-            ImageText
-            {
-                id: iconNameStatus;
-                source: (contact_list_model.active_chat === null) ? "qrc:/QML/ClientApp/icons/name_icon.png" :  contact_list_model.active_chat.image_url;
-                name: (contact_list_model.active_chat === null) ? "" : contact_list_model.active_chat.name;
-                onOffLine: (contact_list_model.active_chat === null) ? false : contact_list_model.active_chat.status; 
-
-                anchors.fill: parent;
-            }
-
             anchors.left: returnImage.right;
-            anchors.leftMargin: 5;
-            anchors.verticalCenter: parent.verticalCenter;
+            anchors.top: parent.top;
+            anchors.bottom: parent.bottom;
+            anchors.margins: 5;
+
+            height: parent.height;
+            spacing: 10;
+
+            RoundedImage
+            {
+                imageSource: (contact_list_model.active_chat === null) ? "qrc:/QML/ClientApp/icons/name_icon.png" :  contact_list_model.active_chat.image_url;
+                width: 45;
+                height: 45;
+            }
+            
+            Column
+            {
+                spacing: 5;
+                Text
+                {
+                    id: userName;
+                    text: (contact_list_model.active_chat === null) ? "" : contact_list_model.active_chat.name;
+                    color: "black";
+                    font.pixelSize: 16;
+                    font.bold: true;
+                    verticalAlignment: Text.AlignVCenter;
+                    elide: Text.ElideRight;
+                }
+                Text
+                {
+                    id: statusText;
+                    text: root.onOffLine ? "Online" : "Offline";
+                    color: root.onOffLine ? "green" : "red";
+                    font.pixelSize: 12;
+                    verticalAlignment: Text.AlignVCenter;
+                }
+            }
         }
     }
 

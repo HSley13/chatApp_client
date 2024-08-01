@@ -78,10 +78,7 @@ Rectangle
             id: stackView2;
             anchors.fill: parent;
 
-            initialItem: Component
-            {
-                ContactList { id: contactList; }
-            }
+            initialItem: contactList;
 
             ListDialog
             {
@@ -131,7 +128,7 @@ Rectangle
 
             onItemClicked:
             {
-                stackView2.push(chatSection);
+                stackView2.pop();
                 console.log("Chat Icon Clicked");
             }
 
@@ -150,6 +147,7 @@ Rectangle
 
             onItemClicked:
             {
+                stackView2.push(groupList)
                 console.log("Group Icon Clicked");
             }
 
@@ -166,6 +164,7 @@ Rectangle
 
             onItemClicked:
             {
+                stackView.push(settingWindow);
                 console.log("Profile Icon Clicked");
             }
 

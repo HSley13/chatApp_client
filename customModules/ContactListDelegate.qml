@@ -4,7 +4,6 @@ import QtQuick.Layouts;
 Rectangle
 {
     color: "transparent";
-    radius: 100;
 
     property string statusIconSource: status ? "qrc:/QML/ClientApp/icons/online_icon.png" : "qrc:/QML/ClientApp/icons/offline_icon.png";
 
@@ -40,14 +39,12 @@ Rectangle
             width: 50;
             height: 50;
 
-            Image
+            RoundedImage
             {
                 id: profileImage;
-                source: image_url;
+                imageSource: image_url;
                 width: parent.width;
                 height: parent.height;
-                fillMode: Image.PreserveAspectFit;
-                mipmap: true;
             }
 
             Image

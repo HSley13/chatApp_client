@@ -4,14 +4,15 @@ project(ClientApp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia)
+find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia Core5Compat)
 qt_standard_project_setup()
 
 qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp)
 
 target_link_libraries(app PRIVATE 
                                 Qt6::Quick 
-                                Qt6::Multimedia)
+                                Qt6::Multimedia
+                                Qt6::Core5Compat)
 
 qt6_policy(SET QTP0001 NEW)
 
@@ -33,9 +34,12 @@ qt_add_qml_module(app
                     customModules/ContactListDelegate.qml
                     customModules/InputField.qml
                     customModules/IconText.qml
-                    customModules/ImageText.qml
                     customModules/MenuPanel.qml
                     customModules/ListDialog.qml
+                    customModules/SettingWindow.qml
+                    customModules/RoundedImage.qml
+                    customModules/GroupList.qml
+                    customModules/RoundedButton.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
@@ -46,6 +50,7 @@ qt_add_qml_module(app
                     AudioController.cpp AudioController.h
                     ContactListModel.cpp ContactListModel.h
                     ContactProxyList.cpp ContactProxyList.h
+                    FileWatcher.cpp FileWatcher.h
      
                     RESOURCES
                     icons/chat_icon.png
@@ -74,6 +79,10 @@ qt_add_qml_module(app
                     icons/superman_icon.png
                     icons/captain_icon.png
                     icons/settings_icon.png
+                    icons/save_icon.png
+                    icons/delete_icon.png
+                    icons/logout_icon.png
+                    icons/upload_icon.png
                     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")

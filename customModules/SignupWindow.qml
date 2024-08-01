@@ -9,7 +9,6 @@ Rectangle
     Image 
     {
         id: welcomeImage;
-
         mipmap: true;
         fillMode: Image.PreserveAspectFit;
 
@@ -26,7 +25,6 @@ Rectangle
     Text 
     {
         id: textWelcome;
-
         text: "GET ON BOARD,";
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere;
         font.bold: true;
@@ -56,82 +54,73 @@ Rectangle
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField 
+    Column
     {
-        id: signUpFirstName;
-        image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
-
-        echoMode: 0;
-        placeHolder: "First Name";
-        width: parent.width * 0.6;
-        height: 40;
-
+        id: signupInfo;
 
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
-    }
+        width: parent.width * 0.6; 
 
-    InputField 
-    {
-        id: signUpLastName;
-        image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
+        spacing: 10;
 
-        echoMode: 0;
-        placeHolder: "Last Name";
-        width: parent.width * 0.6;
-        height: 40;
+        InputField 
+        {
+            id: signUpFirstName;
+            image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
 
-        anchors.top: signUpFirstName.bottom;
-        anchors.topMargin: 10;
-        anchors.horizontalCenter: parent.horizontalCenter;
-    }
+            echoMode: TextInput.Normal;
+            placeHolder: "First Name";
+            width: parent.width;
+            height: 40;
+        }
 
-    InputField 
-    {
-        id: signUpPhoneNumber;
-        image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
+        InputField 
+        {
+            id: signUpLastName;
+            image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
 
-        echoMode: 0;
-        placeHolder: "Phone Number";
-        width: parent.width * 0.6;
-        height: 40;
+            echoMode: TextInput.Normal;
+            placeHolder: "Last Name";
+            width: parent.width;
+            height: 40;
+        }
 
-        anchors.top: signUpLastName.bottom;
-        anchors.topMargin: 10;
-        anchors.horizontalCenter: parent.horizontalCenter;
-    }
+        InputField 
+        {
+            id: signUpPhoneNumber;
+            image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
 
-    InputField 
-    {
-        id: signUpPassword;
-        image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
-        image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
+            echoMode: TextInput.Normal;
+            placeHolder: "Phone Number";
+            width: parent.width;
+            height: 40;
+        }
 
-        echoMode: 2;
-        placeHolder: "Password";
-        width: parent.width * 0.6;
-        height: 40;
+        InputField 
+        {
+            id: signUpPassword;
+            image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
+            image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
-        anchors.top: signUpPhoneNumber.bottom;
-        anchors.topMargin: 10;
-        anchors.horizontalCenter: parent.horizontalCenter;
-    }
+            echoMode: TextInput.Password;
+            placeHolder: "Password";
+            width: parent.width;
+            height: 40;
+        }
 
-    InputField 
-    {
-        id: signUpPasswordConfirmation;
-        image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
-        image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
+        InputField 
+        {
+            id: signUpPasswordConfirmation;
+            image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
+            image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
-        echoMode: 2;
-        placeHolder: "Password Confirmation";
-        width: parent.width * 0.6;
-        height: 40;
-
-        anchors.top: signUpPassword.bottom;
-        anchors.topMargin: 10;
-        anchors.horizontalCenter: parent.horizontalCenter;
+            echoMode: TextInput.Password;
+            placeHolder: "Password Confirmation";
+            width: parent.width;
+            height: 40;
+        }
     }
 
     Rectangle 
@@ -160,7 +149,7 @@ Rectangle
             onClicked: console.log("Sign Up Button Click");
         }
 
-        anchors.top: signUpPasswordConfirmation.bottom;
+        anchors.top: signupInfo.bottom;
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
@@ -180,7 +169,7 @@ Rectangle
             id: signUp;
             color: "transparent";
 
-            width: question.width * .5;
+            width: question.width * 0.5;
             height: 20;
 
             Text 

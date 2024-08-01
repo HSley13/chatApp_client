@@ -1,6 +1,5 @@
 import QtQuick;
 import QtQuick.Controls;
-import QtQuick.Window;
 import QtQuick.Controls.Basic;
 
 Rectangle
@@ -96,7 +95,7 @@ Rectangle
 
     function sendMessage()
     {
-        if(textInput.text == "")
+        if (textInput.text === "")
             return;
 
         contact_list_model.send_message(textInput.text);

@@ -42,6 +42,25 @@ ApplicationWindow
         ContactWindow{}
     }
 
+    Component
+    {
+        id: contactList;
+        ContactList{}
+    }
+
+    Component
+    {
+        id: groupList;
+        GroupList{}
+    }
+
+
+    Component
+    {
+        id: settingWindow;
+        SettingWindow{}
+    }
+
     StackView
     {
         id: stackView;

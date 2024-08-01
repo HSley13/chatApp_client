@@ -1,15 +1,12 @@
 import QtQuick;
-import QtQuick.Window;
 import QtQuick.Controls;
 
 Rectangle
 {
-    anchors.fill: parent;
-
     ListView
     {
         id: contactListView;
-        
+
         width: parent.width;
         height: parent.height;
 
