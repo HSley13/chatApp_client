@@ -37,7 +37,7 @@ Rectangle
         RoundedImage
         {
             id: groupImage;
-            imageSource: "https://groupworkandcommunication2018.wordpress.com/wp-content/uploads/2018/10/group.png";
+            imageSource: "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png";
             width: 50;
             height: 50;
         }

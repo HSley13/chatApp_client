@@ -15,6 +15,7 @@ Rectangle
         spacing: 5;
         clip: true;
 
+        // FIXME: replace it by the real model later
         model: 20;
 
         delegate: GroupListDelegate

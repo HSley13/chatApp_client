@@ -1,6 +1,5 @@
 import QtQuick;
 import QtQuick.Controls;
-import QtQuick.Layouts;
 
 Rectangle
 {
@@ -23,10 +22,7 @@ Rectangle
 
         delegate: ChatListDelegate {}
 
-        onCountChanged: 
-        {
-            chatListView.currentIndex = count - 1;
-        }
+        onCountChanged: chatListView.currentIndex = count - 1;
 
         add: Transition
         {

@@ -41,6 +41,9 @@ qt_add_qml_module(app
                     customModules/GroupList.qml
                     customModules/RoundedButton.qml
                     customModules/GroupListDelegate.qml
+                    customModules/GroupChatList.qml
+                    customModules/GroupChatListDelegate.qml
+
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
