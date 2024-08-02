@@ -5,6 +5,7 @@ import QtQuick.Layouts;
 Rectangle
 {
     id: root;
+    property Item groupListObject: groupList.createObject(stackView2);
 
     Rectangle
     {
@@ -137,7 +138,7 @@ Rectangle
             anchors.verticalCenter: parent.verticalCenter;
         }
 
-        IconText
+        IconText 
         {
             id: chatGroup;
             imageSource1: "qrc:/QML/ClientApp/icons/group_icon.png";
@@ -145,10 +146,10 @@ Rectangle
             height: parent.height * 0.9;
             width: height;
 
-            onItemClicked:
+            onItemClicked: 
             {
-                stackView2.push(groupList)
-                console.log("Group Icon Clicked");
+                if (stackView2.currentItem !== groupListObject)
+                    stackView2.push(groupListObject)
             }
 
             anchors.centerIn: parent;

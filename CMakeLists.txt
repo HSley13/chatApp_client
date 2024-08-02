@@ -40,6 +40,7 @@ qt_add_qml_module(app
                     customModules/RoundedImage.qml
                     customModules/GroupList.qml
                     customModules/RoundedButton.qml
+                    customModules/GroupListDelegate.qml
 
                     SOURCES
                     ChatListModel.cpp ChatListModel.h
@@ -50,7 +51,6 @@ qt_add_qml_module(app
                     AudioController.cpp AudioController.h
                     ContactListModel.cpp ContactListModel.h
                     ContactProxyList.cpp ContactProxyList.h
-                    FileWatcher.cpp FileWatcher.h
      
                     RESOURCES
                     icons/chat_icon.png
