@@ -6,11 +6,25 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _active_chat(Q_NULLPTR),
       _contact_proxy_list(new ContactProxyList(this))
 {
-    _contacts.append(new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 0, this));
-    _contacts.append(new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this));
-    _contacts.append(new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this));
-    _contacts.append(new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this));
-    _contacts.append(new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this));
+    ContactInfo *sleyHortes = new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 1, this);
+    sleyHortes->add_message(new MessageInfo("I created this app", 2222, this));
+    _contacts.append(sleyHortes);
+
+    ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
+    bruceWayne->add_message(new MessageInfo("I killed the Joker", 3333, this));
+    _contacts.append(bruceWayne);
+
+    ContactInfo *tonyStark = new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this);
+    tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", 4444, this));
+    _contacts.append(tonyStark);
+
+    ContactInfo *clarkKent = new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this);
+    clarkKent->add_message(new MessageInfo("I killed Doomsday", 5555, this));
+    _contacts.append(clarkKent);
+
+    ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
+    steveRogers->add_message(new MessageInfo("I had the dance with Peggy", 6666, this));
+    _contacts.append(steveRogers);
 
     connect(this, &ContactListModel::send_message, this, &ContactListModel::on_send_message);
 
@@ -55,7 +69,7 @@ void ContactListModel::on_send_message(const QString &message)
     if (_active_chat == Q_NULLPTR)
         return;
 
-    _active_chat->add_message(new MessageInfo(message, _active_chat->phone_number(), _active_chat));
+    _active_chat->add_message(new MessageInfo(message, _main_user->phone_number(), _active_chat));
 }
 
 int ContactListModel::rowCount(const QModelIndex &parent) const

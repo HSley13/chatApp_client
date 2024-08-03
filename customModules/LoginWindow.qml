@@ -1,15 +1,14 @@
 import QtQuick;
 import QtQuick.Controls;
-import QtQuick.Window;
+import QtQuick.Layouts;
 
-Rectangle 
+Rectangle
 {
     id: root;
 
-    Image 
+    Image
     {
         id: welcomeImage;
-
         mipmap: true;
         fillMode: Image.PreserveAspectFit;
 
@@ -19,14 +18,13 @@ Rectangle
 
         width: 300;
         height: 300;
-
+        
         source: "qrc:/QML/ClientApp/icons/hi_icon.png";
     }
 
-    Text 
+    Text
     {
         id: textWelcome;
-
         text: "WELCOME BACK,";
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere;
         font.bold: true;
@@ -39,7 +37,7 @@ Rectangle
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Text 
+    Text
     {
         id: textAboutUs;
         text: "Fast & Reliable: 2 Adjectives that best describe US";
@@ -56,38 +54,41 @@ Rectangle
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    InputField 
+    ColumnLayout
     {
-        id: loginPhoneNumber;
-        image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
-
-        echoMode: 0;
-        placeHolder: "Phone Number";
-        width: parent.width * 0.6;
-        height: 40;
-
+        id: loginInfo;
         anchors.top: textAboutUs.bottom;
-        anchors.topMargin: 20;
-        anchors.horizontalCenter: parent.horizontalCenter;
-    }
-
-    InputField 
-    {
-        id: loginPassword;
-        image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
-        image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
-
-        echoMode: 2;
-        placeHolder: "Password";
-        width: parent.width * 0.6;
-        height: 40;
-
-        anchors.top: loginPhoneNumber.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
+        width: parent.width * 0.6;
+
+        spacing: 10;
+
+        InputField
+        {
+            id: loginPhoneNumber;
+            image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
+
+            echoMode: TextInput.Normal;
+            placeHolder: "Phone Number";
+            width: parent.width;
+            height: 40;
+        }
+
+        InputField
+        {
+            id: loginPassword;
+            image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
+            image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
+
+            echoMode: TextInput.Password;
+            placeHolder: "Password";
+            width: parent.width;
+            height: 40;
+        }
     }
 
-    Rectangle 
+    Rectangle
     {
         id: passwordForgotten;
         color: "transparent";
@@ -95,15 +96,15 @@ Rectangle
         height: 30;
         width: parent.width * 0.6;
 
-        Text 
+        Text
         {
             anchors.centerIn: parent;
-            text: "Forget Password";
+            text: "Password Forgotten";
             font.bold: true;
             color: "#DE02B5";
         }
 
-        MouseArea 
+        MouseArea
         {
             anchors.fill: parent;
 
@@ -111,21 +112,21 @@ Rectangle
             onClicked: console.log("Forget Password Button Click");
         }
 
-        anchors.top: loginPassword.bottom;
+        anchors.top: loginInfo.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Rectangle 
+    Rectangle
     {
         id: loginButton;
         color: mouseArea.pressed ? "#ed7bb4" : "black";
 
-        radius: 20;
         width: parent.width * 0.6;
         height: 50;
+        radius: 15;
 
-        Text 
+        Text
         {
             text: "LOGIN";
             color: "white";
@@ -133,7 +134,7 @@ Rectangle
             anchors.centerIn: parent;
         }
 
-        MouseArea 
+        MouseArea
         {
             id: mouseArea;
             anchors.fill: parent;
@@ -143,62 +144,46 @@ Rectangle
         }
 
         anchors.top: passwordForgotten.bottom;
-        anchors.topMargin: 10;
+        anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
- 
-    Row 
+
+    RowLayout
     {
         id: rowLayout;
-        
         spacing: 10;
+        anchors.top: loginButton.bottom;
+        anchors.topMargin: 10;
+        anchors.horizontalCenter: parent.horizontalCenter;
+        Layout.fillWidth: true;
 
-        Text 
+        Text
         {
             id: question;
             text: "Don't have an Account?";
         }
 
-        Rectangle 
+        RoundedButton
         {
-            id: signUp;
-            color: "transparent";
+            id: saveInfo;
+            text: "SIGN UP";
+            color: "white";
+            Layout.fillWidth: true;
+            height: 30;
 
-            width: question.width * .5;
-            height: 20;
-
-            Text 
-            {
-                id: signUpText;
-                text: "SIGN UP";
-                color: "#DE02B5";
-                font.bold: true;
-                leftPadding: 5;
-
-                anchors.centerIn: parent;
-            }
-
-            MouseArea 
-            {
-                anchors.fill: parent;
-                onClicked: stackView.push(signUpWindow);
-            }
+            onClicked: stackView.push(signUpWindow);
         }
-
-        anchors.top: loginButton.bottom;
-        anchors.topMargin: 10;
-        anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Rectangle 
+    Rectangle
     {
         id: chatWindowButton;
         color: "transparent";
 
         height: 20;
-        width: question.width * .5;
+        width: question.width * 0.5;
 
-        Text 
+        Text
         {
             id: chatWindowText;
             text: "Chat Window";
@@ -209,7 +194,7 @@ Rectangle
             anchors.centerIn: parent;
         }
 
-        MouseArea 
+        MouseArea
         {
             anchors.fill: parent;
             onClicked: stackView.push(contactWindow);

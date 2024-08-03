@@ -15,7 +15,7 @@ public:
     enum GroupChatRoles
     {
         GroupIDRole = Qt::UserRole + 1,
-        PhoneNumberRole,
+        SenderIDRole,
         ContentRole,
         TimeRole,
         SenderNameRole

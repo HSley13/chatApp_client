@@ -1,13 +1,7 @@
 #include "ChatListModel.h"
 
 ChatListModel::ChatListModel(QObject *parent)
-    : QAbstractListModel(parent)
-{
-    // _messages.append(new MessageInfo("I have killed the Joker", 2222, this));
-    // _messages.append(new MessageInfo("I survived the Snap in EndGame", 3333, this));
-    // _messages.append(new MessageInfo("I killed Doomsday", 4444, this));
-    // _messages.append(new MessageInfo("I had the dance with Peggy", 5555, this));
-}
+    : QAbstractListModel(parent) {}
 
 int ChatListModel::rowCount(const QModelIndex &parent) const
 {

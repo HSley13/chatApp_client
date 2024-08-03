@@ -3,6 +3,7 @@
 #include <QtQuick>
 #include "GroupInfo.h"
 #include "GroupProxyList.h"
+#include "ContactInfo.h"
 
 class GroupListModel : public QAbstractListModel
 {
@@ -10,6 +11,7 @@ class GroupListModel : public QAbstractListModel
     QML_ELEMENT
 
     Q_PROPERTY(GroupInfo *active_group_chat READ active_group_chat WRITE set_active_group_chat NOTIFY active_group_chat_changed)
+    Q_PROPERTY(ContactInfo *main_user READ main_user)
     Q_PROPERTY(GroupProxyList *group_proxy_list READ group_proxy_list)
 
 public:
@@ -29,6 +31,7 @@ public:
     const QList<GroupInfo *> &groups() const;
     void set_groups(const QList<GroupInfo *> &new_groups);
 
+    ContactInfo *main_user() const;
     GroupProxyList *group_proxy_list() const;
 
     GroupInfo *active_group_chat() const;
@@ -42,6 +45,7 @@ public:
 private:
     QList<GroupInfo *> _groups;
     GroupInfo *_active_group_chat{};
+    ContactInfo *_main_user{};
 
     GroupProxyList *_group_proxy_list{};
 

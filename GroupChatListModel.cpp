@@ -1,10 +1,7 @@
 #include "GroupChatListModel.h"
 
 GroupChatListModel::GroupChatListModel(QObject *parent)
-    : QAbstractListModel(parent)
-{
-    //
-}
+    : QAbstractListModel(parent) {}
 
 int GroupChatListModel::rowCount(const QModelIndex &parent) const
 {
@@ -21,7 +18,7 @@ QVariant GroupChatListModel::data(const QModelIndex &index, int role) const
 
     switch (GroupChatRoles(role))
     {
-    case PhoneNumberRole:
+    case SenderIDRole:
         return group_message->sender_ID();
     case ContentRole:
         return group_message->contents();
@@ -39,7 +36,7 @@ QHash<int, QByteArray> GroupChatListModel::roleNames() const
     QHash<int, QByteArray> roles;
 
     roles[GroupIDRole] = "group_ID";
-    roles[PhoneNumberRole] = "phone_number";
+    roles[SenderIDRole] = "sender_ID";
     roles[ContentRole] = "contents";
     roles[TimeRole] = "time";
     roles[SenderNameRole] = "sender_name";

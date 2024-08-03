@@ -10,7 +10,7 @@ Button
     {
         text: root.text
         opacity: enabled ? 1.0 : 0.3;
-        color: root.down ? "#ed7bb4" : "black";
+        color: root.down ? "black" : "#DE02B5";
         horizontalAlignment: Text.AlignHCenter;
         verticalAlignment: Text.AlignVCenter;
         elide: Text.ElideRight;
@@ -22,8 +22,8 @@ Button
         height: root.height;    
         opacity: enabled ? 1 : 0.3;
         color: root.color;
-        border.color: root.down ? "#ed7bb4" : "black";
-        border.width: 1;
+        border.color: root.down ? "black" : "#DE02B5";
+        border.width: 2;
         radius: 10;
     }
 }

@@ -1,12 +1,12 @@
 import QtQuick;
 import QtQuick.Controls;
-import QtQuick.Window;
+import QtQuick.Layouts;
 
-Rectangle 
+Rectangle
 {
     id: root;
 
-    Image 
+    Image
     {
         id: welcomeImage;
         mipmap: true;
@@ -22,7 +22,7 @@ Rectangle
         source: "qrc:/QML/ClientApp/icons/hi_icon.png";
     }
 
-    Text 
+    Text
     {
         id: textWelcome;
         text: "GET ON BOARD,";
@@ -37,7 +37,7 @@ Rectangle
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Text 
+    Text
     {
         id: textAboutUs;
         text: "Create your Profile and Start the Journey with US";
@@ -54,18 +54,17 @@ Rectangle
         anchors.horizontalCenter: parent.horizontalCenter;
     }
 
-    Column
+    ColumnLayout
     {
         id: signupInfo;
-
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
-        width: parent.width * 0.6; 
+        width: parent.width * 0.6;
 
         spacing: 10;
 
-        InputField 
+        InputField
         {
             id: signUpFirstName;
             image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
@@ -76,7 +75,7 @@ Rectangle
             height: 40;
         }
 
-        InputField 
+        InputField
         {
             id: signUpLastName;
             image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
@@ -87,7 +86,7 @@ Rectangle
             height: 40;
         }
 
-        InputField 
+        InputField
         {
             id: signUpPhoneNumber;
             image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
@@ -98,7 +97,7 @@ Rectangle
             height: 40;
         }
 
-        InputField 
+        InputField
         {
             id: signUpPassword;
             image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
@@ -110,7 +109,7 @@ Rectangle
             height: 40;
         }
 
-        InputField 
+        InputField
         {
             id: signUpPasswordConfirmation;
             image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
@@ -123,7 +122,7 @@ Rectangle
         }
     }
 
-    Rectangle 
+    Rectangle
     {
         id: signUpButton;
         color: mouseArea.pressed ? "#ed7bb4" : "black";
@@ -132,7 +131,7 @@ Rectangle
         height: 50;
         radius: 15;
 
-        Text 
+        Text
         {
             text: "SIGN UP";
             color: "white";
@@ -140,12 +139,11 @@ Rectangle
             anchors.centerIn: parent;
         }
 
-        MouseArea 
+        MouseArea
         {
             id: mouseArea;
             anchors.fill: parent;
 
-            // FIXME: handle click button correctly
             onClicked: console.log("Sign Up Button Click");
         }
 
@@ -153,46 +151,30 @@ Rectangle
         anchors.topMargin: 20;
         anchors.horizontalCenter: parent.horizontalCenter;
     }
- 
-    Row 
+
+    RowLayout
     {
         spacing: 10;
+        anchors.top: signUpButton.bottom;
+        anchors.topMargin: 10;
+        anchors.horizontalCenter: parent.horizontalCenter;
+        Layout.fillWidth: true;
 
-        Text 
+        Text
         {
             id: question;
             text: "Already have an Account?";
         }
 
-        Rectangle 
+        RoundedButton
         {
-            id: signUp;
-            color: "transparent";
+            id: saveInfo;
+            text: "LOGIN";
+            color: "white";
+            Layout.fillWidth: true;
+            height: 30;
 
-            width: question.width * 0.5;
-            height: 20;
-
-            Text 
-            {
-                id: signUpText;
-                text: "LOGIN";
-                color: "#DE02B5";
-                font.bold: true;
-                leftPadding: 5;
-
-                anchors.centerIn: parent;
-            }
-
-            MouseArea 
-            {
-                anchors.fill: parent;
-
-                onClicked: stackView.replace(loginWindow, StackView.PopTransition);
-            }
+            onClicked: stackView.replace(loginWindow, StackView.PopTransition);
         }
-
-        anchors.top: signUpButton.bottom;
-        anchors.topMargin: 10;
-        anchors.horizontalCenter: parent.horizontalCenter;
     }
 }
