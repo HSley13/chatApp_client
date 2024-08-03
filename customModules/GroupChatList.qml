@@ -13,21 +13,21 @@ Rectangle
 
         anchors.fill: parent;
 
-        anchors.margins: 5;
-        // FIXME: replace it by the real model later
-        model: 20;
+        anchors.margins: 10;
+
+        model: group_list_model.active_group_chat.group_messages;
 
         spacing: 8;
         clip: true;
-        hightLightFollowCurrentItem: true;
+        highlightFollowsCurrentItem: true;
 
         delegate: GroupChatListDelegate {}
 
-        onCountChanged: groupChatList.currentIndex = count - 1;
+        onCountChanged: groupChatListView.currentIndex = count - 1;
 
         add: Transition
         {
-            NumberAnimation {properties: "x"; from: groupChatList.width / 2; duration: 500; easing.type: Easing.OutBounce;}
+            NumberAnimation {properties: "x"; from: groupChatListView.width / 2; duration: 500; easing.type: Easing.OutBounce;}
         }
     }
 }

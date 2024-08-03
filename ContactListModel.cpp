@@ -1,5 +1,4 @@
 #include "ContactListModel.h"
-#include "ClientManager.h"
 
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
@@ -7,16 +6,11 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _active_chat(Q_NULLPTR),
       _contact_proxy_list(new ContactProxyList(this))
 {
-    _contacts.append(new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 2, this));
-    _contacts.append(new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 2, this));
+    _contacts.append(new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 0, this));
+    _contacts.append(new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this));
     _contacts.append(new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this));
-    _contacts.append(new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 3, this));
+    _contacts.append(new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this));
     _contacts.append(new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this));
-
-    // "I have killed the Joker",
-    //     "I survived the Snap in EndGame",
-    //     "I killed Doomsday",
-    //     "I had the dance with Peggy",
 
     connect(this, &ContactListModel::send_message, this, &ContactListModel::on_send_message);
 
@@ -96,10 +90,8 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
     case ContactObjectRole:
         return QVariant::fromValue(contact_info);
     default:
-        break;
+        QVariant();
     }
-
-    return QVariant();
 }
 
 QHash<int, QByteArray> ContactListModel::roleNames() const

@@ -12,11 +12,10 @@ Rectangle
 
         anchors.margins: 5;
 
-        spacing: 5;
+        spacing: 10;
         clip: true;
 
-        // FIXME: replace it by the real model later
-        model: 20;
+        model: group_list_model;
 
         delegate: GroupListDelegate
         {

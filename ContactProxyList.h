@@ -2,7 +2,6 @@
 
 #include <QtQuick>
 #include "ContactInfo.h"
-
 class ContactProxyList : public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -12,7 +11,4 @@ public:
     ContactProxyList(QObject *parent = nullptr);
 
     Q_INVOKABLE ContactInfo *get(const int &index);
-
-private:
-signals:
 };

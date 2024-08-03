@@ -18,6 +18,9 @@ ApplicationWindow
     ContactListModel
     {id: contact_list_model}
 
+    GroupListModel
+    {id: group_list_model}
+
     Component
     {
         id: loginWindow;
@@ -54,6 +57,11 @@ ApplicationWindow
         GroupList{}
     }
 
+    Component
+    {
+        id: groupChatWindow
+        GroupChatWindow{}
+    }
 
     Component
     {

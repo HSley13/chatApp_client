@@ -2,8 +2,8 @@
 
 #include <QtQuick>
 #include <QTimer>
-
 #include "MessageInfo.h"
+
 class ChatListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -29,7 +29,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void append(MessageInfo *message);
-    Q_INVOKABLE MessageInfo *at(int index) const;
+    Q_INVOKABLE MessageInfo *at(const int &index) const;
 
 signals:
     void count_changed();

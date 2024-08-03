@@ -37,77 +37,77 @@ Rectangle
         RoundedImage
         {
             id: groupImage;
-            imageSource: "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png";
+            imageSource: group_image_url;
             width: 50;
             height: 50;
         }
 
-        // ColumnLayout
-        // {
-        //     Layout.fillWidth: true;
-        //     Layout.preferredHeight: parent.height;
-        //     Layout.leftMargin: 4;
-        //     spacing: 2;
-        //     Layout.topMargin: 3;
+        ColumnLayout
+        {
+            Layout.fillWidth: true;
+            Layout.preferredHeight: parent.height;
+            Layout.leftMargin: 4;
+            spacing: 2;
+            Layout.topMargin: 3;
 
-        //     Text
-        //     {
-        //         text: group_name;
-        //         color: "black";
-        //         font.pixelSize: 14;
-        //         Layout.fillWidth: true;
-        //         Layout.fillHeight: true;
-        //         verticalAlignment: Text.AlignTop;
-        //     }
+            Text
+            {
+                text: group_name;
+                color: "black";
+                font.pixelSize: 14;
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
+                verticalAlignment: Text.AlignTop;
+            }
 
-        //     Text
-        //     {
-        //         text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).contents;
-        //         color: "black";
-        //         font.pixelSize: 12;
-        //         Layout.fillWidth: true;
-        //         Layout.fillHeight: true;
-        //         verticalAlignment: Text.AlignTop;
-        //         elide: Text.ElideRight;
-        //     }
-        // }
+            Text
+            {
+                text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).contents;
+                color: "black";
+                font.pixelSize: 12;
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
+                verticalAlignment: Text.AlignTop;
+                elide: Text.ElideRight;
+            }
+        }
 
-        // ColumnLayout
-        // {
-        //     Layout.fillWidth: true;
-        //     Layout.alignment: Qt.AlignRight;
-        //     Layout.preferredHeight: parent.height;
-        //     spacing: 5;
+        ColumnLayout
+        {
+            Layout.fillWidth: true;
+            Layout.alignment: Qt.AlignRight;
+            Layout.preferredHeight: parent.height;
+            spacing: 5;
 
-        //     Rectangle 
-        //     {
-        //         width: 30;
-        //         height: 30;
-        //         radius: 15;
-        //         color: "#e6e8e8";
+            Rectangle 
+            {
+                width: 30;
+                height: 30;
+                radius: 15;
+                color: "#e6e8e8";
 
-        //         Text
-        //         {
-        //             id: count;
-        //             text: group_unread_message > 0 ? group_unread_message.toString() : "";
-        //             color: "#ed7bb4";
-        //             font.pixelSize: 12;
-        //             font.bold: true;
-        //             visible: group_unread_message > 0;
+                Text
+                {
+                    id: count;
+                    text: group_unread_message > 0 ? group_unread_message.toString() : "";
+                    color: "#ed7bb4";
+                    font.pixelSize: 12;
+                    font.bold: true;
+                    visible: group_unread_message > 0;
 
-        //             anchors.centerIn: parent;
-        //         }
-        //     }
+                    anchors.centerIn: parent;
+                }
+            }
 
-        //     Text
-        //     {
-        //         text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).time;
-        //         color: "gray";
-        //         font.bold: true;
-        //         font.pixelSize: 12;
-        //         horizontalAlignment: Text.AlignRight;
-        //     }
-        // }
+            Text
+            {
+                text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).time;
+                color: "gray";
+                font.bold: true;
+                font.pixelSize: 12;
+                horizontalAlignment: Text.AlignRight;
+            }
+        }
     }
 
     MouseArea
@@ -116,10 +116,10 @@ Rectangle
         anchors.fill: parent;
         hoverEnabled: true;
 
-        // onClicked:
-        // {
-        //     group_list_model.active_group_chat = group_list_model.group_proxy_list.get(index);
-        //     stackView.push(groupChatWindow);
-        // }
+        onClicked:
+        {
+            group_list_model.active_group_chat = group_list_model.group_proxy_list.get(index);
+            stackView.push(groupChatWindow);
+        }
     }
 }

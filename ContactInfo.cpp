@@ -9,8 +9,8 @@ ContactInfo::ContactInfo(const int &conversation_ID, const QString &name, const 
       _phone_number(phone_number),
       _status(status),
       _image_url(image_url),
-      _messages(new ChatListModel(this)),
-      _unread_message(unread_message) {}
+      _unread_message(unread_message),
+      _messages(new ChatListModel(this)) {}
 
 const QString &ContactInfo::name() const
 {
@@ -85,21 +85,6 @@ void ContactInfo::set_unread_message(const int &new_unread_message)
     _unread_message = new_unread_message;
 
     emit unread_message_changed();
-}
-
-const QString &ContactInfo::last_message() const
-{
-    return _last_message;
-}
-
-void ContactInfo::set_last_message(const QString &new_last_message)
-{
-    if (_last_message == new_last_message)
-        return;
-
-    _last_message = new_last_message;
-
-    emit last_message_changed();
 }
 
 const int &ContactInfo::conversation_ID() const

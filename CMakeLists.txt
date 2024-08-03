@@ -40,21 +40,28 @@ qt_add_qml_module(app
                     customModules/RoundedImage.qml
                     customModules/GroupList.qml
                     customModules/RoundedButton.qml
+                    customModules/GroupChatWindow.qml
                     customModules/GroupListDelegate.qml
                     customModules/GroupChatList.qml
                     customModules/GroupChatListDelegate.qml
 
-
                     SOURCES
-                    ChatListModel.cpp ChatListModel.h
-                    MessageInfo.cpp MessageInfo.h
                     ChatProtocol.cpp ChatProtocol.h
                     ClientManager.cpp ClientManager.h
-                    ContactInfo.cpp ContactInfo.h
                     AudioController.cpp AudioController.h
+
+                    MessageInfo.cpp MessageInfo.h
+                    ChatListModel.cpp ChatListModel.h
+                    ContactInfo.cpp ContactInfo.h
                     ContactListModel.cpp ContactListModel.h
                     ContactProxyList.cpp ContactProxyList.h
-     
+
+                    GroupChatListModel.cpp GroupChatListModel.h
+                    GroupMessageInfo.cpp GroupMessageInfo.h
+                    GroupInfo.cpp GroupInfo.h
+                    GroupListModel.cpp GroupListModel.h
+                    GroupProxyList.cpp GroupProxyList.h
+
                     RESOURCES
                     icons/chat_icon.png
                     icons/file_icon.png

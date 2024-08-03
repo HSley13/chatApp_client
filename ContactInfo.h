@@ -14,7 +14,6 @@ class ContactInfo : public QObject
     Q_PROPERTY(bool status READ status WRITE set_status NOTIFY status_changed)
     Q_PROPERTY(QString image_url READ image_url WRITE set_image_url NOTIFY image_url_changed)
     Q_PROPERTY(int unread_message READ unread_message WRITE set_unread_message NOTIFY unread_message_changed)
-    Q_PROPERTY(QString last_message READ last_message WRITE set_last_message NOTIFY last_message_changed)
 
     Q_PROPERTY(ChatListModel *messages READ messages CONSTANT FINAL)
 
@@ -40,9 +39,6 @@ public:
     const int &unread_message() const;
     void set_unread_message(const int &new_unread_message);
 
-    const QString &last_message() const;
-    void set_last_message(const QString &new_last_message);
-
     void add_message(MessageInfo *message);
     ChatListModel *messages() const;
 
@@ -53,7 +49,6 @@ private:
     bool _status{false};
     QString _image_url{};
     int _unread_message{};
-    QString _last_message{};
 
     ChatListModel *_messages;
 
@@ -63,7 +58,6 @@ signals:
     void status_changed();
     void image_url_changed();
     void unread_message_changed();
-    void last_message_changed();
     void conversation_ID_changed();
 
     void messages_changed();

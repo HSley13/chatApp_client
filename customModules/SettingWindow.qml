@@ -203,7 +203,7 @@ Rectangle
                 InputField
                 {
                     image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
-                    echoMode: TextInput.Normal;
+                    echoMode: TextInput.Password;
                     placeHolder: "First Name";
                     width: parent.width * 0.5;
                     height: 40;
@@ -212,7 +212,7 @@ Rectangle
                 InputField
                 {
                     image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
-                    echoMode: TextInput.Normal;
+                    echoMode: TextInput.Password;
                     placeHolder: "Last Name";
                     width: parent.width * 0.5;
                     height: 40;
