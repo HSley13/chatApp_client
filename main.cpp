@@ -1,16 +1,31 @@
-#include <QtQuick>
+#include <QGuiApplication>
+#include <QQuickView>
+#include <QUrl>
+#include <QQmlEngine>
 
-int main(int argc, char **argv)
+#include "FileWatcher.h"
+
+int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    QQmlApplicationEngine engine;
-    engine.addImportPath(":/QML/");
+    QQuickView view;
+
+    const QDir DIRECTORY("/Users/test/Documents/chat_app");
+    const QUrl SOURCE_URL = QUrl::fromLocalFile(DIRECTORY.filePath("./customModules/Main.qml"));
 
     const QUrl url("qrc:/QML/ClientApp/customModules/Main.qml");
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl)
-                     { if (!obj && url == objUrl) QCoreApplication::exit(-1); }, Qt::QueuedConnection);
-    engine.load(url);
+    view.setSource(url);
+    view.setWidth(400);
+    view.setHeight(700);
+    view.show();
+
+    FileWatcher watcher([&view, SOURCE_URL]()
+                        {
+                    view.engine()->clearComponentCache();
+                    view.setSource(SOURCE_URL); });
+
+    watcher.set_directory(DIRECTORY.absolutePath());
 
     return app.exec();
 }

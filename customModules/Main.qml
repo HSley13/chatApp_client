@@ -3,14 +3,15 @@ import QtQuick.Controls;
 import QtQuick.Window;
 import ClientApp;
 
-ApplicationWindow
+Rectangle
 {
     id: mainWindow;
-    width: 400;
-    height: 700;
-    visible: true;
-    title: "Chat App";
-    color: "transparent";
+    anchors.fill: parent;
+    // width: 400;
+    // height: 700;
+    // visible: true;
+    // title: "Chat App";
+    // color: "transparent";
 
     AudioController
     {id: audio_controller}

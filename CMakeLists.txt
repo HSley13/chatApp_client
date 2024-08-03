@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia Core5Compat)
 qt_standard_project_setup()
 
-qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp)
+qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp FileWatcher.cpp)
 
 target_link_libraries(app PRIVATE 
                                 Qt6::Quick 

@@ -275,7 +275,7 @@ Rectangle
             {
                 image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
                 image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
-                echoMode: TextInput.Normal;
+                echoMode: TextInput.Password;
                 placeHolder: "New Password";
                 Layout.fillWidth: true;
                 height: 40;
@@ -285,7 +285,7 @@ Rectangle
             {
                 image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
                 image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
-                echoMode: TextInput.Normal;
+                echoMode: TextInput.Password;
                 placeHolder: "Confirmation";
                 Layout.fillWidth: true;
                 height: 40;
