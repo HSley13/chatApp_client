@@ -105,7 +105,7 @@ Dialog
                 text: "OK";
                 onClicked:
                 {
-                    group_list_model.add_group(textInput.inputField, root.selectedItems);
+                    // group_list_model.add_group(textInput.inputField, root.selectedItems);
 
                     for (var i = 0; i < listView.count; i++)
                     {

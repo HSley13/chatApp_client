@@ -13,20 +13,6 @@ Rectangle
         width: parent.width;
         height: 50;
 
-        IconText
-        {
-            id: returnImage;
-            imageSource1:"qrc:/QML/ClientApp/icons/back_icon.png";
-            height: parent.height * 0.5;
-            width: height;
-
-            onItemClicked: stackView.pop();
-
-            anchors.verticalCenter: parent.verticalCenter;
-            anchors.left: parent.left;
-            anchors.leftMargin: 10;
-        }
-
         InputField
         {
             id: contactSearch;
@@ -36,11 +22,6 @@ Rectangle
             width: parent.width * 0.6;
             height: 40;
             isSearching: true;
-
-            onAccepted: (value) => 
-            {
-                console.log("Text Searched: " + value);
-            }
 
             anchors.top: parent.top;
             anchors.topMargin: 10;
@@ -55,12 +36,7 @@ Rectangle
             height: parent.height * 0.5;
             width: height;
 
-            onItemClicked:
-            {
-                menuPanel.hidden = !menuPanel.hidden;
-
-                console.log("Menu Clicked");
-            }
+            onItemClicked: menuPanel.hidden = !menuPanel.hidden;
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right;
@@ -108,8 +84,8 @@ Rectangle
 
                 onDialogAccepted:
                 {
-                    // FIXME:
-                    console.log("input: " + group_dialog.inputField);
+                     group_list_model.add_group(inputField, selectedItems);
+                    // FIXME: notify the server
                 }
             }
 
@@ -122,8 +98,8 @@ Rectangle
 
                 onDialogAccepted:
                 {
-                    // FIXME:
-                    console.log("input: " + addFriend_dialog.inputField);
+                    // FIXME: notify the server
+                    console.log("input: " + inputField);
                 }
             }
         }
@@ -149,11 +125,7 @@ Rectangle
             height: parent.height * 0.9;
             width: height;
 
-            onItemClicked:
-            {
-                stackView2.pop();
-                console.log("Chat Icon Clicked");
-            }
+            onItemClicked: stackView2.pop();
 
             anchors.left: parent.left;
             anchors.leftMargin: 10;
@@ -185,11 +157,7 @@ Rectangle
             height: parent.height * 0.9;
             width: height;
 
-            onItemClicked:
-            {
-                stackView.push(settingWindow);
-                console.log("Profile Icon Clicked");
-            }
+            onItemClicked: stackView.push(settingWindow);
 
             anchors.right: parent.right;
             anchors.rightMargin: 10;

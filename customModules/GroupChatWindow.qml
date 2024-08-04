@@ -97,6 +97,7 @@ Rectangle
 
             onItemClicked:
             {
+                // FIXME: Handle this click properly
                 console.log("Plus Icon Clicked");
             }
 
@@ -145,7 +146,7 @@ Rectangle
                 }
 
                 // FIXME: Handle this click properly
-                console.log("Send Icon Clicked");
+                console.log("Send record Icon Clicked");
             }
 
             anchors.verticalCenter: parent.verticalCenter;

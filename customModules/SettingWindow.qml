@@ -345,6 +345,7 @@ Rectangle
 
             onClicked:
             {
+                // FIXME: send message to the server
                 console.log("Save Info Button Clicked");
             }
         }
@@ -398,6 +399,7 @@ Rectangle
 
             onClicked:
             {
+                stackView.replace(loginWindow, StackView.PopTransition);
                 console.log("Log out Button Clicked");
             }
         }

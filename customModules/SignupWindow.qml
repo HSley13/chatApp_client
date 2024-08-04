@@ -144,6 +144,7 @@ Rectangle
             id: mouseArea;
             anchors.fill: parent;
 
+            // FIXME: Handle this click properly
             onClicked: console.log("Sign Up Button Click");
         }
 
