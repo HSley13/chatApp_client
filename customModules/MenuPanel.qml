@@ -40,29 +40,13 @@ Rectangle
                         anchors.verticalCenter: parent.verticalCenter;
                     }
 
-                    Rectangle
+                    RoundedImage
                     {
+                        id: itemImage;
+                        imageSource: model.image_source;
+                        visible: model.image_source !== "";
                         width: 30;
                         height: 30;
-                        radius: 15; 
-                        color: "transparent";
-                        
-                        Image 
-                        {
-                            id: itemImage;
-
-                            source: model.image_source;
-                            visible: model.image_source !== "";
-
-                            fillMode: Image.PreserveAspectFit;
-                            clip: true;
-                            mipmap: true;
-                            asynchronous: true;
-
-                            width: parent.width * 0.9;
-                            height: parent.height * 0.9;
-                            anchors.centerIn: parent;
-                        }
                     }
                 }
 
@@ -72,6 +56,8 @@ Rectangle
                     onClicked: 
                     {
                         console.log("Selected: " + model.text);
+                        if(model.text === "New Group") dialog.open();
+                        
                     }
                 }
             }

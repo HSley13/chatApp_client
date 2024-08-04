@@ -12,6 +12,7 @@ Rectangle
     property string placeHolder;
     property alias echoMode: textInput.echoMode;
     property bool isMessage: false;
+    property bool isSearching: false;
 
     signal accepted(string value);
 
@@ -39,14 +40,14 @@ Rectangle
         rightPadding: sendMessageButton.width;
         verticalAlignment: TextField.AlignVCenter;
 
-        onTextChanged: contact_list_model.contact_proxy_list.setFilterFixedString(text);
+        onTextChanged: isSearching ? contact_list_model.contact_proxy_list.setFilterFixedString(text) : "";
 
         onAccepted:
         {
             root.accepted(text);
             sendMessage();
         }
-
+        
         background: Rectangle
         {
             radius: root.radius - 2;

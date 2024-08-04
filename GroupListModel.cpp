@@ -7,7 +7,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
       _active_group_chat(Q_NULLPTR),
       _group_proxy_list(new GroupProxyList(this))
 {
-    GroupInfo *avengers = new GroupInfo(1111, "Avengers", {}, "https://helios-i.mashable.com/imagery/articles/033kBmLCuB3k8dcc8kpMftI/hero-image.fill.size_1248x702.v1623370357.jpg", 1, this);
+    GroupInfo *avengers = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
     avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", 3333, "Chris Evans", this));
     _groups.append(avengers);
 
@@ -15,11 +15,12 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     deadpool_wolverine->add_group_message(new GroupMessageInfo("Let's get the People what They came for", 4444, "Ryan Reynolds", this));
     _groups.append(deadpool_wolverine);
 
-    GroupInfo *justiceLeague = new GroupInfo(3333, "Justice League", {}, "https://irs.www.warnerbros.com/keyart-jpeg/movies/media/browser/justice_league_whv_keyart.jpg", 1, this);
+    GroupInfo *justiceLeague = new GroupInfo(3333, "Justice League", {}, "qrc:/QML/ClientApp/icons/justice_league_icon.png", 1, this);
     justiceLeague->add_group_message(new GroupMessageInfo("Superman, tell me, do u bleed?", 5555, "Ben Affleck", this));
     _groups.append(justiceLeague);
 
     connect(this, &GroupListModel::group_send_message, this, &GroupListModel::on_group_send_message);
+    connect(this, &GroupListModel::add_group, this, &GroupListModel::on_add_group);
 
     _group_proxy_list->setSourceModel(this);
 }
@@ -139,4 +140,17 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
 GroupProxyList *GroupListModel::group_proxy_list() const
 {
     return _group_proxy_list;
+}
+
+void GroupListModel::on_add_group(const QString &group_name, const QStringList &members_list)
+{
+    beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
+
+    GroupInfo *new_group = new GroupInfo(9999, group_name, {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
+    new_group->add_group_message(new GroupMessageInfo("New Group", 9999, "Sley HORTES", this));
+    _groups.append(new_group);
+
+    endInsertRows();
+
+    emit groups_changed();
 }

@@ -7,11 +7,6 @@ Rectangle
 {
     id: mainWindow;
     anchors.fill: parent;
-    // width: 400;
-    // height: 700;
-    // visible: true;
-    // title: "Chat App";
-    // color: "transparent";
 
     AudioController
     {id: audio_controller}

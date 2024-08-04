@@ -4,7 +4,7 @@ project(ClientApp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia Core5Compat)
+find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia Core5Compat WebSockets)
 qt_standard_project_setup()
 
 qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp FileWatcher.cpp)
@@ -12,7 +12,8 @@ qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp FileWatcher.cpp)
 target_link_libraries(app PRIVATE 
                                 Qt6::Quick 
                                 Qt6::Multimedia
-                                Qt6::Core5Compat)
+                                Qt6::Core5Compat
+                                Qt6::WebSockets)
 
 qt6_policy(SET QTP0001 NEW)
 
@@ -93,9 +94,25 @@ qt_add_qml_module(app
                     icons/delete_icon.png
                     icons/logout_icon.png
                     icons/upload_icon.png
+                    icons/avengers_icon.png
+                    icons/justice_league_icon.png
                     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1")
 endif()
+
+set(QHOT_EXECUTABLE /usr/local/bin/qhot)
+
+add_custom_target(run-qhot
+    COMMAND ${QHOT_EXECUTABLE} main.qml
+    DEPENDS ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_custom_target(run-qhot-with-profile
+    COMMAND ${QHOT_EXECUTABLE} main.qml --profile-path ${CMAKE_SOURCE_DIR}/qhot-profile.json
+    DEPENDS ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)

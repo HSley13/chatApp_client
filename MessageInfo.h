@@ -20,6 +20,8 @@ public:
     const QString &time();
     const int &sender_ID();
 
+    const QDateTime date_time() const;
+
 private:
     const QString _contents{};
     const QString _time{};

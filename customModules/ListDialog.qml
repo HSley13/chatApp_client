@@ -33,12 +33,23 @@ Dialog
     {
         spacing: 10;
 
+        InputField
+        {
+            id: textInput;
+            image1Source: "";
+            echoMode: TextInput.Normal;
+            placeHolder: "Enter Group Name";
+            Layout.fillWidth: true;
+            height: 30;
+        }
+
         ListView
         {
             id: listView;
             Layout.fillWidth: true;
             height: input ? 200 : 300;
             model: names;
+            clip: true;
 
             delegate: Item
             {
@@ -78,16 +89,6 @@ Dialog
             }
         }
 
-        InputField
-        {
-            id: textInput;
-            image1Source: "";
-            echoMode: TextInput.Normal;
-            placeHolder: "Enter a Value ...";
-            Layout.fillWidth: true;
-            height: 30;
-        }
-
         Rectangle
         {
             width: parent.width;
@@ -99,6 +100,15 @@ Dialog
                 text: "OK";
                 onClicked:
                 {
+                    group_list_model.add_group(textInput.inputField, root.selectedItems);
+
+                    for (var i = 0; i < listView.count; i++)
+                    {
+                        var item = listView.itemAtIndex(i);
+                        if (item.checkBox)
+                            item.checkBox.checked = false;
+                    }
+                    
                     console.log("Selected Items: " + root.selectedItems);
                     root.accept();
                 }

@@ -123,6 +123,14 @@ Rectangle
             height: 40;
             isMessage: true;
 
+            // onAccepted: (value) =>
+            // {
+            //     contact_list_model.send_message(value);
+            //     group_list_model.group_send_message(value);
+
+            //     inputField = "";
+            // }
+
             anchors.verticalCenter: parent.verticalCenter;
             anchors.horizontalCenter: parent.horizontalCenter;
         }

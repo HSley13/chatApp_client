@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
 
     const QUrl url("qrc:/QML/ClientApp/customModules/Main.qml");
     view.setSource(url);
-    view.setWidth(400);
-    view.setHeight(700);
+    view.setWidth(500);
+    view.setHeight(800);
     view.show();
 
     FileWatcher watcher([&view, SOURCE_URL]()

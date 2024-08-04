@@ -15,7 +15,7 @@ Rectangle
         spacing: 10;
         clip: true;
 
-        model: group_list_model;
+        model: group_list_model.group_proxy_list;
 
         delegate: GroupListDelegate
         {

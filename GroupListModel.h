@@ -51,10 +51,13 @@ private:
 
 private slots:
     void on_group_send_message(const QString &group_message);
+    void on_add_group(const QString &group_name, const QStringList &members_list);
 
 signals:
     void groups_changed();
     void active_group_chat_changed();
 
     void group_send_message(const QString &group_message);
+
+    void add_group(const QString &group_name, const QStringList &members_list);
 };

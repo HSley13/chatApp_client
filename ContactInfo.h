@@ -42,6 +42,8 @@ public:
     void add_message(MessageInfo *message);
     ChatListModel *messages() const;
 
+    QDateTime most_recent_message_date() const;
+
 private:
     int _conversation_ID{0};
     QString _name{};

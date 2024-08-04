@@ -113,3 +113,12 @@ void ContactInfo::add_message(MessageInfo *message)
 
     emit messages_changed();
 }
+
+QDateTime ContactInfo::most_recent_message_date() const
+{
+    if (_messages->rowCount() == 0)
+        return QDateTime();
+
+    MessageInfo *last_message = _messages->at(_messages->rowCount() - 1);
+    return last_message->date_time();
+}

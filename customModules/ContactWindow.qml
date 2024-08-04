@@ -35,6 +35,7 @@ Rectangle
             placeHolder: "Search...";
             width: parent.width * 0.6;
             height: 40;
+            isSearching: true;
 
             onAccepted: (value) => 
             {
@@ -57,7 +58,6 @@ Rectangle
             onItemClicked:
             {
                 menuPanel.hidden = !menuPanel.hidden;
-                (dialog.open()) ? dialog.close() : dialog.open();
 
                 console.log("Menu Clicked");
             }
@@ -85,10 +85,11 @@ Rectangle
             {
                 id: dialog;
                 input: true;
-                title: "Hello World";
+                title: "New Group";
                 width: 300;
+                checkable: true;
 
-                names: ["Are you sure you want to delete it?"];
+                names: contact_list_model.contacts_name;
 
                 onDialogAccepted:
                 {
