@@ -83,27 +83,48 @@ Rectangle
 
             ListDialog
             {
-                id: dialog;
-                input: true;
-                title: "New Group";
-                width: 300;
+                id: newConversation_dialog;
+                title: "New Conversation, Select a Person";
                 checkable: true;
-
-                names: contact_list_model.contacts_name;
+                
+                names: contact_list_model.contact_proxy_list;
 
                 onDialogAccepted:
                 {
-                    console.log("Dialog Accepted");
-                    console.log("input: " + dialog.inputField);
+                    contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
+                    stackView.push(chatWindow);
                 }
+            }
 
-                onDialogRejected:
+            ListDialog
+            {
+                id: group_dialog;
+                input: true;
+                title: "New Group";
+                checkable: true;
+                placeHolder: "Enter Group Name";
+
+                names: contact_list_model.contact_proxy_list;
+
+                onDialogAccepted:
                 {
-                    console.log("Dialog Rejected");
-                    console.log("input: " + dialog.inputField);
+                    // FIXME:
+                    console.log("input: " + group_dialog.inputField);
                 }
+            }
 
-                anchors.centerIn: parent;
+            ListDialog
+            {
+                id: addFriend_dialog;
+                input: true;
+                title: "Add New Friend";
+                placeHolder: "Enter Phone number";
+
+                onDialogAccepted:
+                {
+                    // FIXME:
+                    console.log("input: " + addFriend_dialog.inputField);
+                }
             }
         }
     }
@@ -188,7 +209,8 @@ Rectangle
         {
             var options = [
                 {text: "New Conversation", image_source: "qrc:/QML/ClientApp/icons/chat_icon.png"},
-                {text: "New Group", image_source: "qrc:/QML/ClientApp/icons/group_icon.png"}
+                {text: "New Group", image_source: "qrc:/QML/ClientApp/icons/group_icon.png"},
+                {text: "Add Friend", image_source: "qrc:/QML/ClientApp/icons/phone_icon.png"}
             ];
             
             menuPanel.update_options(options);

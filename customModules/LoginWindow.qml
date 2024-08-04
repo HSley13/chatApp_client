@@ -66,7 +66,7 @@ Rectangle
 
         InputField
         {
-            id: loginPhoneNumber;
+            id: loginphone_number;
             image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
 
             echoMode: TextInput.Normal;

@@ -87,11 +87,11 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
         return group_info->group_name();
     case MemberListRole:
         return QVariant::fromValue(group_info->members_list());
-    case GroupUnreadMessageRole:
+    case Groupunread_messageRole:
         return group_info->group_unread_message();
     case GroupMessagesRole:
         return QVariant::fromValue(group_info->group_messages());
-    case GroupImageUrlRole:
+    case Groupimage_urlRole:
         return group_info->group_image_url();
     case GroupObjectRole:
         return QVariant::fromValue(group_info);
@@ -112,7 +112,7 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case GroupNameRole:
         group_info->set_group_name(value.toString());
         break;
-    case GroupUnreadMessageRole:
+    case Groupunread_messageRole:
         group_info->set_group_unread_message(value.toInt());
         break;
     default:
@@ -129,9 +129,9 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
     roles[GroupIDRole] = "Group_ID";
     roles[GroupNameRole] = "group_name";
     roles[MemberListRole] = "members_list";
-    roles[GroupUnreadMessageRole] = "group_unread_message";
+    roles[Groupunread_messageRole] = "group_unread_message";
     roles[GroupMessagesRole] = "group_messages";
-    roles[GroupImageUrlRole] = "group_image_url";
+    roles[Groupimage_urlRole] = "group_image_url";
     roles[GroupObjectRole] = "group_contact_object";
 
     return roles;

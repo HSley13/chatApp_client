@@ -7,11 +7,13 @@ Dialog
     id: root;
 
     property string titles: "";
-    property var names: [];
+    property var names;
     property alias inputField: textInput.inputField;
     property bool input: false;
     property var selectedItems: [];
     property bool checkable: false;
+    property string placeHolder: "";
+    property int index: listView.index;
 
     signal dialogAccepted();
     signal dialogRejected();
@@ -21,6 +23,8 @@ Dialog
 
     title: titles;
     modal: true;
+    width: 300;
+    anchors.centerIn: parent;
 
     background: Rectangle
     {
@@ -38,9 +42,10 @@ Dialog
             id: textInput;
             image1Source: "";
             echoMode: TextInput.Normal;
-            placeHolder: "Enter Group Name";
+            placeHolder: root.placeHolder;
             Layout.fillWidth: true;
             height: 30;
+            visible: root.input;
         }
 
         ListView
@@ -66,7 +71,7 @@ Dialog
                         checked: false;
                         visible: root.checkable;
 
-                        onCheckedChanged: (checked) ? root.selectedItems.push(modelData) : root.selectedItems.splice(root.selectedItems.indexOf(modelData), 1);
+                        onCheckedChanged: (checked) ? root.selectedItems.push(name) : root.selectedItems.splice(root.selectedItems.indexOf(name), 1);
                     }
 
                     Rectangle
@@ -77,7 +82,7 @@ Dialog
 
                         Text
                         {
-                            text: modelData;
+                            text: name;
                             font.pixelSize: 16;
                             color: "black";
                             wrapMode: Text.Wrap;  

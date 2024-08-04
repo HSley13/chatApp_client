@@ -14,8 +14,8 @@ class ChatListModel : public QAbstractListModel
 public:
     enum ChatRoles
     {
-        ConversationIDRole = Qt::UserRole + 1,
-        PhoneNumberRole,
+        conversation_IDRole = Qt::UserRole + 1,
+        phone_numberRole,
         ContentRole,
         TimeRole,
     };

@@ -56,7 +56,9 @@ Rectangle
                     onClicked: 
                     {
                         console.log("Selected: " + model.text);
-                        if(model.text === "New Group") dialog.open();
+                        if(model.text === "New Group") group_dialog.open();
+                        else if(model.text === "Add Friend") addFriend_dialog.open();
+                        else newConversation_dialog.open();
                         
                     }
                 }

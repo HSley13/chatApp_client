@@ -5,7 +5,8 @@ ContactInfo::ContactInfo(QObject *parent)
 
 ContactInfo::ContactInfo(const int &conversation_ID, const QString &name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent)
     : QObject(parent),
-      _conversation_ID(conversation_ID), _name(name),
+      _conversation_ID(conversation_ID),
+      _name(name),
       _phone_number(phone_number),
       _status(status),
       _image_url(image_url),
@@ -47,7 +48,7 @@ const bool &ContactInfo::status() const
     return _status;
 }
 
-void ContactInfo::set_status(const bool &new_status)
+void ContactInfo::set_Status(const bool &new_status)
 {
     if (_status == new_status)
         return;

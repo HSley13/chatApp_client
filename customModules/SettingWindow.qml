@@ -95,7 +95,7 @@ Rectangle
             RoundedImage
             {
                 id: profileImage;
-                imageSource: "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png";
+                imageSource: contact_list_model.main_user.image_url;
                 width: 100;
                 height: 100;
             }
@@ -174,7 +174,9 @@ Rectangle
 
                         onClicked:
                         {
-                            console.log("Delete Picture Button Clicked");
+                            contact_list_model.main_user.image_url = "qrc:/QML/ClientApp/icons/name_icon.png";
+
+                            // FIXME: Notify the server;
                         }
                     }
                 }

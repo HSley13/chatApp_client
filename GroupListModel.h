@@ -20,8 +20,8 @@ public:
         GroupIDRole = Qt::UserRole + 1,
         MemberListRole,
         GroupNameRole,
-        GroupUnreadMessageRole,
-        GroupImageUrlRole,
+        Groupunread_messageRole,
+        Groupimage_urlRole,
         GroupMessagesRole,
         GroupObjectRole
     };

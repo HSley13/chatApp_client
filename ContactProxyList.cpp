@@ -22,11 +22,6 @@ ContactInfo *ContactProxyList::get(const int &index)
     return sourceModel()->data(sourceIndex, ContactListModel::ContactRoles::ContactObjectRole).value<ContactInfo *>();
 }
 
-ContactInfo *ContactProxyList::get_by_ID(const int &id)
-{
-    return _contacts_by_ID.value(id, nullptr);
-}
-
 // bool ContactProxyList::lessThan(const QModelIndex &left, const QModelIndex &right) const
 // {
 //     QModelIndex source_left = mapToSource(left);

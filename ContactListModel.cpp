@@ -2,7 +2,7 @@
 
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
-      _main_user(new ContactInfo(0, "Sley", 1234, true, "qrc:/QML/ClientApp/icons/name_icon.png", 0, this)),
+      _main_user(new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this)),
       _active_chat(Q_NULLPTR),
       _contact_proxy_list(new ContactProxyList(this))
 {
@@ -10,31 +10,21 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     sleyHortes->add_message(new MessageInfo("I created this app", 2222, this));
     _contacts.append(sleyHortes);
 
-    _contacts_name.append(sleyHortes->name());
-
     ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
     bruceWayne->add_message(new MessageInfo("I killed the Joker", 3333, this));
     _contacts.append(bruceWayne);
-
-    _contacts_name.append(bruceWayne->name());
 
     ContactInfo *tonyStark = new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this);
     tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", 4444, this));
     _contacts.append(tonyStark);
 
-    _contacts_name.append(tonyStark->name());
-
     ContactInfo *clarkKent = new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this);
     clarkKent->add_message(new MessageInfo("I killed Doomsday", 5555, this));
     _contacts.append(clarkKent);
 
-    _contacts_name.append(clarkKent->name());
-
     ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
     steveRogers->add_message(new MessageInfo("I had the dance with Peggy", 6666, this));
     _contacts.append(steveRogers);
-
-    _contacts_name.append(steveRogers->name());
 
     connect(this, &ContactListModel::send_message, this, &ContactListModel::on_send_message);
 
@@ -97,19 +87,19 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
 
     switch (ContactRoles(role))
     {
-    case ConversationIDRole:
+    case conversation_IDRole:
         return contact_info->conversation_ID();
     case NameRole:
         return contact_info->name();
-    case PhoneNumberRole:
+    case phone_numberRole:
         return contact_info->phone_number();
     case StatusRole:
         return contact_info->status();
-    case UnreadMessageRole:
+    case unread_messageRole:
         return contact_info->unread_message();
     case MessagesRole:
         return QVariant::fromValue(contact_info->messages());
-    case ImageUrlRole:
+    case image_urlRole:
         return contact_info->image_url();
     case ContactObjectRole:
         return QVariant::fromValue(contact_info);
@@ -122,13 +112,13 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
 {
     QHash<int, QByteArray> roles{};
 
-    roles[ConversationIDRole] = "conversation_ID";
+    roles[conversation_IDRole] = "conversation_ID";
     roles[NameRole] = "name";
-    roles[PhoneNumberRole] = "phone_number";
+    roles[phone_numberRole] = "phone_number";
     roles[StatusRole] = "status";
-    roles[UnreadMessageRole] = "unread_message";
+    roles[unread_messageRole] = "unread_message";
     roles[MessagesRole] = "messages";
-    roles[ImageUrlRole] = "image_url";
+    roles[image_urlRole] = "image_url";
     roles[ContactObjectRole] = "contact_object";
 
     return roles;
@@ -146,11 +136,11 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     case NameRole:
         contact_info->set_name(value.toString());
         break;
-    case UnreadMessageRole:
+    case unread_messageRole:
         contact_info->set_unread_message(value.toInt());
         break;
     case StatusRole:
-        contact_info->set_status(value.toBool());
+        contact_info->set_Status(value.toBool());
         break;
     default:
         return false;
@@ -162,9 +152,4 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
 ContactProxyList *ContactListModel::contact_proxy_list() const
 {
     return _contact_proxy_list;
-}
-
-const QStringList &ContactListModel::contacts_name() const
-{
-    return _contacts_name;
 }
