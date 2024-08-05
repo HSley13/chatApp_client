@@ -79,7 +79,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list.get(index).messages.count - 1).contents;
+                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list.get(index).messages.count - 1).text;
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;

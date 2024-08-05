@@ -27,31 +27,37 @@ qt_add_qml_module(app
                     customModules/Main.qml
                     customModules/LoginWindow.qml 
                     customModules/SignUpWindow.qml 
-                    customModules/ChatWindow.qml
-                    customModules/ChatList.qml
-                    customModules/ChatListDelegate.qml
+
                     customModules/ContactWindow.qml
                     customModules/ContactList.qml
                     customModules/ContactListDelegate.qml
+
+                    customModules/ChatWindow.qml
+                    customModules/ChatList.qml
+                    customModules/TextMessageDelegate.qml
+                    customModules/AudioMessageDelegate.qml
+                    customModules/FileMessageDelegate.qml
+
+                    customModules/GroupList.qml
+                    customModules/GroupListDelegate.qml
+                    
+                    customModules/GroupChatWindow.qml
+                    customModules/GroupChatList.qml
+                    customModules/GroupChatListDelegate.qml
+
                     customModules/InputField.qml
                     customModules/IconText.qml
                     customModules/MenuPanel.qml
                     customModules/ListDialog.qml
                     customModules/SettingWindow.qml
                     customModules/RoundedImage.qml
-                    customModules/GroupList.qml
                     customModules/RoundedButton.qml
-                    customModules/GroupChatWindow.qml
-                    customModules/GroupListDelegate.qml
-                    customModules/GroupChatList.qml
-                    customModules/GroupChatListDelegate.qml
-                    customModules/AudioPlayer.qml
-                    customModules/FileViewer.qml
+
 
                     SOURCES
                     ChatProtocol.cpp ChatProtocol.h
                     ClientManager.cpp ClientManager.h
-                    AudioController.cpp AudioController.h
+                    MediaController.cpp MediaController.h
 
                     MessageInfo.cpp MessageInfo.h
                     ChatListModel.cpp ChatListModel.h
@@ -66,6 +72,8 @@ qt_add_qml_module(app
                     GroupProxyList.cpp GroupProxyList.h
 
                     RESOURCES
+                    icons/pause_icon.png
+                    icons/play_icon.png
                     icons/chat_icon.png
                     icons/file_icon.png
                     icons/group_icon.png 
@@ -103,18 +111,14 @@ qt_add_qml_module(app
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1")
+
+    include_directories(${EMSCRIPTEN}/system/include)
+    set_target_properties(app PROPERTIES LINK_FLAGS "-lidbfs.js")
 endif()
 
-set(QHOT_EXECUTABLE /usr/local/bin/qhot)
-
-add_custom_target(run-qhot
-    COMMAND ${QHOT_EXECUTABLE} main.qml
-    DEPENDS ${PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
-
-add_custom_target(run-qhot-with-profile
-    COMMAND ${QHOT_EXECUTABLE} main.qml --profile-path ${CMAKE_SOURCE_DIR}/qhot-profile.json
-    DEPENDS ${PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
+if (APPLE)
+    set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
+    set_target_properties(app PROPERTIES
+                            MACOSX_BUNDLE_INFO_PLIST ${MACOSX_BUNDLE_INFO_PLIST}
+                        )
+endif()

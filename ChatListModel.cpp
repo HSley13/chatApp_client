@@ -18,10 +18,14 @@ QVariant ChatListModel::data(const QModelIndex &index, int role) const
 
     switch (ChatRoles(role))
     {
-    case phone_numberRole:
+    case PhoneNumberRole:
         return message->sender_ID();
-    case ContentRole:
-        return message->contents();
+    case TextRole:
+        return message->text();
+    case AudioSourceRole:
+        return message->audio_source();
+    case FileSourceRole:
+        return message->file_source();
     case TimeRole:
         return message->time();
     default:
@@ -33,9 +37,11 @@ QHash<int, QByteArray> ChatListModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
 
-    roles[conversation_IDRole] = "conversation_ID";
-    roles[phone_numberRole] = "phone_number";
-    roles[ContentRole] = "contents";
+    roles[ConversationIDRole] = "conversation_ID";
+    roles[PhoneNumberRole] = "phone_number";
+    roles[TextRole] = "text";
+    roles[AudioSourceRole] = "audio_source";
+    roles[FileSourceRole] = "file_source";
     roles[TimeRole] = "time";
 
     return roles;

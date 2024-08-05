@@ -77,6 +77,7 @@ Rectangle
     Rectangle 
     {
         width: parent.width;
+        color: "gray";
 
         ChatList { id: chatList; }
 
@@ -140,7 +141,7 @@ Rectangle
 
                 if(root.isRecording)
                 {
-                    audio_controller.record();
+                    media_controller.start_recording();
 
                     voiceCounter.anchors.left = sendVoice.right;
 
@@ -148,7 +149,7 @@ Rectangle
                 }
                 else
                 {
-                    audio_controller.stop();
+                    media_controller.stop_recording();
 
                     sendVoice.anchors.rightMargin = 5;
                 }
@@ -166,7 +167,7 @@ Rectangle
         {
             id: voiceCounter;
 
-            text: audio_controller.time_display;
+            text: media_controller.time_display;
             color: "black";
             visible: root.isRecording;
 

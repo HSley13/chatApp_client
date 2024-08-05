@@ -132,7 +132,7 @@ Rectangle
 
                 if(root.isRecording)
                 {
-                    audio_controller.record();
+                    media_controller.record();
 
                     voiceCounter.anchors.left = sendVoice.right;
 
@@ -140,7 +140,7 @@ Rectangle
                 }
                 else
                 {
-                    audio_controller.stop();
+                    media_controller.stop();
 
                     sendVoice.anchors.rightMargin = 5;
                 }
@@ -158,7 +158,7 @@ Rectangle
         {
             id: voiceCounter;
 
-            text: audio_controller.time_display;
+            text: media_controller.time_display;
             color: "black";
             visible: root.isRecording;
 

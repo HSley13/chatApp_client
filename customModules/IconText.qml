@@ -14,9 +14,6 @@ Rectangle
     radius: width / 2;
     color: mouseArea.pressed ? "gray" : "transparent";
     
-    anchors.top: parent.top;
-    anchors.topMargin: 5;
-
     Image
     {
         id: profile;

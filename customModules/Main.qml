@@ -8,8 +8,8 @@ Rectangle
     id: mainWindow;
     anchors.fill: parent;
 
-    AudioController
-    {id: audio_controller}
+    MediaController
+    {id: media_controller}
 
     ContactListModel
     {id: contact_list_model}
