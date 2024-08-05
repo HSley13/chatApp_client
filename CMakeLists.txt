@@ -45,6 +45,8 @@ qt_add_qml_module(app
                     customModules/GroupListDelegate.qml
                     customModules/GroupChatList.qml
                     customModules/GroupChatListDelegate.qml
+                    customModules/AudioPlayer.qml
+                    customModules/FileViewer.qml
 
                     SOURCES
                     ChatProtocol.cpp ChatProtocol.h

@@ -14,7 +14,7 @@ Rectangle
     property bool isMessage: false;
     property bool isSearching: false;
 
-    signal accepted(string value);
+    signal accepted(string value);  
 
     radius: 20;
     border.color: textInput.focus ? "#a10e7a" : "black";
