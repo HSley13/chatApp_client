@@ -21,7 +21,7 @@ Rectangle
         delegate: Item
         {
             width: chatListView.width;
-            height: (model.audio_source !== "" ? 100 : (model.text !== "" ? 50 : 60));
+            height: (model.audio_source !== "" ? 75 : (model.text !== "" ? 60 : 60));
 
             Loader
             {
@@ -32,8 +32,8 @@ Rectangle
                     if (contentLoader.item)
                     {
                         contentLoader.item.model = model;
-                        contentLoader.item.phoneNumber = phone_number;
-                        contentLoader.item.fileUrl = file_source;
+                        contentLoader.item.phone_number = model.phone_number;
+                        contentLoader.item.file_url = model.file_source;
                     }
                 }
             }

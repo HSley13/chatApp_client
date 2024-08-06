@@ -1,4 +1,5 @@
 #include "ContactListModel.h"
+#include "MediaController.h"
 
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
@@ -27,8 +28,6 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
     steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", 6666, this));
     _contacts.append(steveRogers);
-
-    connect(this, &ContactListModel::send_message, this, &ContactListModel::on_send_message);
 
     _contact_proxy_list->setSourceModel(this);
 }
@@ -66,12 +65,29 @@ ContactInfo *ContactListModel::main_user() const
     return _main_user;
 }
 
-void ContactListModel::on_send_message(const QString &message)
+void ContactListModel::message_sent(const QString &message)
 {
     if (_active_chat == Q_NULLPTR)
         return;
 
-    _active_chat->add_message(new MessageInfo(message, "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", _main_user->phone_number(), _active_chat));
+    _active_chat->add_message(new MessageInfo(message, "", "", _main_user->phone_number(), _active_chat));
+}
+
+void ContactListModel::audio_sent()
+{
+    if (_active_chat == Q_NULLPTR)
+        return;
+
+    _active_chat->add_message(new MessageInfo("", MediaController::_recorder->outputLocation().toLocalFile(), "", _main_user->phone_number(), _active_chat));
+}
+
+void ContactListModel::file_sent()
+{
+    if (_active_chat == Q_NULLPTR)
+        return;
+
+    qDebug() << "file sent: " << MediaController::_file_name;
+    _active_chat->add_message(new MessageInfo("", "", MediaController::_file_name, _main_user->phone_number(), _active_chat));
 }
 
 int ContactListModel::rowCount(const QModelIndex &parent) const

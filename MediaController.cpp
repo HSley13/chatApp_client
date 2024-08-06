@@ -3,6 +3,9 @@
 #include <QDebug>
 #include <QDateTime>
 
+QMediaRecorder *MediaController::_recorder = nullptr;
+QString MediaController::_file_name;
+
 MediaController::MediaController(QObject *parent)
     : QObject(parent) {}
 
@@ -96,4 +99,33 @@ void MediaController::on_duration_changed(qint64 duration)
                                .arg((duration % 60000) / 1000, 2, 10, QChar('0'));
 
     set_time_display(duration_str);
+}
+
+void MediaController::view_file(const QString &filePath)
+{
+    QUrl fileUrl = QUrl::fromLocalFile(filePath);
+    if (fileUrl.isValid())
+        QDesktopServices::openUrl(fileUrl);
+}
+
+// void MediaController::send_file()
+// {
+//     std::function<void(const QString &, const QByteArray &)> file_content_ready = [=](const QString &file_name, const QByteArray &file_data)
+//     {
+//         qDebug() << "file system open";
+//         _file_name = QFileInfo(file_name).absoluteFilePath();
+//     };
+
+//     QFileDialog::getOpenFileContent("All Files (*)", file_content_ready);
+// }
+
+void MediaController::send_file()
+{
+    QString file_name = QFileDialog::getOpenFileName(nullptr, "Open File", "", "All Files (*)");
+
+    if (!file_name.isEmpty())
+    {
+        _file_name = QFileInfo(file_name).absoluteFilePath();
+        qDebug() << "Selected file:" << _file_name;
+    }
 }

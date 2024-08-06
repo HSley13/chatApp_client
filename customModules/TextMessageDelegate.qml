@@ -1,5 +1,5 @@
-import QtQuick;
-import QtQuick.Controls;
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Item
 {
@@ -7,6 +7,7 @@ Item
     width: bubble.width;
 
     property var model;
+    property int phone_number;
     readonly property bool sender: phone_number === contact_list_model.main_user.phone_number;
 
     Rectangle
@@ -51,7 +52,7 @@ Item
 
             anchors.top: bubble.bottom;
             anchors.topMargin: 5;
-            anchors.right: sender ? parent.right :undefined;
+            anchors.right: sender ? parent.right : undefined;
             horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
 
             color: "black";

@@ -5,7 +5,7 @@
 #include <QMediaRecorder>
 #include <QAudioInput>
 #include <QMediaCaptureSession>
-
+#include <QtWidgets>
 class MediaController : public QObject
 {
     Q_OBJECT
@@ -25,16 +25,15 @@ public:
     Q_INVOKABLE void start_recording();
     Q_INVOKABLE void stop_recording();
 
+    Q_INVOKABLE void send_file();
+
+    static QMediaRecorder *_recorder;
+    static QString _file_name;
 public slots:
     void set_time_display(QString new_time);
     void set_audio_source(QString new_source);
 
-    void open_file(const QString &filePath)
-    {
-        QUrl fileUrl = QUrl::fromLocalFile(filePath);
-        if (fileUrl.isValid())
-            QDesktopServices::openUrl(fileUrl);
-    }
+    void view_file(const QString &filePath);
 
 private slots:
     void on_duration_changed(qint64 duration);
@@ -43,7 +42,6 @@ private:
     QString _time_display{"00:00"};
     QString _audio_source{""};
 
-    QMediaRecorder *_recorder{nullptr};
     QMediaCaptureSession *_session{nullptr};
     QAudioInput *_audio_input{nullptr};
 

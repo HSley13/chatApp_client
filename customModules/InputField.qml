@@ -100,7 +100,7 @@ Rectangle
             return;
 
         group_list_model.group_send_message(textInput.text);
-        contact_list_model.send_message(textInput.text);
+        contact_list_model.message_sent(textInput.text);
 
         textInput.text = "";
     }

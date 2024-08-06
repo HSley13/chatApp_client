@@ -44,6 +44,10 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
+    Q_INVOKABLE void message_sent(const QString &message);
+    Q_INVOKABLE void audio_sent();
+    Q_INVOKABLE void file_sent();
+
 private:
     QList<ContactInfo *> _contacts;
     ContactInfo *_active_chat{};
@@ -51,12 +55,7 @@ private:
 
     ContactProxyList *_contact_proxy_list{};
 
-public slots:
-    void on_send_message(const QString &message);
-
 signals:
     void contacts_changed();
     void active_chat_changed();
-
-    void send_message(const QString &message);
 };

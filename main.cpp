@@ -2,12 +2,13 @@
 #include <QQuickView>
 #include <QUrl>
 #include <QQmlEngine>
+#include <QApplication>
 
 #include "FileWatcher.h"
 
 int main(int argc, char *argv[])
 {
-  QGuiApplication app(argc, argv);
+  QApplication app(argc, argv);
 
   QQuickView view;
 

@@ -6,19 +6,19 @@ import QtMultimedia;
 Item
 {
     property var model;
-    property string phoneNumber;
+    property int phone_number;
 
     id: root;
     height: audio_bubble.height + 24;
     width: audio_bubble.width;
 
-    readonly property bool sender: phoneNumber === contact_list_model.main_user.phone_number;
+    readonly property bool sender: phone_number === contact_list_model.main_user.phone_number;
 
     Rectangle
     {
         id: audio_bubble;
-        width: 200;
-        height: 70;
+        width: controlsRow.width + 20;
+        height: 55;
         radius: 10;
 
         x: sender ? chatListView.width - width : 0;
@@ -29,6 +29,17 @@ Item
             source: model.audio_source;
             autoPlay: false;
             audioOutput: audioOutput;
+
+            onPositionChanged:
+            {
+                if (position >= duration)
+                {
+                    progressSlider.value = 0;
+                    mediaPlayer.stop();
+                }
+                else
+                    progressSlider.value = position;
+            }
         }
 
         AudioOutput
@@ -49,7 +60,6 @@ Item
             id: controlsColumn;
             anchors.fill: parent;
             anchors.margins: 5;
-            spacing: 5;
 
             RowLayout
             {
@@ -60,8 +70,7 @@ Item
                 IconText
                 {
                     id: playButton;
-                    imageSource1: "qrc:/QML/ClientApp/icons/play_icon.png";
-                    imageSource2: "qrc:/QML/ClientApp/icons/pause_icon.png";
+                    imageSource1: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? "qrc:/QML/ClientApp/icons/pause_icon.png" : "qrc:/QML/ClientApp/icons/play_icon.png";
                     height: 30;
                     width: 30;
 
@@ -71,7 +80,7 @@ Item
                 Slider
                 {
                     id: progressSlider;
-                    width: controlsRow.width - playButton.width;
+                    width: controlsRow.width - playButton.width - 20;
                     from: 0;
                     to: mediaPlayer.duration;
                     value: mediaPlayer.position;
@@ -90,7 +99,7 @@ Item
                 }
 
                 color: "black";
-                font.pixelSize: 12;
+                font.pixelSize: 10;
                 width: parent.width;
                 horizontalAlignment: Text.AlignHCenter;
             }
@@ -115,7 +124,6 @@ Item
         {
             target: mediaPlayer;
 
-            onPositionChanged: progressSlider.value = mediaPlayer.position;
             onDurationChanged: progressSlider.to = mediaPlayer.duration;
         }
     }

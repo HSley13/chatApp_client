@@ -4,13 +4,14 @@ project(ClientApp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia Core5Compat WebSockets)
+find_package(Qt6 REQUIRED COMPONENTS Quick Widgets Multimedia Core5Compat WebSockets)
 qt_standard_project_setup()
 
 qt_add_executable(app WIN32 MACOSX_BUNDLE main.cpp FileWatcher.cpp)
 
 target_link_libraries(app PRIVATE 
-                                Qt6::Quick 
+                                Qt6::Quick
+                                Qt6::Widgets 
                                 Qt6::Multimedia
                                 Qt6::Core5Compat
                                 Qt6::WebSockets)

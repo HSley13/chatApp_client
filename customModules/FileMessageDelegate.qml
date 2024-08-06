@@ -5,20 +5,20 @@ import QtQuick.Layouts;
 Item
 {
     property var model;
-    property string phoneNumber;
-    property string fileUrl;
+    property int phone_number;
+    property string file_url;
 
     id: root;
-    height: bubble.height + 24;
-    width: bubble.width;
+    height: file_bubble.height + 10;
+    width: file_bubble.width;
 
-    readonly property bool sender: phoneNumber === contact_list_model.main_user.phone_number;
+    readonly property bool sender: phone_number === contact_list_model.main_user.phone_number;
 
     Rectangle
     {
-        id: bubble;
-        width: Math.min(image.width + 24, chatListView.width * 0.8);
-        height: image.height + 24;
+        id: file_bubble;
+        width: Math.min(image.width, chatListView.width * 0.8);
+        height: image.height;
         radius: 10;
 
         x: sender ? chatListView.width - width : 0;
@@ -44,7 +44,7 @@ Item
             {
                 id: imageMouseArea;
                 anchors.fill: parent;
-                onClicked: media_controller.open_file(fileUrl);
+                onClicked: media_controller.view_file(file_url);
             }
         }
 
@@ -53,27 +53,29 @@ Item
             id: timeText;
             text: model.time;
 
-            anchors.bottom: parent.bottom;
-            anchors.bottomMargin: 5;
+            anchors.top: file_bubble.bottom;
+            anchors.topMargin: 5;
             anchors.right: sender ? parent.right : undefined;
             horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
 
             color: "black";
             font.pixelSize: 10;
-            width: parent.width;
+
+            width: file_bubble.width;
         }
 
-        Text
-        {
-            id: fileSizeText;
-            text: `${(model.file_size / 1024 / 1024).toFixed(2)} MB`;
+        // FIXME: add the file size later 
+        // Text
+        // {
+        //     id: fileSizeText;
+        //     text: `${(model.file_size / 1024 / 1024).toFixed(2)} MB`;
 
-            anchors.right: parent.right;
-            anchors.rightMargin: 10;
-            anchors.verticalCenter: parent.verticalCenter;
+        //     anchors.right: parent.right;
+        //     anchors.rightMargin: 10;
+        //     anchors.verticalCenter: parent.verticalCenter;
 
-            color: "black";
-            font.pixelSize: 12;
-        }
+        //     color: "black";
+        //     font.pixelSize: 12;
+        // }
     }
 }

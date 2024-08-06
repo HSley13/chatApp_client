@@ -1,5 +1,6 @@
 import QtQuick;
 import QtQuick.Controls;
+import Qt.labs.platform
 
 Rectangle
 {
@@ -105,11 +106,11 @@ Rectangle
             height: parent.width * 0.1;
             width: height * 0.8;
 
-            onItemClicked:
+            onItemClicked: 
             {
-                console.log("Plus Icon Clicked");
+                media_controller.send_file();
+                contact_list_model.file_sent();
             }
-
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;
             anchors.leftMargin: 5;
@@ -151,11 +152,10 @@ Rectangle
                 {
                     media_controller.stop_recording();
 
+                    contact_list_model.audio_sent();
+
                     sendVoice.anchors.rightMargin = 5;
                 }
-
-                // FIXME: Handle this click properly
-                console.log("Send Icon Clicked");
             }
 
             anchors.verticalCenter: parent.verticalCenter;
