@@ -5,14 +5,11 @@ import QtMultimedia;
 
 Item
 {
+    height: file_bubble.height + 10;
+    width: file_bubble.width;
+
     property var model;
-    property int phone_number;
-
-    id: root;
-    height: audio_bubble.height + 24;
-    width: audio_bubble.width;
-
-    readonly property bool sender: phone_number === contact_list_model.main_user.phone_number;
+    readonly property bool sender: model.phone_number === contact_list_model.main_user.phone_number;
 
     Rectangle
     {

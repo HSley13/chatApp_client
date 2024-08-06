@@ -1,5 +1,6 @@
 #include "GroupListModel.h"
-#include "ContactListModel.h"
+#include "MediaController.h"
+#include "GroupMessageInfo.h"
 
 GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
@@ -8,19 +9,16 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
       _group_proxy_list(new GroupProxyList(this))
 {
     GroupInfo *avengers = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
-    avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", 3333, "Chris Evans", this));
+    avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", "", "", 3333, "Chris Evans", this));
     _groups.append(avengers);
 
     GroupInfo *deadpool_wolverine = new GroupInfo(2222, "DeadPool & Wolverine", {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
-    deadpool_wolverine->add_group_message(new GroupMessageInfo("Let's get the People what They came for", 4444, "Ryan Reynolds", this));
+    deadpool_wolverine->add_group_message(new GroupMessageInfo("Let's get the People what They came for", "", "", 4444, "Ryan Reynolds", this));
     _groups.append(deadpool_wolverine);
 
     GroupInfo *justiceLeague = new GroupInfo(3333, "Justice League", {}, "qrc:/QML/ClientApp/icons/justice_league_icon.png", 1, this);
-    justiceLeague->add_group_message(new GroupMessageInfo("Superman, tell me, do u bleed?", 5555, "Ben Affleck", this));
+    justiceLeague->add_group_message(new GroupMessageInfo("Superman, tell me, do u bleed?", "", "", 5555, "Ben Affleck", this));
     _groups.append(justiceLeague);
-
-    connect(this, &GroupListModel::group_send_message, this, &GroupListModel::on_group_send_message);
-    connect(this, &GroupListModel::add_group, this, &GroupListModel::on_add_group);
 
     _group_proxy_list->setSourceModel(this);
 }
@@ -58,12 +56,29 @@ ContactInfo *GroupListModel::main_user() const
     return _main_user;
 }
 
-void GroupListModel::on_group_send_message(const QString &group_message)
+void GroupListModel::group_message_sent(const QString &group_message)
 {
     if (_active_group_chat == Q_NULLPTR)
         return;
 
-    _active_group_chat->add_group_message(new GroupMessageInfo(group_message, _main_user->phone_number(), _main_user->name(), _active_group_chat));
+    _active_group_chat->add_group_message(new GroupMessageInfo(group_message, "", "", _main_user->phone_number(), "", _active_group_chat));
+}
+
+void GroupListModel::group_audio_sent()
+{
+    if (_active_group_chat == Q_NULLPTR)
+        return;
+
+    _active_group_chat->add_group_message(new GroupMessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), "", _active_group_chat));
+}
+
+void GroupListModel::group_file_sent()
+{
+    if (_active_group_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
+        return;
+
+    _active_group_chat->add_group_message(new GroupMessageInfo("", "", MediaController::_file_path, _main_user->phone_number(), "", _active_group_chat));
+    MediaController::_file_path = QString();
 }
 
 int GroupListModel::rowCount(const QModelIndex &parent) const
@@ -87,11 +102,11 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
         return group_info->group_name();
     case MemberListRole:
         return QVariant::fromValue(group_info->members_list());
-    case Groupunread_messageRole:
+    case GroupUnreadMessageRole:
         return group_info->group_unread_message();
     case GroupMessagesRole:
         return QVariant::fromValue(group_info->group_messages());
-    case Groupimage_urlRole:
+    case GroupImageUrlRole:
         return group_info->group_image_url();
     case GroupObjectRole:
         return QVariant::fromValue(group_info);
@@ -112,7 +127,7 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case GroupNameRole:
         group_info->set_group_name(value.toString());
         break;
-    case Groupunread_messageRole:
+    case GroupUnreadMessageRole:
         group_info->set_group_unread_message(value.toInt());
         break;
     default:
@@ -129,9 +144,9 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
     roles[GroupIDRole] = "Group_ID";
     roles[GroupNameRole] = "group_name";
     roles[MemberListRole] = "members_list";
-    roles[Groupunread_messageRole] = "group_unread_message";
+    roles[GroupUnreadMessageRole] = "group_unread_message";
     roles[GroupMessagesRole] = "group_messages";
-    roles[Groupimage_urlRole] = "group_image_url";
+    roles[GroupImageUrlRole] = "group_image_url";
     roles[GroupObjectRole] = "group_contact_object";
 
     return roles;
@@ -142,12 +157,12 @@ GroupProxyList *GroupListModel::group_proxy_list() const
     return _group_proxy_list;
 }
 
-void GroupListModel::on_add_group(const QString &group_name, const QStringList &members_list)
+void GroupListModel::add_group(const QString &group_name, const QStringList &members_list)
 {
     beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
 
     GroupInfo *new_group = new GroupInfo(9999, group_name, {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
-    new_group->add_group_message(new GroupMessageInfo("New Group", 9999, "Sley HORTES", this));
+    new_group->add_group_message(new GroupMessageInfo("New Group", "", "", 9999, "", this));
     _groups.append(new_group);
 
     endInsertRows();

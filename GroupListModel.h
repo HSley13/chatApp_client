@@ -20,8 +20,8 @@ public:
         GroupIDRole = Qt::UserRole + 1,
         MemberListRole,
         GroupNameRole,
-        Groupunread_messageRole,
-        Groupimage_urlRole,
+        GroupUnreadMessageRole,
+        GroupImageUrlRole,
         GroupMessagesRole,
         GroupObjectRole
     };
@@ -42,22 +42,20 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
+    Q_INVOKABLE void group_message_sent(const QString &group_message);
+    Q_INVOKABLE void add_group(const QString &group_name, const QStringList &members_list);
+    Q_INVOKABLE void group_audio_sent();
+    Q_INVOKABLE void group_file_sent();
+
 private:
-    QList<GroupInfo *> _groups;
+    QList<GroupInfo *>
+        _groups;
     GroupInfo *_active_group_chat{};
     ContactInfo *_main_user{};
 
     GroupProxyList *_group_proxy_list{};
 
-private slots:
-    void on_group_send_message(const QString &group_message);
-    void on_add_group(const QString &group_name, const QStringList &members_list);
-
 signals:
     void groups_changed();
     void active_group_chat_changed();
-
-    void group_send_message(const QString &group_message);
-
-    void add_group(const QString &group_name, const QStringList &members_list);
 };

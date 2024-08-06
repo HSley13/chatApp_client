@@ -1,0 +1,92 @@
+import QtQuick;
+import QtQuick.Controls;
+import QtQuick.Layouts;
+
+Item
+{
+    height: file_bubble.height + 10;
+    width: file_bubble.width;
+
+    property var model;
+    readonly property bool sender: model.phone_number === contact_list_model.main_user.phone_number;
+
+    Rectangle
+    {
+        id: file_bubble;
+        width: Math.min(image.width, groupChatListView.width * 0.8);
+        height: image.height;
+        radius: 10;
+
+        x: sender ? groupChatListView.width - width : 0;
+
+        color: "white";
+
+        gradient: Gradient
+        {
+            orientation: Gradient.Horizontal;
+            GradientStop { position: 0.0; color: sender ? "#ed7bb4" : "white"; }
+            GradientStop { position: 1.0; color: sender ? "gray" : "gray"; }
+        }
+
+        Image
+        {
+            id: image;
+            source: "qrc:/QML/ClientApp/icons/file_icon.png";
+            anchors.centerIn: parent;
+            width: 50; 
+            height: 50;
+
+            MouseArea
+            {
+                id: imageMouseArea;
+                anchors.fill: parent;
+                onClicked: media_controller.view_file(model.file_url);
+            }
+        }
+
+        Text
+        {
+            id: timeText;
+            text: model.time;
+
+            anchors.top: file_bubble.bottom;
+            anchors.topMargin: 5;
+            anchors.right: sender ? parent.right : undefined;
+            horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
+
+            color: "black";
+            font.pixelSize: 10;
+
+            width: file_bubble.width;
+        }
+
+        // FIXME: add the file size later 
+        // Text
+        // {
+        //     id: fileSizeText;
+        //     text: `${(model.file_size / 1024 / 1024).toFixed(2)} MB`;
+
+        //     anchors.right: parent.right;
+        //     anchors.rightMargin: 10;
+        //     anchors.verticalCenter: parent.verticalCenter;
+
+        //     color: "black";
+        //     font.pixelSize: 12;
+        // }
+    }
+
+    Text
+    {
+        id: senderNameText;
+        text: model.sender_name;
+        visible: model.sender_name !== "";
+
+        anchors.left: file_bubble.left;
+        anchors.leftMargin: 12;
+        anchors.top: file_bubble.top;
+
+        color: "#DE02B5";
+        font.pixelSize: 10;
+        font.bold: true;
+    }
+}

@@ -97,8 +97,8 @@ Rectangle
 
             onItemClicked:
             {
-                // FIXME: Handle this click properly
-                console.log("Plus Icon Clicked");
+                media_controller.send_file();
+                group_list_model.group_file_sent();
             }
 
             anchors.left: parent.left;
@@ -132,7 +132,7 @@ Rectangle
 
                 if(root.isRecording)
                 {
-                    media_controller.record();
+                    media_controller.start_recording();
 
                     voiceCounter.anchors.left = sendVoice.right;
 
@@ -140,13 +140,10 @@ Rectangle
                 }
                 else
                 {
-                    media_controller.stop();
+                    media_controller.stop_recording();
 
                     sendVoice.anchors.rightMargin = 5;
                 }
-
-                // FIXME: Handle this click properly
-                console.log("Send record Icon Clicked");
             }
 
             anchors.verticalCenter: parent.verticalCenter;

@@ -20,8 +20,12 @@ QVariant GroupChatListModel::data(const QModelIndex &index, int role) const
     {
     case SenderIDRole:
         return group_message->sender_ID();
-    case ContentRole:
-        return group_message->contents();
+    case TextRole:
+        return group_message->text();
+    case AudioSourceRole:
+        return group_message->audio_source();
+    case FileSourceRole:
+        return group_message->file_source();
     case TimeRole:
         return group_message->time();
     case SenderNameRole:
@@ -37,7 +41,9 @@ QHash<int, QByteArray> GroupChatListModel::roleNames() const
 
     roles[GroupIDRole] = "group_ID";
     roles[SenderIDRole] = "sender_ID";
-    roles[ContentRole] = "contents";
+    roles[TextRole] = "text";
+    roles[AudioSourceRole] = "audio_source";
+    roles[FileSourceRole] = "file_source";
     roles[TimeRole] = "time";
     roles[SenderNameRole] = "sender_name";
 

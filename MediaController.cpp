@@ -7,7 +7,22 @@ QString MediaController::_audio_path;
 
 MediaController::MediaController(QObject *parent)
     : QObject(parent),
-      _client(new ClientManager(this)) {}
+      _client(new ClientManager(this))
+{
+    _session = new QMediaCaptureSession(this);
+    _audio_input = new QAudioInput(this);
+    _session->setAudioInput(_audio_input);
+
+    _recorder = new QMediaRecorder(this);
+    connect(_recorder, &QMediaRecorder::durationChanged, this, &MediaController::on_duration_changed);
+
+    _session->setRecorder(_recorder);
+
+    QString file_path = QCoreApplication::applicationDirPath() + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + "_audio.m4a";
+    _recorder->setOutputLocation(QUrl::fromLocalFile(file_path));
+    _recorder->setQuality(QMediaRecorder::VeryHighQuality);
+    _recorder->setEncodingMode(QMediaRecorder::ConstantQualityEncoding);
+}
 
 const QString &MediaController::time_display() const
 {
@@ -62,23 +77,7 @@ void MediaController::start_recording()
 
 void MediaController::setup_recording()
 {
-    _session = new QMediaCaptureSession(this);
-    _audio_input = new QAudioInput(this);
-    _session->setAudioInput(_audio_input);
-
-    _recorder = new QMediaRecorder(this);
-    connect(_recorder, &QMediaRecorder::durationChanged, this, &MediaController::on_duration_changed);
-
-    _session->setRecorder(_recorder);
-
-    QString file_path = QCoreApplication::applicationDirPath() + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + "_audio.m4a";
-    _recorder->setOutputLocation(QUrl::fromLocalFile(file_path));
-    _recorder->setQuality(QMediaRecorder::VeryHighQuality);
-    _recorder->setEncodingMode(QMediaRecorder::ConstantQualityEncoding);
-
     _recorder->record();
-
-    qDebug() << "Audio Started: " << QDateTime::currentDateTime().toString();
 }
 
 void MediaController::stop_recording()
@@ -86,7 +85,6 @@ void MediaController::stop_recording()
     if (_recorder)
     {
         _recorder->stop();
-        qDebug() << "Audio Stop: " << QDateTime::currentDateTime().toString();
 
         QString audio_path = _recorder->outputLocation().toLocalFile();
 
@@ -105,7 +103,7 @@ void MediaController::stop_recording()
         const QString &IDBFS_audio_name = QString("%1_%2").arg(current_time, audio_name);
         _client->IDBFS_save_audio(IDBFS_audio_name, audio_data, static_cast<int>(audio_data.size()));
 
-        _audio_path = IDBFS_audio_name;
+        _audio_path = _client->get_audio_url(IDBFS_audio_name, 1111, "", "").toString();
 #else
         _audio_path = audio_path;
 #endif

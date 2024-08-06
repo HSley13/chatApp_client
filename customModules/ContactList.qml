@@ -7,12 +7,11 @@ Rectangle
     {
         id: contactListView;
 
-        width: parent.width;
-        height: parent.height;
+        anchors.fill: parent;
 
         anchors.margins: 5;
 
-        spacing: 5;
+        spacing: 10;
         clip: true;
 
         model: contact_list_model.contact_proxy_list;

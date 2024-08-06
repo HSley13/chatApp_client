@@ -7,8 +7,7 @@ Rectangle
     {
         id: groupListView
 
-        width: parent.width;
-        height: parent.height;
+        anchors.fill: parent;
 
         anchors.margins: 5;
 

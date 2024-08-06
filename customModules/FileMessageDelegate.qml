@@ -4,15 +4,11 @@ import QtQuick.Layouts;
 
 Item
 {
-    property var model;
-    property int phone_number;
-    property string file_url;
-
-    id: root;
     height: file_bubble.height + 10;
     width: file_bubble.width;
 
-    readonly property bool sender: phone_number === contact_list_model.main_user.phone_number;
+    property var model;
+    readonly property bool sender: model.phone_number === contact_list_model.main_user.phone_number;
 
     Rectangle
     {
@@ -44,7 +40,7 @@ Item
             {
                 id: imageMouseArea;
                 anchors.fill: parent;
-                onClicked: media_controller.view_file(file_url);
+                onClicked: media_controller.view_file(model.file_url);
             }
         }
 

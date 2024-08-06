@@ -16,7 +16,9 @@ public:
     {
         GroupIDRole = Qt::UserRole + 1,
         SenderIDRole,
-        ContentRole,
+        TextRole,
+        AudioSourceRole,
+        FileSourceRole,
         TimeRole,
         SenderNameRole
     };

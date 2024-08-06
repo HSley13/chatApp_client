@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick;
+import QtQuick.Controls;
 
 Rectangle
 {
@@ -30,11 +30,7 @@ Rectangle
                 onLoaded:
                 {
                     if (contentLoader.item)
-                    {
                         contentLoader.item.model = model;
-                        contentLoader.item.phone_number = model.phone_number;
-                        contentLoader.item.file_url = model.file_source;
-                    }
                 }
             }
         }

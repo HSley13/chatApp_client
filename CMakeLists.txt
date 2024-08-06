@@ -44,7 +44,9 @@ qt_add_qml_module(app
                     
                     customModules/GroupChatWindow.qml
                     customModules/GroupChatList.qml
-                    customModules/GroupChatListDelegate.qml
+                    customModules/GroupTextMessageDelegate.qml
+                    customModules/GroupAudioMessageDelegate.qml
+                    customModules/GroupFileMessageDelegate.qml
 
                     customModules/InputField.qml
                     customModules/IconText.qml

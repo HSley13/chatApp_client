@@ -62,7 +62,7 @@ Rectangle
 
             Text
             {
-                text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).contents;
+                text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).text;
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
