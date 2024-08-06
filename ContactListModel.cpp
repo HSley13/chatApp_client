@@ -78,16 +78,16 @@ void ContactListModel::audio_sent()
     if (_active_chat == Q_NULLPTR)
         return;
 
-    _active_chat->add_message(new MessageInfo("", MediaController::_recorder->outputLocation().toLocalFile(), "", _main_user->phone_number(), _active_chat));
+    _active_chat->add_message(new MessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), _active_chat));
 }
 
 void ContactListModel::file_sent()
 {
-    if (_active_chat == Q_NULLPTR)
+    if (_active_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
         return;
 
-    qDebug() << "file sent: " << MediaController::_file_name;
-    _active_chat->add_message(new MessageInfo("", "", MediaController::_file_name, _main_user->phone_number(), _active_chat));
+    _active_chat->add_message(new MessageInfo("", "", MediaController::_file_path, _main_user->phone_number(), _active_chat));
+    MediaController::_file_path = QString();
 }
 
 int ContactListModel::rowCount(const QModelIndex &parent) const

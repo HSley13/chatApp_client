@@ -102,15 +102,15 @@ Rectangle
         {
             id: plus;
             imageSource1: "qrc:/QML/ClientApp/icons/plus_icon.png";
-            imageSource2: "qrc:/QML/ClientApp/icons/cancel_icon.png";
             height: parent.width * 0.1;
-            width: height * 0.8;
+            width: 40;
 
             onItemClicked: 
             {
                 media_controller.send_file();
                 contact_list_model.file_sent();
             }
+
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;
             anchors.leftMargin: 5;
@@ -134,7 +134,7 @@ Rectangle
             id: sendVoice;
             imageSource1: "qrc:/QML/ClientApp/icons/voice_icon.png";
             height: parent.width * 0.1;
-            width: height * 0.8;
+            width: 40;
 
             onItemClicked:
             {

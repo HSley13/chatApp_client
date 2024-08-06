@@ -1,13 +1,13 @@
 #include "MediaController.h"
-#include <QCoreApplication>
 #include <QDebug>
 #include <QDateTime>
 
-QMediaRecorder *MediaController::_recorder = nullptr;
-QString MediaController::_file_name;
+QString MediaController::_file_path;
+QString MediaController::_audio_path;
 
 MediaController::MediaController(QObject *parent)
-    : QObject(parent) {}
+    : QObject(parent),
+      _client(new ClientManager(this)) {}
 
 const QString &MediaController::time_display() const
 {
@@ -73,10 +73,12 @@ void MediaController::setup_recording()
 
     QString file_path = QCoreApplication::applicationDirPath() + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + "_audio.m4a";
     _recorder->setOutputLocation(QUrl::fromLocalFile(file_path));
-    _recorder->setQuality(QMediaRecorder::HighQuality);
+    _recorder->setQuality(QMediaRecorder::VeryHighQuality);
     _recorder->setEncodingMode(QMediaRecorder::ConstantQualityEncoding);
 
     _recorder->record();
+
+    qDebug() << "Audio Started: " << QDateTime::currentDateTime().toString();
 }
 
 void MediaController::stop_recording()
@@ -84,7 +86,31 @@ void MediaController::stop_recording()
     if (_recorder)
     {
         _recorder->stop();
-        set_audio_source(_recorder->outputLocation().toLocalFile());
+        qDebug() << "Audio Stop: " << QDateTime::currentDateTime().toString();
+
+        QString audio_path = _recorder->outputLocation().toLocalFile();
+
+#ifdef __EMSCRIPTEN__
+        const QString &current_time = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+        const QString &audio_name = _client->my_ID() + "audio.m4a";
+
+        QByteArray audio_data;
+        QFile audio(audio_path);
+        if (audio.open(QIODevice::ReadOnly))
+        {
+            audio_data = audio.readAll();
+            audio.close();
+        }
+
+        const QString &IDBFS_audio_name = QString("%1_%2").arg(current_time, audio_name);
+        _client->IDBFS_save_audio(IDBFS_audio_name, audio_data, static_cast<int>(audio_data.size()));
+
+        _audio_path = IDBFS_audio_name;
+#else
+        _audio_path = audio_path;
+#endif
+
+        set_audio_source(audio_path);
         set_time_display("00:00");
     }
 }
@@ -101,31 +127,41 @@ void MediaController::on_duration_changed(qint64 duration)
     set_time_display(duration_str);
 }
 
-void MediaController::view_file(const QString &filePath)
+void MediaController::view_file(const QString &file_path)
 {
-    QUrl fileUrl = QUrl::fromLocalFile(filePath);
-    if (fileUrl.isValid())
-        QDesktopServices::openUrl(fileUrl);
+    if (!file_path.isEmpty())
+    {
+#ifdef __EMSCRIPTEN__
+        QDesktopServices::openUrl(_client->get_file_url(file_path, 1111, "", ""));
+#else
+        QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
+#endif
+    }
 }
-
-// void MediaController::send_file()
-// {
-//     std::function<void(const QString &, const QByteArray &)> file_content_ready = [=](const QString &file_name, const QByteArray &file_data)
-//     {
-//         qDebug() << "file system open";
-//         _file_name = QFileInfo(file_name).absoluteFilePath();
-//     };
-
-//     QFileDialog::getOpenFileContent("All Files (*)", file_content_ready);
-// }
 
 void MediaController::send_file()
 {
-    QString file_name = QFileDialog::getOpenFileName(nullptr, "Open File", "", "All Files (*)");
-
-    if (!file_name.isEmpty())
+    std::function<void(const QString &, const QByteArray &)> file_content_ready = [=](const QString &file_name, const QByteArray &file_data)
     {
-        _file_name = QFileInfo(file_name).absoluteFilePath();
-        qDebug() << "Selected file:" << _file_name;
-    }
+        if (!file_name.isEmpty())
+        {
+            QString current_time = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+            // FIXME:
+            // const QString &UTC_time = QDateTime::fromString(current_time, "yyyy-MM-dd HH:mm:ss")
+            //                               .toUTC()
+            //                               .toString();
+
+#ifdef __EMSCRIPTEN__
+            QString IDBFS_file_name = QString("%1_%2").arg(current_time, QFileInfo(file_name).fileName());
+            _client->IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
+
+            _file_path = IDBFS_file_name;
+#else
+            _file_path = QFileInfo(file_name).absoluteFilePath();
+#endif
+        }
+    };
+
+    QFileDialog::getOpenFileContent("All Files (*)", file_content_ready);
 }

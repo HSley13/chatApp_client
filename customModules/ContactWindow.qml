@@ -1,6 +1,7 @@
 import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Layouts;
+import Qt.labs.platform;
 
 Rectangle
 {
@@ -175,7 +176,8 @@ Rectangle
 
         Component.onCompleted:
         {
-            var options = [
+            var options = 
+            [
                 {text: "New Conversation", image_source: "qrc:/QML/ClientApp/icons/chat_icon.png"},
                 {text: "New Group", image_source: "qrc:/QML/ClientApp/icons/group_icon.png"},
                 {text: "Add Friend", image_source: "qrc:/QML/ClientApp/icons/phone_icon.png"}

@@ -3,7 +3,7 @@
 QWebSocket *ClientManager::_socket = nullptr;
 ChatProtocol *ClientManager::_protocol = nullptr;
 
-QString ClientManager::_my_ID;
+QString ClientManager::_my_ID{"1111"};
 QString ClientManager::_my_name;
 QString ClientManager::_file_name;
 QString ClientManager::_time_zone;

@@ -6,6 +6,7 @@
 #include <QAudioInput>
 #include <QMediaCaptureSession>
 #include <QtWidgets>
+#include "ClientManager.h"
 class MediaController : public QObject
 {
     Q_OBJECT
@@ -27,8 +28,24 @@ public:
 
     Q_INVOKABLE void send_file();
 
-    static QMediaRecorder *_recorder;
-    static QString _file_name;
+    void ask_microphone_permission();
+
+public:
+    static QString _file_path;
+    static QString _audio_path;
+
+private:
+    QString _time_display{"00:00"};
+    QString _audio_source{""};
+
+    QMediaRecorder *_recorder;
+    QMediaCaptureSession *_session{nullptr};
+    QAudioInput *_audio_input{nullptr};
+
+    qint64 _record_start_time{0};
+
+    ClientManager *_client{nullptr};
+
 public slots:
     void set_time_display(QString new_time);
     void set_audio_source(QString new_source);
@@ -37,15 +54,6 @@ public slots:
 
 private slots:
     void on_duration_changed(qint64 duration);
-
-private:
-    QString _time_display{"00:00"};
-    QString _audio_source{""};
-
-    QMediaCaptureSession *_session{nullptr};
-    QAudioInput *_audio_input{nullptr};
-
-    qint64 _record_start_time{0};
 
 signals:
     void time_display_changed();

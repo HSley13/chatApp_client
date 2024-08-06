@@ -3,7 +3,6 @@
 #include <QtQuick>
 #include "ContactInfo.h"
 #include "ContactProxyList.h"
-
 class ContactListModel : public QAbstractListModel
 {
     Q_OBJECT
