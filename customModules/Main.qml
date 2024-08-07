@@ -71,6 +71,6 @@ Rectangle
 
         anchors.fill: parent;
         
-        initialItem: loginWindow;
+        initialItem: contactWindow;
     }
 }

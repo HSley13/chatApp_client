@@ -40,7 +40,7 @@ Item
             {
                 id: imageMouseArea;
                 anchors.fill: parent;
-                onClicked: media_controller.view_file(model.file_url);
+                onClicked: media_controller.view_file(model.file_source);
             }
         }
 

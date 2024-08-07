@@ -1,8 +1,6 @@
 #pragma once
 
-#include <QtQuick>
 #include "ChatListModel.h"
-
 class ContactInfo : public QObject
 {
     Q_OBJECT
@@ -11,7 +9,7 @@ class ContactInfo : public QObject
     Q_PROPERTY(int conversation_ID READ conversation_ID WRITE set_conversation_ID NOTIFY conversation_ID_changed)
     Q_PROPERTY(QString name READ name WRITE set_name NOTIFY name_changed)
     Q_PROPERTY(int phone_number READ phone_number WRITE set_phone_number NOTIFY phone_number_changed)
-    Q_PROPERTY(bool status READ status WRITE set_Status NOTIFY status_changed)
+    Q_PROPERTY(bool status READ status WRITE set_status NOTIFY status_changed)
     Q_PROPERTY(QString image_url READ image_url WRITE set_image_url NOTIFY image_url_changed)
     Q_PROPERTY(int unread_message READ unread_message WRITE set_unread_message NOTIFY unread_message_changed)
 
@@ -31,7 +29,7 @@ public:
     void set_phone_number(const int &new_phone_number);
 
     const bool &status() const;
-    void set_Status(const bool &new_status);
+    void set_status(const bool &new_status);
 
     const QString &image_url() const;
     Q_INVOKABLE void set_image_url(const QString &new_image_url);

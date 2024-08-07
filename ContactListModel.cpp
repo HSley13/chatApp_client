@@ -1,32 +1,33 @@
 #include "ContactListModel.h"
-#include "MediaController.h"
 
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _main_user(new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this)),
       _active_chat(Q_NULLPTR),
-      _contact_proxy_list(new ContactProxyList(this))
+      _contact_proxy_list(new ContactProxyList(this)),
+      _client_manager(new ClientManager(this)),
+      _media_controller(new MediaController(this))
 {
     ContactInfo *sleyHortes = new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 1, this);
-    sleyHortes->add_message(new MessageInfo("", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", 2222, this));
-    sleyHortes->add_message(new MessageInfo("I created this app", "", "", 2222, this));
-    sleyHortes->add_message(new MessageInfo("", "", "/Users/test/Downloads/Proof of Nationality_page-0001.jpg", 2222, this));
+    sleyHortes->add_message(new MessageInfo(QString(), "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 2222, this));
+    sleyHortes->add_message(new MessageInfo("I created this app", QString(), QString(), 2222, this));
+    sleyHortes->add_message(new MessageInfo(QString(), QString(), "/Users/test/Downloads/Proof of Nationality_page-0001.jpg", 2222, this));
     _contacts.append(sleyHortes);
 
     ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
-    bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", 3333, this));
+    bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 3333, this));
     _contacts.append(bruceWayne);
 
     ContactInfo *tonyStark = new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this);
-    tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", 4444, this));
+    tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 4444, this));
     _contacts.append(tonyStark);
 
     ContactInfo *clarkKent = new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this);
-    clarkKent->add_message(new MessageInfo("I killed Doomsday", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", 5555, this));
+    clarkKent->add_message(new MessageInfo("I killed Doomsday", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 5555, this));
     _contacts.append(clarkKent);
 
     ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
-    steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", "", 6666, this));
+    steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 6666, this));
     _contacts.append(steveRogers);
 
     _contact_proxy_list->setSourceModel(this);
@@ -70,24 +71,38 @@ void ContactListModel::message_sent(const QString &message)
     if (_active_chat == Q_NULLPTR)
         return;
 
-    _active_chat->add_message(new MessageInfo(message, "", "", _main_user->phone_number(), _active_chat));
+    MessageInfo *new_message = new MessageInfo(message, QString(), QString(), _main_user->phone_number(), _active_chat);
+    _active_chat->add_message(new_message);
+
+    // _client_manager->send_text(_main_user->phone_number(), _active_chat->phone_number(), message, new_message->time());
 }
 
 void ContactListModel::audio_sent()
 {
-    if (_active_chat == Q_NULLPTR)
+    if (_active_chat == Q_NULLPTR || _media_controller->_audio_path.isEmpty())
         return;
 
-    _active_chat->add_message(new MessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), _active_chat));
+    MessageInfo *new_message = new MessageInfo(QString(), _media_controller->_audio_path, QString(), _main_user->phone_number(), _active_chat);
+    _active_chat->add_message(new_message);
+
+    // _client_manager->send_audio(_main_user->phone_number(), _active_chat->phone_number(), _media_controller->_audio_name, _media_controller->_audio_data, new_message->time());
+    _media_controller->_audio_path = QString();
+    _media_controller->_audio_name = QString();
+    _media_controller->_audio_data = QByteArray();
 }
 
 void ContactListModel::file_sent()
 {
-    if (_active_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
+    if (_active_chat == Q_NULLPTR || _media_controller->_file_path.isEmpty())
         return;
 
-    _active_chat->add_message(new MessageInfo("", "", MediaController::_file_path, _main_user->phone_number(), _active_chat));
-    MediaController::_file_path = QString();
+    MessageInfo *new_message = new MessageInfo(QString(), QString(), _media_controller->_file_path, _main_user->phone_number(), _active_chat);
+    _active_chat->add_message(new_message);
+
+    // _client_manager->send_file(_main_user->phone_number(), _active_chat->phone_number(), _media_controller->_file_name, _media_controller->_file_data, new_message->time());
+    _media_controller->_file_path = QString();
+    _media_controller->_file_name = QString();
+    _media_controller->_file_data = QByteArray();
 }
 
 int ContactListModel::rowCount(const QModelIndex &parent) const
@@ -109,35 +124,35 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return contact_info->conversation_ID();
     case NameRole:
         return contact_info->name();
-    case phone_numberRole:
+    case PhoneNumberRole:
         return contact_info->phone_number();
     case StatusRole:
         return contact_info->status();
-    case unread_messageRole:
+    case UnreadMessageRole:
         return contact_info->unread_message();
+    case ImageUrlRole:
+        return contact_info->image_url();
     case MessagesRole:
         return QVariant::fromValue(contact_info->messages());
-    case image_urlRole:
-        return contact_info->image_url();
     case ContactObjectRole:
         return QVariant::fromValue(contact_info);
     default:
-        QVariant();
+        return QVariant();
     }
 }
 
 QHash<int, QByteArray> ContactListModel::roleNames() const
 {
-    QHash<int, QByteArray> roles{};
+    QHash<int, QByteArray> roles;
 
     roles[conversation_IDRole] = "conversation_ID";
     roles[NameRole] = "name";
-    roles[phone_numberRole] = "phone_number";
+    roles[PhoneNumberRole] = "phone_number";
     roles[StatusRole] = "status";
-    roles[unread_messageRole] = "unread_message";
+    roles[UnreadMessageRole] = "unread_message";
+    roles[ImageUrlRole] = "image_url";
     roles[MessagesRole] = "messages";
-    roles[image_urlRole] = "image_url";
-    roles[ContactObjectRole] = "contact_object";
+    roles[ContactObjectRole] = "contact_info";
 
     return roles;
 }
@@ -151,19 +166,29 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
 
     switch (ContactRoles(role))
     {
+    case conversation_IDRole:
+        contact_info->set_conversation_ID(value.toInt());
+        break;
     case NameRole:
         contact_info->set_name(value.toString());
         break;
-    case unread_messageRole:
-        contact_info->set_unread_message(value.toInt());
+    case PhoneNumberRole:
+        contact_info->set_phone_number(value.toInt());
         break;
     case StatusRole:
-        contact_info->set_Status(value.toBool());
+        contact_info->set_status(value.toBool());
+        break;
+    case UnreadMessageRole:
+        contact_info->set_unread_message(value.toInt());
+        break;
+    case ImageUrlRole:
+        contact_info->set_image_url(value.toString());
         break;
     default:
         return false;
     }
 
+    // emit dataChanged(index, index, {role});
     return true;
 }
 

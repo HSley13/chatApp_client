@@ -48,7 +48,7 @@ const bool &ContactInfo::status() const
     return _status;
 }
 
-void ContactInfo::set_Status(const bool &new_status)
+void ContactInfo::set_status(const bool &new_status)
 {
     if (_status == new_status)
         return;

@@ -5,11 +5,11 @@ import QtMultimedia;
 
 Item
 {
-    height: file_bubble.height + 10;
-    width: file_bubble.width;
+    height: audio_bubble.height + 10;
+    width: audio_bubble.width;
 
     property var model;
-    readonly property bool sender: model.phone_number === contact_list_model.main_user.phone_number;
+    readonly property bool sender: model.sender_ID === contact_list_model.main_user.phone_number;
 
     Rectangle
     {
@@ -29,13 +29,13 @@ Item
 
             onPositionChanged:
             {
-                if (position >= duration)
+                if (mediaPlayer.position >= duration)
                 {
                     progressSlider.value = 0;
                     mediaPlayer.stop();
                 }
                 else
-                    progressSlider.value = position;
+                    progressSlider.value = mediaPlayer.position;
             }
         }
 
@@ -115,13 +115,6 @@ Item
             color: "black";
             font.pixelSize: 10;
             width: controlsColumn.width;
-        }
-
-        Connections
-        {
-            target: mediaPlayer;
-
-            onDurationChanged: progressSlider.to = mediaPlayer.duration;
         }
     }
 

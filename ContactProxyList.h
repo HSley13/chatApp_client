@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QtQuick>
 #include "ContactInfo.h"
 class ContactProxyList : public QSortFilterProxyModel
 {

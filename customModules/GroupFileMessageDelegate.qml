@@ -8,7 +8,7 @@ Item
     width: file_bubble.width;
 
     property var model;
-    readonly property bool sender: model.phone_number === contact_list_model.main_user.phone_number;
+    readonly property bool sender: model.sender_ID === contact_list_model.main_user.phone_number;
 
     Rectangle
     {
@@ -40,7 +40,7 @@ Item
             {
                 id: imageMouseArea;
                 anchors.fill: parent;
-                onClicked: media_controller.view_file(model.file_url);
+                onClicked: media_controller.view_file(model.file_source);
             }
         }
 

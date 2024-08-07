@@ -120,6 +120,28 @@ Rectangle
             width: parent.width;
             height: 40;
         }
+
+        InputField
+        {
+            id: secret_question;
+            image1Source: "qrc:/QML/ClientApp/icons/question_icon.png";
+
+            echoMode: TextInput.Normal;
+            placeHolder: "Secret Question";
+            width: parent.width;
+            height: 40;
+        }
+
+        InputField
+        {
+            id: secret_answer;
+            image1Source: "qrc:/QML/ClientApp/icons/answer_icon.png";
+
+            echoMode: TextInput.Normal;
+            placeHolder: "Secret Answer";
+            width: parent.width;
+            height: 40;
+        }
     }
 
     Rectangle

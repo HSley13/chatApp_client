@@ -1,27 +1,31 @@
 #include "MediaController.h"
 #include <QDebug>
 #include <QDateTime>
+#include <QFileDialog>
 
 QString MediaController::_file_path;
 QString MediaController::_audio_path;
 
+QString MediaController::_file_name;
+QString MediaController::_audio_name;
+
+QByteArray MediaController::_audio_data;
+QByteArray MediaController::_file_data;
+
 MediaController::MediaController(QObject *parent)
     : QObject(parent),
-      _client(new ClientManager(this))
+      _client_manager(new ClientManager(this)),
+      _session(new QMediaCaptureSession(this)),
+      _audio_input(new QAudioInput(this)),
+      _recorder(new QMediaRecorder(this))
 {
-    _session = new QMediaCaptureSession(this);
-    _audio_input = new QAudioInput(this);
     _session->setAudioInput(_audio_input);
-
-    _recorder = new QMediaRecorder(this);
-    connect(_recorder, &QMediaRecorder::durationChanged, this, &MediaController::on_duration_changed);
-
     _session->setRecorder(_recorder);
 
-    QString file_path = QCoreApplication::applicationDirPath() + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + "_audio.m4a";
-    _recorder->setOutputLocation(QUrl::fromLocalFile(file_path));
     _recorder->setQuality(QMediaRecorder::VeryHighQuality);
     _recorder->setEncodingMode(QMediaRecorder::ConstantQualityEncoding);
+
+    connect(_recorder, &QMediaRecorder::durationChanged, this, &MediaController::on_duration_changed);
 }
 
 const QString &MediaController::time_display() const
@@ -77,6 +81,9 @@ void MediaController::start_recording()
 
 void MediaController::setup_recording()
 {
+    QString audio_path = QCoreApplication::applicationDirPath() + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + "_audio.m4a";
+    _recorder->setOutputLocation(QUrl::fromLocalFile(audio_path));
+
     _recorder->record();
 }
 
@@ -90,20 +97,20 @@ void MediaController::stop_recording()
 
 #ifdef __EMSCRIPTEN__
         const QString &current_time = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-        const QString &audio_name = _client->my_ID() + "audio.m4a";
+        const QString &audio_name = QString("%1_%2").arg("1111", "audio.m4a");
 
-        QByteArray audio_data;
         QFile audio(audio_path);
         if (audio.open(QIODevice::ReadOnly))
         {
-            audio_data = audio.readAll();
+            _audio_data = audio.readAll();
             audio.close();
         }
 
         const QString &IDBFS_audio_name = QString("%1_%2").arg(current_time, audio_name);
-        _client->IDBFS_save_audio(IDBFS_audio_name, audio_data, static_cast<int>(audio_data.size()));
+        _client_manager->IDBFS_save_audio(IDBFS_audio_name, _audio_data, static_cast<int>(_audio_data.size()));
+        _audio_name = IDBFS_audio_name;
 
-        _audio_path = _client->get_audio_url(IDBFS_audio_name, 1111, "", "").toString();
+        _audio_path = _client_manager->get_audio_url(IDBFS_audio_name).toString();
 #else
         _audio_path = audio_path;
 #endif
@@ -127,10 +134,11 @@ void MediaController::on_duration_changed(qint64 duration)
 
 void MediaController::view_file(const QString &file_path)
 {
+    qDebug() << "file Path opened: " << _file_path;
     if (!file_path.isEmpty())
     {
 #ifdef __EMSCRIPTEN__
-        QDesktopServices::openUrl(_client->get_file_url(file_path, 1111, "", ""));
+        QDesktopServices::openUrl(_client_manager->get_file_url(file_path));
 #else
         QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
 #endif
@@ -151,12 +159,15 @@ void MediaController::send_file()
             //                               .toString();
 
 #ifdef __EMSCRIPTEN__
+            _file_data = file_data;
+            _file_name = file_name;
             QString IDBFS_file_name = QString("%1_%2").arg(current_time, QFileInfo(file_name).fileName());
-            _client->IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
+            _client_manager->IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
 
             _file_path = IDBFS_file_name;
 #else
             _file_path = QFileInfo(file_name).absoluteFilePath();
+            qDebug() << "file Path selected: " << _file_path;
 #endif
         }
     };

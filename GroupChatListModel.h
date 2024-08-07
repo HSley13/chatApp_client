@@ -1,9 +1,6 @@
 #pragma once
 
-#include <QtQuick>
-#include <QTimer>
 #include "GroupMessageInfo.h"
-
 class GroupChatListModel : public QAbstractListModel
 {
     Q_OBJECT

@@ -1,11 +1,8 @@
 #pragma once
 
-#include <QtQml>
-#include <QtQuick>
 #include <QMediaRecorder>
 #include <QAudioInput>
 #include <QMediaCaptureSession>
-#include <QtWidgets>
 #include "ClientManager.h"
 class MediaController : public QObject
 {
@@ -27,12 +24,25 @@ public:
     Q_INVOKABLE void stop_recording();
 
     Q_INVOKABLE void send_file();
+    Q_INVOKABLE void view_file(const QString &file_path);
 
     void ask_microphone_permission();
 
+public slots:
+    void set_time_display(QString new_time);
+    void set_audio_source(QString new_source);
+
+private slots:
+    void on_duration_changed(qint64 duration);
+
 public:
     static QString _file_path;
+    static QString _file_name;
+    static QByteArray _file_data;
+
     static QString _audio_path;
+    static QString _audio_name;
+    static QByteArray _audio_data;
 
 private:
     QString _time_display{"00:00"};
@@ -44,16 +54,7 @@ private:
 
     qint64 _record_start_time{0};
 
-    ClientManager *_client{nullptr};
-
-public slots:
-    void set_time_display(QString new_time);
-    void set_audio_source(QString new_source);
-
-    void view_file(const QString &filePath);
-
-private slots:
-    void on_duration_changed(qint64 duration);
+    ClientManager *_client_manager{nullptr};
 
 signals:
     void time_display_changed();

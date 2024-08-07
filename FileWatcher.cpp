@@ -1,10 +1,3 @@
-#include <QDebug>
-#include <QString>
-#include <QFileSystemWatcher>
-#include <QDir>
-#include <QDirIterator>
-#include <QTimer>
-#include <functional>
 #include "FileWatcher.h"
 
 FileWatcher::FileWatcher(std::function<void()> callback)
@@ -30,7 +23,7 @@ QStringList FileWatcher::find_files(const QString &path)
 {
     QStringList files;
 
-    QDirIterator it(path, QStringList() << "*.qml" << "*.cpp" << "*.h", QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(path, QStringList() << "*.qml", QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext())
         files.append(it.next());
 

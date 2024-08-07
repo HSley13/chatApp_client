@@ -91,9 +91,8 @@ Rectangle
         {
             id: plus;
             imageSource1: "qrc:/QML/ClientApp/icons/plus_icon.png";
-            imageSource2: "qrc:/QML/ClientApp/icons/cancel_icon.png";
             height: parent.width * 0.1;
-            width: height * 0.8;
+            width: 40;
 
             onItemClicked:
             {
@@ -124,7 +123,7 @@ Rectangle
             id: sendVoice;
             imageSource1: "qrc:/QML/ClientApp/icons/voice_icon.png";
             height: parent.width * 0.1;
-            width: height * 0.8;
+            width: 40;
 
             onItemClicked:
             {
@@ -141,6 +140,8 @@ Rectangle
                 else
                 {
                     media_controller.stop_recording();
+
+                    group_list_model.group_audio_sent();
 
                     sendVoice.anchors.rightMargin = 5;
                 }

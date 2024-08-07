@@ -1,8 +1,7 @@
 #pragma once
 
-#include <QtQuick>
 #include <QDateTime>
-
+#include <QtQuick>
 class MessageInfo : public QObject
 {
     Q_OBJECT

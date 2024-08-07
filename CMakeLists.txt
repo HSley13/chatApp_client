@@ -58,7 +58,6 @@ qt_add_qml_module(app
 
 
                     SOURCES
-                    ChatProtocol.cpp ChatProtocol.h
                     ClientManager.cpp ClientManager.h
                     MediaController.cpp MediaController.h
 
@@ -109,6 +108,8 @@ qt_add_qml_module(app
                     icons/upload_icon.png
                     icons/avengers_icon.png
                     icons/justice_league_icon.png
+                    icons/question_icon.png
+                    icons/answer_icon.png
                     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")

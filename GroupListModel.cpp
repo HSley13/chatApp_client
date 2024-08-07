@@ -66,10 +66,11 @@ void GroupListModel::group_message_sent(const QString &group_message)
 
 void GroupListModel::group_audio_sent()
 {
-    if (_active_group_chat == Q_NULLPTR)
+    if (_active_group_chat == Q_NULLPTR || MediaController::_audio_path.isEmpty())
         return;
 
     _active_group_chat->add_group_message(new GroupMessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), "", _active_group_chat));
+    MediaController::_audio_path = QString();
 }
 
 void GroupListModel::group_file_sent()
@@ -149,6 +150,7 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
     roles[GroupImageUrlRole] = "group_image_url";
     roles[GroupObjectRole] = "group_contact_object";
 
+    // emit dataChanged(index, index, {role});
     return roles;
 }
 

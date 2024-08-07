@@ -13,7 +13,7 @@ Dialog
     property var selectedItems: [];
     property bool checkable: false;
     property string placeHolder: "";
-    property int index: listView.index;
+    property int index: (listView.index) ? listView.index : 0;
 
     signal dialogAccepted();
     signal dialogRejected();

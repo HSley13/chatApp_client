@@ -2,7 +2,6 @@
 
 #include <QtQuick>
 #include <QTime>
-
 class GroupMessageInfo : public QObject
 {
     Q_OBJECT

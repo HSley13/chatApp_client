@@ -3,14 +3,15 @@
 #include <functional>
 #include <QFileSystemWatcher>
 #include <QObject>
+#include <QDebug>
+#include <QString>
 #include <QDir>
+#include <QDirIterator>
 #include <QTimer>
-
-class QString;
-
 class FileWatcher : public QObject
 {
     Q_OBJECT
+
 public:
     FileWatcher(std::function<void()> callback);
 

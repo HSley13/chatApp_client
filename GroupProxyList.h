@@ -1,8 +1,6 @@
 #pragma once
 
-#include <QtQuick>
 #include "GroupInfo.h"
-
 class GroupProxyList : public QSortFilterProxyModel
 {
     Q_OBJECT
