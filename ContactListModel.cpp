@@ -4,6 +4,7 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _main_user(new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this)),
       _active_chat(Q_NULLPTR),
+      _contact_proxy_list_chat(new ContactProxyList(this)),
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
 {
@@ -28,6 +29,9 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
     steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 6666, this));
     _contacts.append(steveRogers);
+
+    _contact_proxy_list_chat->setSourceModel(this);
+    _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
     _contact_proxy_list->setSourceModel(this);
 }
@@ -206,7 +210,7 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     //     break;
     // case ContactObjectRole:
     //     contact_info->set_contact_info(value.value<ContactInfo *>());
-    // break;
+    //     break;
     case LastMessageTimeRole:
         contact_info->set_last_message_time(value.value<QDateTime>());
         break;
@@ -216,6 +220,11 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
 
     emit dataChanged(index, index, {role});
     return true;
+}
+
+ContactProxyList *ContactListModel::contact_proxy_list_chat() const
+{
+    return _contact_proxy_list_chat;
 }
 
 ContactProxyList *ContactListModel::contact_proxy_list() const

@@ -10,6 +10,7 @@ class ContactListModel : public QAbstractListModel
 
     Q_PROPERTY(ContactInfo *active_chat READ active_chat WRITE set_active_chat NOTIFY active_chat_changed)
     Q_PROPERTY(ContactInfo *main_user READ main_user NOTIFY main_user_changed)
+    Q_PROPERTY(ContactProxyList *contact_proxy_list_chat READ contact_proxy_list_chat NOTIFY contact_proxy_list_chat_changed)
     Q_PROPERTY(ContactProxyList *contact_proxy_list READ contact_proxy_list NOTIFY contact_proxy_list_changed)
     Q_PROPERTY(QList<ContactInfo *> contacts READ contacts WRITE set_contacts NOTIFY contacts_changed)
 
@@ -38,6 +39,7 @@ public:
     const QStringList &contacts_name() const;
 
     ContactInfo *main_user() const;
+    ContactProxyList *contact_proxy_list_chat() const;
     ContactProxyList *contact_proxy_list() const;
 
     virtual int rowCount(const QModelIndex &parent) const override;
@@ -54,6 +56,7 @@ signals:
     void contacts_changed();
     void active_chat_changed();
 
+    void contact_proxy_list_chat_changed();
     void contact_proxy_list_changed();
     void main_user_changed();
 
@@ -61,6 +64,7 @@ private:
     ContactInfo *_active_chat{};
     ContactInfo *_main_user{};
 
+    ContactProxyList *_contact_proxy_list_chat{};
     ContactProxyList *_contact_proxy_list{};
     MediaController *_media_controller{};
 };

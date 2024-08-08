@@ -16,7 +16,7 @@ Rectangle
         spacing: 10;
         clip: true;
 
-        model: contact_list_model.contact_proxy_list;
+        model: contact_list_model.contact_proxy_list_chat;
 
         delegate: ContactListDelegate 
         {

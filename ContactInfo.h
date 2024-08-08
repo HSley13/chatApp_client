@@ -43,8 +43,6 @@ public:
     QDateTime last_message_time() const;
     void set_last_message_time(const QDateTime &time);
 
-    QDateTime most_recent_message_date() const;
-
 private:
     int _conversation_ID{0};
     QString _name{};

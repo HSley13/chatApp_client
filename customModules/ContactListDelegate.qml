@@ -79,7 +79,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list.get(index).messages.count - 1).text;
+                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list_chat.get(index).messages.count - 1).text;
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
@@ -118,7 +118,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list.get(index).messages.count - 1).time;
+                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list_chat.get(index).messages.count - 1).time;
                 color: "gray";
                 font.bold: true;
                 font.pixelSize: 12;
@@ -135,7 +135,7 @@ Rectangle
 
         onClicked:
         {
-            contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
+            contact_list_model.active_chat = contact_list_model.contact_proxy_list_chat.get(index);
             stackView.push(chatWindow);
         }
     }
