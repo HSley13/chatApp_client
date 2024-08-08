@@ -2,7 +2,6 @@
 
 #include "ContactInfo.h"
 #include "ContactProxyList.h"
-#include "ClientManager.h"
 #include "MediaController.h"
 class ContactListModel : public QAbstractListModel
 {
@@ -24,7 +23,8 @@ public:
         UnreadMessageRole,
         ImageUrlRole,
         MessagesRole,
-        ContactObjectRole
+        ContactObjectRole,
+        LastMessageTimeRole
     };
 
     ContactListModel(QAbstractListModel *parent = nullptr);

@@ -61,7 +61,13 @@ void GroupListModel::group_message_sent(const QString &group_message)
     if (_active_group_chat == Q_NULLPTR)
         return;
 
-    _active_group_chat->add_group_message(new GroupMessageInfo(group_message, "", "", _main_user->phone_number(), "", _active_group_chat));
+    GroupMessageInfo *new_message = new GroupMessageInfo(group_message, "", "", _main_user->phone_number(), "", _active_group_chat);
+    _active_group_chat->add_group_message(new_message);
+
+    _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
+    QModelIndex top_left = index(0, 0);
+    QModelIndex bottom_right = index(_groups.size() - 1, 0);
+    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 }
 
 void GroupListModel::group_audio_sent()
@@ -69,8 +75,14 @@ void GroupListModel::group_audio_sent()
     if (_active_group_chat == Q_NULLPTR || MediaController::_audio_path.isEmpty())
         return;
 
-    _active_group_chat->add_group_message(new GroupMessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), "", _active_group_chat));
+    GroupMessageInfo *new_message = new GroupMessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), "", _active_group_chat);
+    _active_group_chat->add_group_message(new_message);
     MediaController::_audio_path = QString();
+
+    _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
+    QModelIndex top_left = index(0, 0);
+    QModelIndex bottom_right = index(_groups.size() - 1, 0);
+    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 }
 
 void GroupListModel::group_file_sent()
@@ -78,8 +90,14 @@ void GroupListModel::group_file_sent()
     if (_active_group_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
         return;
 
-    _active_group_chat->add_group_message(new GroupMessageInfo("", "", MediaController::_file_path, _main_user->phone_number(), "", _active_group_chat));
+    GroupMessageInfo *new_message = new GroupMessageInfo("", "", MediaController::_file_path, _main_user->phone_number(), "", _active_group_chat);
+    _active_group_chat->add_group_message(new_message);
     MediaController::_file_path = QString();
+
+    _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
+    QModelIndex top_left = index(0, 0);
+    QModelIndex bottom_right = index(_groups.size() - 1, 0);
+    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 }
 
 int GroupListModel::rowCount(const QModelIndex &parent) const
@@ -111,6 +129,8 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
         return group_info->group_image_url();
     case GroupObjectRole:
         return QVariant::fromValue(group_info);
+    case LastMessageTimeRole:
+        return QVariant::fromValue(group_info->last_message_time());
     default:
         return QVariant();
     }
@@ -131,10 +151,13 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case GroupUnreadMessageRole:
         group_info->set_group_unread_message(value.toInt());
         break;
+    case LastMessageTimeRole:
+        group_info->set_last_message_time(value.value<QDateTime>());
     default:
         return false;
     }
 
+    emit dataChanged(index, index, {role});
     return true;
 }
 
@@ -149,6 +172,7 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
     roles[GroupMessagesRole] = "group_messages";
     roles[GroupImageUrlRole] = "group_image_url";
     roles[GroupObjectRole] = "group_contact_object";
+    roles[LastMessageTimeRole] = "last_message_time";
 
     // emit dataChanged(index, index, {role});
     return roles;

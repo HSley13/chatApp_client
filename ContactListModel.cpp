@@ -73,6 +73,11 @@ void ContactListModel::message_sent(const QString &message)
     MessageInfo *new_message = new MessageInfo(message, QString(), QString(), _main_user->phone_number(), _active_chat);
     _active_chat->add_message(new_message);
 
+    _active_chat->set_last_message_time(QDateTime::currentDateTime());
+    QModelIndex top_left = index(0, 0);
+    QModelIndex bottom_right = index(_contacts.size() - 1, 0);
+    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+
     // _client_manager->send_text(_main_user->phone_number(), _active_chat->phone_number(), message, new_message->time());
 }
 
@@ -83,6 +88,11 @@ void ContactListModel::audio_sent()
 
     MessageInfo *new_message = new MessageInfo(QString(), _media_controller->_audio_path, QString(), _main_user->phone_number(), _active_chat);
     _active_chat->add_message(new_message);
+
+    _active_chat->set_last_message_time(QDateTime::currentDateTime());
+    QModelIndex top_left = index(0, 0);
+    QModelIndex bottom_right = index(_contacts.size() - 1, 0);
+    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
     // _client_manager->send_audio(_main_user->phone_number(), _active_chat->phone_number(), _media_controller->_audio_name, _media_controller->_audio_data, new_message->time());
     _media_controller->_audio_path = QString();
@@ -97,6 +107,11 @@ void ContactListModel::file_sent()
 
     MessageInfo *new_message = new MessageInfo(QString(), QString(), _media_controller->_file_path, _main_user->phone_number(), _active_chat);
     _active_chat->add_message(new_message);
+
+    _active_chat->set_last_message_time(QDateTime::currentDateTime());
+    QModelIndex top_left = index(0, 0);
+    QModelIndex bottom_right = index(_contacts.size() - 1, 0);
+    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
     // _client_manager->send_file(_main_user->phone_number(), _active_chat->phone_number(), _media_controller->_file_name, _media_controller->_file_data, new_message->time());
     _media_controller->_file_path = QString();
@@ -135,6 +150,8 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue(contact_info->messages());
     case ContactObjectRole:
         return QVariant::fromValue(contact_info);
+    case LastMessageTimeRole:
+        return QVariant::fromValue(contact_info->last_message_time());
     default:
         return QVariant();
     }
@@ -152,6 +169,7 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     roles[ImageUrlRole] = "image_url";
     roles[MessagesRole] = "messages";
     roles[ContactObjectRole] = "contact_info";
+    roles[LastMessageTimeRole] = "last_message_time";
 
     return roles;
 }
@@ -172,7 +190,7 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
         contact_info->set_name(value.toString());
         break;
     case PhoneNumberRole:
-        contact_info->set_phone_number(value.toInt());
+        contact_info->set_phone_number(value.toLongLong());
         break;
     case StatusRole:
         contact_info->set_status(value.toBool());
@@ -183,11 +201,20 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     case ImageUrlRole:
         contact_info->set_image_url(value.toString());
         break;
+    // case MessagesRole:
+    //     contact_info->set_messages(value.value<QList<MessageInfo *>>());
+    //     break;
+    // case ContactObjectRole:
+    //     contact_info->set_contact_info(value.value<ContactInfo *>());
+    // break;
+    case LastMessageTimeRole:
+        contact_info->set_last_message_time(value.value<QDateTime>());
+        break;
     default:
         return false;
     }
 
-    // emit dataChanged(index, index, {role});
+    emit dataChanged(index, index, {role});
     return true;
 }
 

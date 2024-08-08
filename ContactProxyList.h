@@ -11,7 +11,7 @@ public:
 
     Q_INVOKABLE ContactInfo *get(const int &index);
 
-    // bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
 };

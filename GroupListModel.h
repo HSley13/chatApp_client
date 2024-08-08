@@ -21,7 +21,8 @@ public:
         GroupUnreadMessageRole,
         GroupImageUrlRole,
         GroupMessagesRole,
-        GroupObjectRole
+        GroupObjectRole,
+        LastMessageTimeRole
     };
 
     GroupListModel(QAbstractListModel *parent = nullptr);

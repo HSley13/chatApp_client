@@ -123,3 +123,14 @@ QDateTime ContactInfo::most_recent_message_date() const
     MessageInfo *last_message = _messages->at(_messages->rowCount() - 1);
     return last_message->date_time();
 }
+
+QDateTime ContactInfo::last_message_time() const
+{
+    return _last_message_time;
+}
+
+void ContactInfo::set_last_message_time(const QDateTime &time)
+{
+    if (_last_message_time != time)
+        _last_message_time = time;
+}

@@ -98,3 +98,14 @@ void GroupInfo::add_group_message(GroupMessageInfo *message)
 
     emit group_messages_changed();
 }
+
+QDateTime GroupInfo::last_message_time() const
+{
+    return _last_message_time;
+}
+
+void GroupInfo::set_last_message_time(const QDateTime &time)
+{
+    if (_last_message_time != time)
+        _last_message_time = time;
+}

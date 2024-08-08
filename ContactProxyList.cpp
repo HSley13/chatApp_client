@@ -22,16 +22,9 @@ ContactInfo *ContactProxyList::get(const int &index)
     return sourceModel()->data(sourceIndex, ContactListModel::ContactRoles::ContactObjectRole).value<ContactInfo *>();
 }
 
-// bool ContactProxyList::lessThan(const QModelIndex &left, const QModelIndex &right) const
-// {
-//     QModelIndex source_left = mapToSource(left);
-//     QModelIndex source_right = mapToSource(right);
-
-//     ContactInfo *contact_left = sourceModel()->data(source_left, ContactListModel::ContactRoles::ContactObjectRole).value<ContactInfo *>();
-//     ContactInfo *contact_right = sourceModel()->data(source_right, ContactListModel::ContactRoles::ContactObjectRole).value<ContactInfo *>();
-
-//     if (contact_left && contact_right)
-//         return contact_left->most_recent_message_date() > contact_right->most_recent_message_date();
-
-//     return false;
-// }
+bool ContactProxyList::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    QDateTime leftDate = sourceModel()->data(left, ContactListModel::ContactRoles::LastMessageTimeRole).toDateTime();
+    QDateTime rightDate = sourceModel()->data(right, ContactListModel::ContactRoles::LastMessageTimeRole).toDateTime();
+    return leftDate > rightDate;
+}

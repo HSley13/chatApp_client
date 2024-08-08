@@ -40,6 +40,9 @@ public:
     void add_message(MessageInfo *message);
     ChatListModel *messages() const;
 
+    QDateTime last_message_time() const;
+    void set_last_message_time(const QDateTime &time);
+
     QDateTime most_recent_message_date() const;
 
 private:
@@ -51,6 +54,8 @@ private:
     int _unread_message{};
 
     ChatListModel *_messages;
+
+    QDateTime _last_message_time = QDateTime::currentDateTime();
 
 signals:
     void name_changed();

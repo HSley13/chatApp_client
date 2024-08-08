@@ -38,6 +38,9 @@ public:
     void add_group_message(GroupMessageInfo *group_message);
     GroupChatListModel *group_messages() const;
 
+    QDateTime last_message_time() const;
+    void set_last_message_time(const QDateTime &time);
+
 private:
     int _group_ID{0};
     QString _group_name{};
@@ -46,6 +49,8 @@ private:
     int _group_unread_message{};
 
     GroupChatListModel *_group_messages;
+
+    QDateTime _last_message_time = QDateTime::currentDateTime();
 
 signals:
     void group_name_changed();

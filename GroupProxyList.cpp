@@ -21,3 +21,10 @@ GroupInfo *GroupProxyList::get(const int &index)
 
     return sourceModel()->data(sourceIndex, GroupListModel::GroupRoles::GroupObjectRole).value<GroupInfo *>();
 }
+
+bool GroupProxyList::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    QDateTime leftDate = sourceModel()->data(left, GroupListModel::GroupRoles::LastMessageTimeRole).toDateTime();
+    QDateTime rightDate = sourceModel()->data(right, GroupListModel::GroupRoles::LastMessageTimeRole).toDateTime();
+    return leftDate > rightDate;
+}
