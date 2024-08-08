@@ -2,7 +2,7 @@ import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Layouts;
 
-Rectangle
+Item
 {
     id: root;
 
@@ -109,7 +109,7 @@ Rectangle
             anchors.fill: parent;
 
             // FIXME: handle click button correctly
-            onClicked: console.log("Forget Password Button Click");
+            onClicked: stackView.push(forgottenPassword);
         }
 
         anchors.top: loginInfo.bottom;
@@ -177,7 +177,7 @@ Rectangle
 
     Rectangle
     {
-        id: chatWindowButton;
+        id: contactWindowButton;
         color: "transparent";
 
         height: 20;
@@ -186,7 +186,7 @@ Rectangle
         Text
         {
             id: chatWindowText;
-            text: "Chat Window";
+            text: "Contact Window";
             color: "#DE02B5";
             font.bold: true;
             leftPadding: 5;

@@ -62,6 +62,5 @@ private:
     ContactInfo *_main_user{};
 
     ContactProxyList *_contact_proxy_list{};
-    ClientManager *_client_manager{};
     MediaController *_media_controller{};
 };

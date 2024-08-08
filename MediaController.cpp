@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QFileDialog>
+#include "ClientManager.h"
 
 QString MediaController::_file_path;
 QString MediaController::_audio_path;
@@ -14,7 +15,6 @@ QByteArray MediaController::_file_data;
 
 MediaController::MediaController(QObject *parent)
     : QObject(parent),
-      _client_manager(new ClientManager(this)),
       _session(new QMediaCaptureSession(this)),
       _audio_input(new QAudioInput(this)),
       _recorder(new QMediaRecorder(this))
@@ -107,10 +107,10 @@ void MediaController::stop_recording()
         }
 
         const QString &IDBFS_audio_name = QString("%1_%2").arg(current_time, audio_name);
-        _client_manager->IDBFS_save_audio(IDBFS_audio_name, _audio_data, static_cast<int>(_audio_data.size()));
+        ClientManager::IDBFS_save_audio(IDBFS_audio_name, _audio_data, static_cast<int>(_audio_data.size()));
         _audio_name = IDBFS_audio_name;
 
-        _audio_path = _client_manager->get_audio_url(IDBFS_audio_name).toString();
+        _audio_path = ClientManager::get_audio_url(IDBFS_audio_name).toString();
 #else
         _audio_path = audio_path;
 #endif
@@ -138,7 +138,7 @@ void MediaController::view_file(const QString &file_path)
     if (!file_path.isEmpty())
     {
 #ifdef __EMSCRIPTEN__
-        QDesktopServices::openUrl(_client_manager->get_file_url(file_path));
+        QDesktopServices::openUrl(ClientManager::get_file_url(file_path));
 #else
         QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
 #endif
@@ -162,7 +162,7 @@ void MediaController::send_file()
             _file_data = file_data;
             _file_name = file_name;
             QString IDBFS_file_name = QString("%1_%2").arg(current_time, QFileInfo(file_name).fileName());
-            _client_manager->IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
+            ClientManager::IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
 
             _file_path = IDBFS_file_name;
 #else

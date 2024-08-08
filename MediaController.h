@@ -54,8 +54,6 @@ private:
 
     qint64 _record_start_time{0};
 
-    ClientManager *_client_manager{nullptr};
-
 signals:
     void time_display_changed();
     void audio_source_changed();

@@ -17,6 +17,9 @@ Rectangle
     GroupListModel
     {id: group_list_model}
 
+    ClientManager
+    {id: client_manager}
+
     Component
     {
         id: loginWindow;
@@ -65,12 +68,18 @@ Rectangle
         SettingWindow{}
     }
 
+    Component
+    {
+        id: forgottenPassword;
+        ForgottenPassword{}
+    }
+
     StackView
     {
         id: stackView;
 
         anchors.fill: parent;
         
-        initialItem: contactWindow;
+        initialItem: loginWindow;
     }
 }

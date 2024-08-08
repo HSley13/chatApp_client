@@ -5,7 +5,6 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _main_user(new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this)),
       _active_chat(Q_NULLPTR),
       _contact_proxy_list(new ContactProxyList(this)),
-      _client_manager(new ClientManager(this)),
       _media_controller(new MediaController(this))
 {
     ContactInfo *sleyHortes = new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 1, this);

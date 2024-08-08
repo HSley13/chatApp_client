@@ -3,7 +3,7 @@ import QtQuick.Controls;
 import QtQuick.Layouts;
 import Qt.labs.platform;
 
-Rectangle
+Item
 {
     id: root;
     property Item groupListObject: groupList.createObject(stackView2);

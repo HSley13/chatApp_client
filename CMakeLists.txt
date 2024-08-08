@@ -28,6 +28,7 @@ qt_add_qml_module(app
                     customModules/Main.qml
                     customModules/LoginWindow.qml 
                     customModules/SignUpWindow.qml 
+                    customModules/ForgottenPassword.qml
 
                     customModules/ContactWindow.qml
                     customModules/ContactList.qml
@@ -110,6 +111,7 @@ qt_add_qml_module(app
                     icons/justice_league_icon.png
                     icons/question_icon.png
                     icons/answer_icon.png
+                    icons/forgotten_icon.png
                     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")

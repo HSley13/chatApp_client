@@ -2,7 +2,7 @@ import QtQuick;
 import QtQuick.Controls;
 import QtQuick.Layouts;
 
-Rectangle
+Item
 {
     id: root;
 
@@ -166,8 +166,17 @@ Rectangle
             id: mouseArea;
             anchors.fill: parent;
 
-            // FIXME: Handle this click properly
-            onClicked: console.log("Sign Up Button Click");
+            onClicked: 
+            {
+                client_manager.send_sign_up(signUpphone_number.inputField, signUpFirstName.inputField, signUpLastName.inputField, signUpPassword.inputField, signUpPasswordConfirmation.inputField, secret_answer.inputField, secret_question.inputField);
+                signUpphone_number.inputField = "";
+                signUpFirstName.inputField = "";
+                signUpLastName.inputField = "";
+                signUpPassword.inputField = ""; 
+                signUpPasswordConfirmation.inputField = "";
+                secret_answer.inputField = ""; 
+                secret_question.inputField = "";
+            }
         }
 
         anchors.top: signupInfo.bottom;

@@ -1,27 +1,16 @@
 #include "ClientManager.h"
 
-QWebSocket *ClientManager::_socket = nullptr;
-
 ClientManager::ClientManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      _socket(new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this))
 {
-    if (!_socket)
-    {
-        _socket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this);
-        QUrl url = QUrl(QString("wss://chatapp.hslay13.online"));
+    _socket->open(QUrl(QString("wss://chatapp.hslay13.online")));
 
-        connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
-        connect(_socket, &QWebSocket::binaryMessageReceived, this, &ClientManager::on_binary_message_received);
-        connect(_socket, &QWebSocket::errorOccurred, this, [this, &url]()
-                {
-                    if (_socket->state() == QAbstractSocket::UnconnectedState)
-                        QTimer::singleShot(3000, this, [this, &url]() { _socket->open(url); }); });
+    connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
+    connect(_socket, &QWebSocket::binaryMessageReceived, this, &ClientManager::on_binary_message_received);
 
-        _socket->open(url);
-
-        mount_audio_IDBFS();
-        mount_file_IDBFS();
-    }
+    mount_audio_IDBFS();
+    mount_file_IDBFS();
 }
 
 void ClientManager::on_binary_message_received(const QByteArray &data)
@@ -32,6 +21,60 @@ void ClientManager::on_disconnected()
 {
 }
 /*-------------------------------------------------------------------- Functions --------------------------------------------------------------*/
+
+void ClientManager::send_sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
+{
+    if (!phone_number)
+    {
+        // FIXME: push notification
+        return;
+    }
+
+    if (first_name.isEmpty() || last_name.isEmpty())
+    {
+        // FIXME: push notification
+        return;
+    }
+
+    if (password.isEmpty())
+    {
+        // FIXME: push notification
+        return;
+    }
+
+    if (password.compare(password_confirmation))
+    {
+        // FIXME: push notification
+        return;
+    }
+
+    if (secret_question.isEmpty() || secret_answer.isEmpty())
+    {
+        // FIXME: push notification
+        return;
+    }
+
+    QJsonObject json_object;
+    json_object["type"] = "sign_up";
+    json_object["phone_number"] = phone_number;
+    json_object["first_name"] = first_name;
+    json_object["last_name"] = last_name;
+    json_object["password"] = password;
+    json_object["secret_question"] = secret_question;
+    json_object["secret_answer"] = secret_answer;
+
+    QJsonDocument Json_doc(json_object);
+
+    _socket->sendTextMessage(QString::fromUtf8(Json_doc.toJson()));
+}
+
+void ClientManager::send_login_request(const QString &phone_number, const QString &password, const QString &time_zone)
+{
+}
+
+void send_login_request(const int &phone_number, const QString &password, const QString &time_zone)
+{
+}
 
 void ClientManager::mount_audio_IDBFS()
 {
@@ -351,4 +394,39 @@ void ClientManager::get_user_time()
 #else
     _time_zone = QTimeZone::systemTimeZone().id();
 #endif
+}
+
+void ClientManager::map_initialization()
+{
+    _map["text"] = TextMessage;
+    _map["is_typing"] = IsTyping;
+    _map["set_name"] = SetName;
+    _map["file"] = FileMessage;
+    _map["audio"] = AudioMessage;
+    _map["save_data"] = SaveData;
+    _map["client_new_name"] = ClientNewName;
+    _map["client_disconnected"] = ClientDisconnected;
+    _map["client_connected"] = ClientConnected;
+    _map["added_you"] = AddedYou;
+    _map["lookup_friend"] = LookupFriend;
+    _map["create_conversation"] = CreateConversation;
+    _map["save_message"] = SaveMessage;
+    _map["sign_up"] = SignUp;
+    _map["login_request"] = LoginRequest;
+    _map["new_password_request"] = NewPasswordRequest;
+    _map["update_password"] = UpdatePassword;
+    _map["delete_message"] = DeleteMessage;
+    _map["delete_group_message"] = DeleteGroupMessage;
+    _map["new_group"] = NewGroup;
+    _map["added_to_group"] = AddedToGroup;
+    _map["group_is_typing"] = GroupIsTyping;
+    _map["group_text"] = GroupText;
+    _map["group_file"] = GroupFile;
+    _map["group_audio"] = GroupAudio;
+    _map["new_group_member"] = NewGroupMember;
+    _map["remove_group_member"] = RemoveGroupMember;
+    _map["request_data"] = RequestData;
+    _map["delete_account"] = DeleteAccount;
+    _map["last_message_read"] = LastMessageRead;
+    _map["group_last_message_read"] = GroupLastMessageRead;
 }
