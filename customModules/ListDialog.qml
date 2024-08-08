@@ -1,19 +1,18 @@
-import QtQuick;
-import QtQuick.Controls;
-import QtQuick.Layouts;
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
 Dialog
 {
     id: root;
 
     property string titles: "";
-    property var names;
     property alias inputField: textInput.inputField;
     property bool input: false;
     property var selectedItems: [];
+    property var model;
     property bool checkable: false;
     property string placeHolder: "";
-    property int index: (listView.index) ? listView.index : 0;
 
     signal dialogAccepted();
     signal dialogRejected();
@@ -24,6 +23,7 @@ Dialog
     title: titles;
     modal: true;
     width: 300;
+    height: 400;
     anchors.centerIn: parent;
 
     background: Rectangle
@@ -50,49 +50,135 @@ Dialog
 
         ListView
         {
-            id: listView;
+            id: membersList;
             Layout.fillWidth: true;
-            height: input ? 200 : 300;
-            model: names;
+            Layout.fillHeight: true;
+            model: root.model;
             clip: true;
+            spacing: 10;
 
             delegate: Item
             {
                 width: parent.width;
                 height: 40;
 
+                property string statusIconSource: status ? "qrc:/QML/ClientApp/icons/online_icon.png" : "qrc:/QML/ClientApp/icons/offline_icon.png";
+
+
+                Rectangle
+                {
+                    id: hoverBackground;
+                    width: mouseArea.containsMouse ? parent.width : 0;
+                    height: parent.height;
+
+                    anchors.left: parent.left;
+                    anchors.leftMargin: profileImage.width / 2;
+
+                    Behavior on width { SmoothedAnimation { duration: 450; } }
+
+                    gradient: Gradient
+                    {
+                        orientation: Gradient.Horizontal;
+
+                        GradientStop { position: 0.0; color: "transparent"; }
+                        GradientStop { position: 0.5; color: "#ed7bb4"; }
+                        GradientStop { position: 1.0; color: "transparent"; }
+                    }
+                }
+
                 RowLayout
                 {
-                    spacing: 5;
+                    width: parent.width;
+                    height: parent.height;
+                    spacing: 10;
 
                     CheckBox
                     {
                         id: checkBox;
-                        checked: false;
                         visible: root.checkable;
+                        checked: false;
 
-                        onCheckedChanged: (checked) ? root.selectedItems.push(name) : root.selectedItems.splice(root.selectedItems.indexOf(name), 1);
+                        onCheckedChanged: (checked) ? root.selectedItems.push(phone_number) : root.selectedItems.splice(root.selectedItems.indexOf(phone_number), 1);
                     }
 
-                    Rectangle
+                    RowLayout
                     {
-                        width: parent.width - checkBox.width - 10;
-                        height: 30;
-                        color: "transparent";  
+                        width: parent.width * 0.8;
+                        height: parent.height;
+                        spacing: 5;
 
-                        Text
+                        Item
                         {
-                            text: name;
-                            font.pixelSize: 16;
-                            color: "black";
-                            wrapMode: Text.Wrap;  
-                            elide: Text.ElideRight;  
-                            anchors.left: parent.left;
+                            width: 40;
+                            height: width;
+
+                            RoundedImage
+                            {
+                                id: profileImage;
+                                imageSource: image_url;
+                                width: parent.width;
+                                height: parent.height;
+                            }
+
+                            Image
+                            {
+                                id: statusDot;
+                                source: statusIconSource;
+                                width: 10;
+                                height: 10;
+                                anchors.bottom: profileImage.bottom;
+                                anchors.right: profileImage.right;
+                                anchors.margins: 2;
+                            }
+                        }
+
+                        ColumnLayout
+                        {
+                            Layout.fillWidth: true;
+                            Layout.preferredHeight: parent.height;
+                            Layout.leftMargin: 4;
+                            spacing: 2;
+                            Layout.topMargin: 3;
+
+                            Text
+                            {
+                                text: name;
+                                color: "black";
+                                font.pixelSize: 12;
+                                Layout.fillWidth: true;
+                                Layout.fillHeight: true;
+                                verticalAlignment: Text.AlignTop;
+                            }
+
+                            Text
+                            {
+                                text: phone_number;
+                                color: "black";
+                                font.pixelSize: 10;
+                                Layout.fillWidth: true;
+                                Layout.fillHeight: true;
+                                verticalAlignment: Text.AlignTop;
+                                elide: Text.ElideRight;
+                            }
+                        }
+
+                        MouseArea
+                        {
+                            id: mouseArea;
+                            anchors.fill: parent;
+                            hoverEnabled: true;
+
+                            onClicked:
+                            {
+                                contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
+                                stackView.push(chatWindow);
+                                root.accept();
+                            }
                         }
                     }
                 }
             }
-        }
+        }   
 
         Rectangle
         {
@@ -105,22 +191,12 @@ Dialog
                 text: "OK";
                 onClicked:
                 {
-                    // group_list_model.add_group(textInput.inputField, root.selectedItems);
-
-                    for (var i = 0; i < listView.count; i++)
-                    {
-                        var item = listView.itemAtIndex(i);
-                        if (item.checkBox)
-                            item.checkBox.checked = false;
-                    }
-                    
                     console.log("Selected Items: " + root.selectedItems);
                     root.accept();
                 }
 
                 anchors.left: parent.left;
             }
-
 
             Button
             {

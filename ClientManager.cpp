@@ -7,14 +7,127 @@ ClientManager::ClientManager(QObject *parent)
     _socket->open(QUrl(QString("wss://chatapp.hslay13.online")));
 
     connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
-    connect(_socket, &QWebSocket::binaryMessageReceived, this, &ClientManager::on_binary_message_received);
+    connect(_socket, &QWebSocket::textMessageReceived, this, &ClientManager::on_text_message_received);
 
     mount_audio_IDBFS();
     mount_file_IDBFS();
 }
 
-void ClientManager::on_binary_message_received(const QByteArray &data)
+void ClientManager::on_text_message_received(const QString &message)
 {
+    QJsonDocument json_doc = QJsonDocument::fromJson(message.toUtf8());
+    if (json_doc.isNull() || !json_doc.isObject())
+    {
+        qWarning() << "Invalid JSON received.";
+        return;
+    }
+
+    QJsonObject json_object = json_doc.object();
+    MessageType type = _map.value(json_object["type"].toString());
+
+    switch (type)
+    {
+    case TextMessage:
+        // Handle TextMessage
+        break;
+    case IsTyping:
+        // Handle IsTyping
+        break;
+    case SetName:
+        // Handle SetName
+        break;
+    case FileMessage:
+        // Handle FileMessage
+        break;
+    case AudioMessage:
+        // Handle AudioMessage
+        break;
+    case SaveData:
+        // Handle SaveData
+        break;
+    case ClientNewName:
+        // Handle ClientNewName
+        break;
+    case ClientDisconnected:
+        // Handle ClientDisconnected
+        break;
+    case ClientConnected:
+        // Handle ClientConnected
+        break;
+    case AddedYou:
+        // Handle AddedYou
+        break;
+    case LookupFriend:
+        // Handle LookupFriend
+        break;
+    case CreateConversation:
+        // Handle CreateConversation
+        break;
+    case SaveMessage:
+        // Handle SaveMessage
+        break;
+    case SignUp:
+    {
+        const QString &status = json_object["status"].toString();
+        // FIXME:
+    }
+
+    break;
+    case LoginRequest:
+        // Handle LoginRequest
+        break;
+    case NewPasswordRequest:
+        // Handle NewPasswordRequest
+        break;
+    case UpdatePassword:
+        // Handle UpdatePassword
+        break;
+    case DeleteMessage:
+        // Handle DeleteMessage
+        break;
+    case DeleteGroupMessage:
+        // Handle DeleteGroupMessage
+        break;
+    case NewGroup:
+        // Handle NewGroup
+        break;
+    case AddedToGroup:
+        // Handle AddedToGroup
+        break;
+    case GroupIsTyping:
+        // Handle GroupIsTyping
+        break;
+    case GroupText:
+        // Handle GroupText
+        break;
+    case GroupFile:
+        // Handle GroupFile
+        break;
+    case GroupAudio:
+        // Handle GroupAudio
+        break;
+    case NewGroupMember:
+        // Handle NewGroupMember
+        break;
+    case RemoveGroupMember:
+        // Handle RemoveGroupMember
+        break;
+    case RequestData:
+        // Handle RequestData
+        break;
+    case DeleteAccount:
+        // Handle DeleteAccount
+        break;
+    case LastMessageRead:
+        // Handle LastMessageRead
+        break;
+    case GroupLastMessageRead:
+        // Handle GroupLastMessageRead
+        break;
+    default:
+        qWarning() << "Unknown message type: " << json_object["type"].toString();
+        break;
+    }
 }
 
 void ClientManager::on_disconnected()
@@ -54,14 +167,14 @@ void ClientManager::send_sign_up(const int &phone_number, const QString &first_n
         return;
     }
 
-    QJsonObject json_object;
-    json_object["type"] = "sign_up";
-    json_object["phone_number"] = phone_number;
-    json_object["first_name"] = first_name;
-    json_object["last_name"] = last_name;
-    json_object["password"] = password;
-    json_object["secret_question"] = secret_question;
-    json_object["secret_answer"] = secret_answer;
+    QJsonObject json_object{
+        {"type", "sign_up"},
+        {"phone_number", phone_number},
+        {"first_name", first_name},
+        {"last_name", last_name},
+        {"password", password},
+        {"secret_question", secret_question},
+        {"secret_answer", secret_answer}};
 
     QJsonDocument Json_doc(json_object);
 
@@ -398,7 +511,7 @@ void ClientManager::get_user_time()
 
 void ClientManager::map_initialization()
 {
-    _map["text"] = TextMessage;
+    _map["sign_up"] = SignUp;
     _map["is_typing"] = IsTyping;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
@@ -411,7 +524,7 @@ void ClientManager::map_initialization()
     _map["lookup_friend"] = LookupFriend;
     _map["create_conversation"] = CreateConversation;
     _map["save_message"] = SaveMessage;
-    _map["sign_up"] = SignUp;
+    _map["text"] = TextMessage;
     _map["login_request"] = LoginRequest;
     _map["new_password_request"] = NewPasswordRequest;
     _map["update_password"] = UpdatePassword;
@@ -429,4 +542,5 @@ void ClientManager::map_initialization()
     _map["delete_account"] = DeleteAccount;
     _map["last_message_read"] = LastMessageRead;
     _map["group_last_message_read"] = GroupLastMessageRead;
+    _map["invalid_type"] = InvalidType;
 }

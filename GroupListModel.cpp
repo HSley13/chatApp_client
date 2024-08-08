@@ -6,10 +6,12 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _main_user(new ContactInfo(0, "Sley", 1234, true, "qrc:/QML/ClientApp/icons/name_icon.png", 0, this)),
       _active_group_chat(Q_NULLPTR),
-      _group_proxy_list(new GroupProxyList(this))
+      _group_proxy_list(new GroupProxyList(this)),
+      _contact_list_model(new ContactListModel(this))
 {
     GroupInfo *avengers = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
     avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", "", "", 3333, "Chris Evans", this));
+    avengers->set_group_members(_contact_list_model->contacts());
     _groups.append(avengers);
 
     GroupInfo *deadpool_wolverine = new GroupInfo(2222, "DeadPool & Wolverine", {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
@@ -21,6 +23,11 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     _groups.append(justiceLeague);
 
     _group_proxy_list->setSourceModel(this);
+}
+
+ContactListModel *GroupListModel::contact_list_model() const
+{
+    return _contact_list_model;
 }
 
 const QList<GroupInfo *> &GroupListModel::groups() const
@@ -119,8 +126,8 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
         return group_info->group_ID();
     case GroupNameRole:
         return group_info->group_name();
-    case MemberListRole:
-        return QVariant::fromValue(group_info->members_list());
+    case GroupMembersRole:
+        return QVariant::fromValue(group_info->group_members());
     case GroupUnreadMessageRole:
         return group_info->group_unread_message();
     case GroupMessagesRole:
@@ -153,6 +160,10 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
         break;
     case LastMessageTimeRole:
         group_info->set_last_message_time(value.value<QDateTime>());
+        break;
+    case GroupMembersRole:
+        group_info->set_group_members(value.value<QList<ContactInfo *>>());
+        break;
     default:
         return false;
     }
@@ -167,14 +178,13 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
 
     roles[GroupIDRole] = "Group_ID";
     roles[GroupNameRole] = "group_name";
-    roles[MemberListRole] = "members_list";
+    roles[GroupMembersRole] = "group_members";
     roles[GroupUnreadMessageRole] = "group_unread_message";
     roles[GroupMessagesRole] = "group_messages";
     roles[GroupImageUrlRole] = "group_image_url";
     roles[GroupObjectRole] = "group_contact_object";
     roles[LastMessageTimeRole] = "last_message_time";
 
-    // emit dataChanged(index, index, {role});
     return roles;
 }
 

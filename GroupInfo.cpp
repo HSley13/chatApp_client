@@ -3,11 +3,11 @@
 GroupInfo::GroupInfo(QObject *parent)
     : QObject(parent), _group_messages(new GroupChatListModel(this)) {}
 
-GroupInfo::GroupInfo(const int &group_ID, const QString &group_name, const QHash<int, QString> &members_list, const QString &group_image_url, const int &group_unread_message, QObject *parent)
+GroupInfo::GroupInfo(const int &group_ID, const QString &group_name, const QList<ContactInfo *> &group_members, const QString &group_image_url, const int &group_unread_message, QObject *parent)
     : QObject(parent),
       _group_ID(group_ID),
       _group_name(group_name),
-      _members_list(members_list),
+      _group_members(group_members),
       _group_image_url(group_image_url),
       _group_unread_message(group_unread_message),
       _group_messages(new GroupChatListModel(this)) {}
@@ -27,19 +27,29 @@ void GroupInfo::set_group_name(const QString &new_group_name)
     emit group_name_changed();
 }
 
-const QHash<int, QString> &GroupInfo::members_list() const
+const QList<ContactInfo *> &GroupInfo::group_members() const
 {
-    return _members_list;
+    return _group_members;
 }
 
-void GroupInfo::set_members_list(const QHash<int, QString> &new_members_list)
+void GroupInfo::set_group_members(const QList<ContactInfo *> &group_members)
 {
-    if (_members_list == new_members_list)
+    if (group_members.isEmpty() || group_members == _group_members)
         return;
 
-    _members_list = new_members_list;
+    _group_members = group_members;
 
-    emit members_list_changed();
+    emit group_members_changed();
+}
+
+void GroupInfo::add_group_members(ContactInfo *new_member)
+{
+    if (_group_members.contains(new_member))
+        return;
+
+    _group_members.append(new_member);
+
+    emit group_members_changed();
 }
 
 const QString &GroupInfo::group_image_url() const

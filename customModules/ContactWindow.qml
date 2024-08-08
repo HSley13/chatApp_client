@@ -62,15 +62,7 @@ Item
             {
                 id: newConversation_dialog;
                 title: "New Conversation, Select a Person";
-                checkable: true;
-                
-                names: contact_list_model.contact_proxy_list;
-
-                onDialogAccepted:
-                {
-                    contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
-                    stackView.push(chatWindow);
-                }
+                model: contact_list_model.contact_proxy_list;
             }
 
             ListDialog
@@ -80,12 +72,11 @@ Item
                 title: "New Group";
                 checkable: true;
                 placeHolder: "Enter Group Name";
-
-                names: contact_list_model.contact_proxy_list;
+                model: contact_list_model.contact_proxy_list;
 
                 onDialogAccepted:
                 {
-                     group_list_model.add_group(inputField, selectedItems);
+                    //  add the group and its members
                     // FIXME: notify the server
                 }
             }
@@ -173,6 +164,9 @@ Item
         id: menuPanel;
         anchors.right: menu.left;
         anchors.top: menu.bottom;
+
+        width: 160;
+        height: 120;
 
         Component.onCompleted:
         {

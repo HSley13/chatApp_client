@@ -63,6 +63,21 @@ Item
                 }
             }
         }
+
+        IconText
+        {
+            id: menu;
+            imageSource1: "qrc:/QML/ClientApp/icons/menu_icon.png";
+            imageSource2: "qrc:/QML/ClientApp/icons/cancel_menu.png";
+            height: parent.height * 0.5;
+            width: height;
+
+            onItemClicked: menuPanel.hidden = !menuPanel.hidden;
+
+            anchors.verticalCenter: parent.verticalCenter;
+            anchors.right: parent.right;
+            anchors.rightMargin: menuPanel.hidden ? 10 : menuPanel.width;
+        }
     }
 
     Rectangle 
@@ -166,5 +181,17 @@ Item
         }
 
         anchors.bottom: parent.bottom;
+    }
+
+    GroupMenuPanel 
+    {
+        id: menuPanel;
+        anchors.right: menu.left;
+        anchors.top: menu.bottom;
+
+        width: parent.width * .4;
+        height: parent.height * .5;
+
+        x: hidden ? parent.width : parent.width - width;
     }
 }

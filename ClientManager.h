@@ -69,12 +69,12 @@ public:
     Q_INVOKABLE void send_login_request(const QString &phone_number, const QString &password, const QString &time_zone);
 
 public slots:
-    void on_binary_message_received(const QByteArray &data);
+    void on_text_message_received(const QString &data);
     void on_disconnected();
 
 private:
     QWebSocket *_socket;
     QString _time_zone;
 
-    QMap<QString, MessageType> _map;
+    QHash<QString, MessageType> _map;
 };

@@ -5,8 +5,6 @@ Rectangle
     id: root;
 
     property bool hidden: true;
-    width: 160;
-    height: 120;
 
     ListView 
     {

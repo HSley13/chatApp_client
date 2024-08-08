@@ -3,6 +3,8 @@
 #include "GroupInfo.h"
 #include "GroupProxyList.h"
 #include "ContactInfo.h"
+#include "ContactListModel.h"
+
 class GroupListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -10,13 +12,14 @@ class GroupListModel : public QAbstractListModel
 
     Q_PROPERTY(GroupInfo *active_group_chat READ active_group_chat WRITE set_active_group_chat NOTIFY active_group_chat_changed)
     Q_PROPERTY(ContactInfo *main_user READ main_user NOTIFY main_user_changed)
+    Q_PROPERTY(ContactListModel *contact_list_model READ contact_list_model NOTIFY contact_list_model_changed)
     Q_PROPERTY(GroupProxyList *group_proxy_list READ group_proxy_list NOTIFY group_proxy_list_changed)
 
 public:
     enum GroupRoles
     {
         GroupIDRole = Qt::UserRole + 1,
-        MemberListRole,
+        GroupMembersRole,
         GroupNameRole,
         GroupUnreadMessageRole,
         GroupImageUrlRole,
@@ -46,11 +49,14 @@ public:
     Q_INVOKABLE void group_audio_sent();
     Q_INVOKABLE void group_file_sent();
 
+    ContactListModel *contact_list_model() const;
+
 private:
     QList<GroupInfo *> _groups;
     GroupInfo *_active_group_chat{};
     ContactInfo *_main_user{};
 
+    ContactListModel *_contact_list_model;
     GroupProxyList *_group_proxy_list{};
 
 signals:
@@ -59,4 +65,6 @@ signals:
 
     void group_proxy_list_changed();
     void main_user_changed();
+
+    void contact_list_model_changed();
 };

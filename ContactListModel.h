@@ -49,6 +49,7 @@ public:
     Q_INVOKABLE void audio_sent();
     Q_INVOKABLE void file_sent();
 
+    QList<ContactInfo *> _contacts;
 signals:
     void contacts_changed();
     void active_chat_changed();
@@ -57,7 +58,6 @@ signals:
     void main_user_changed();
 
 private:
-    QList<ContactInfo *> _contacts;
     ContactInfo *_active_chat{};
     ContactInfo *_main_user{};
 
