@@ -108,6 +108,16 @@ ChatListModel *ContactInfo::messages() const
     return _messages;
 }
 
+void ContactInfo::set_messages(ChatListModel *messages)
+{
+    if (messages == _messages)
+        return;
+
+    _messages = messages;
+
+    emit messages_changed();
+}
+
 void ContactInfo::add_message(MessageInfo *message)
 {
     _messages->append(message);

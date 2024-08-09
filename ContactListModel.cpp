@@ -205,12 +205,9 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     case ImageUrlRole:
         contact_info->set_image_url(value.toString());
         break;
-    // case MessagesRole:
-    //     contact_info->set_messages(value.value<QList<MessageInfo *>>());
-    //     break;
-    // case ContactObjectRole:
-    //     contact_info->set_contact_info(value.value<ContactInfo *>());
-    //     break;
+    case MessagesRole:
+        contact_info->set_messages(value.value<ChatListModel *>());
+        break;
     case LastMessageTimeRole:
         contact_info->set_last_message_time(value.value<QDateTime>());
         break;

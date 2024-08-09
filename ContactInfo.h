@@ -13,7 +13,7 @@ class ContactInfo : public QObject
     Q_PROPERTY(QString image_url READ image_url WRITE set_image_url NOTIFY image_url_changed)
     Q_PROPERTY(int unread_message READ unread_message WRITE set_unread_message NOTIFY unread_message_changed)
 
-    Q_PROPERTY(ChatListModel *messages READ messages CONSTANT FINAL)
+    Q_PROPERTY(ChatListModel *messages READ messages WRITE set_messages NOTIFY messages_changed)
 
 public:
     ContactInfo(QObject *parent = nullptr);
@@ -39,6 +39,7 @@ public:
 
     void add_message(MessageInfo *message);
     ChatListModel *messages() const;
+    void set_messages(ChatListModel *messages);
 
     QDateTime last_message_time() const;
     void set_last_message_time(const QDateTime &time);

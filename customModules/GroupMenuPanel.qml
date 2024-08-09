@@ -18,7 +18,7 @@ Rectangle
 
         RoundedButton
         {
-            text: "+ Members";
+            text: "+ Add";
             color: "white";
             Layout.fillWidth: true;
             height: 22;
@@ -32,7 +32,7 @@ Rectangle
 
         RoundedButton
         {
-            text: "- Members";
+            text: "- Remove";
             color: "white";
             Layout.fillWidth: true;
             height: 30;

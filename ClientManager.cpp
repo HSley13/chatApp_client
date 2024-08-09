@@ -11,6 +11,7 @@ ClientManager::ClientManager(QObject *parent)
 
     mount_audio_IDBFS();
     mount_file_IDBFS();
+    get_user_time();
 }
 
 void ClientManager::on_text_message_received(const QString &message)
@@ -27,6 +28,13 @@ void ClientManager::on_text_message_received(const QString &message)
 
     switch (type)
     {
+    case SignUp:
+    {
+        const QString &status = json_object["status"].toString();
+        const QString &message = json_object["message"].toString();
+        // FIXME:
+    }
+    break;
     case TextMessage:
         // Handle TextMessage
         break;
@@ -66,13 +74,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case SaveMessage:
         // Handle SaveMessage
         break;
-    case SignUp:
-    {
-        const QString &status = json_object["status"].toString();
-        // FIXME:
-    }
-
-    break;
     case LoginRequest:
         // Handle LoginRequest
         break;
@@ -181,12 +182,17 @@ void ClientManager::send_sign_up(const int &phone_number, const QString &first_n
     _socket->sendTextMessage(QString::fromUtf8(Json_doc.toJson()));
 }
 
-void ClientManager::send_login_request(const QString &phone_number, const QString &password, const QString &time_zone)
+void ClientManager::send_login_request(const QString &phone_number, const QString &password)
 {
-}
+    QJsonObject json_object{
+        {"type", "login_request"},
+        {"phone_number", phone_number},
+        {"password", password},
+        {"time_zone", _time_zone}};
 
-void send_login_request(const int &phone_number, const QString &password, const QString &time_zone)
-{
+    QJsonDocument json_doc(json_object);
+
+    _socket->sendTextMessage(QString::fromUtf8(json_doc.toJson()));
 }
 
 void ClientManager::mount_audio_IDBFS()

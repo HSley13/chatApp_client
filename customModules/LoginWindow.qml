@@ -66,7 +66,7 @@ Item
 
         InputField
         {
-            id: loginphone_number;
+            id: loginPhoneNumber;
             image1Source: "qrc:/QML/ClientApp/icons/phone_icon.png";
 
             echoMode: TextInput.Normal;
@@ -108,7 +108,6 @@ Item
         {
             anchors.fill: parent;
 
-            // FIXME: handle click button correctly
             onClicked: stackView.push(forgottenPassword);
         }
 
@@ -139,8 +138,7 @@ Item
             id: mouseArea;
             anchors.fill: parent;
 
-            // FIXME: handle click button correctly
-            onClicked: console.log("Login Button Click");
+            onClicked: client_manager(loginPhoneNumber.inputField, loginPassword.inputField);
         }
 
         anchors.top: passwordForgotten.bottom;

@@ -102,6 +102,16 @@ GroupChatListModel *GroupInfo::group_messages() const
     return _group_messages;
 }
 
+void GroupInfo::set_group_messages(GroupChatListModel *group_messages)
+{
+    if (_group_messages == group_messages)
+        return;
+
+    _group_messages = group_messages;
+
+    emit group_messages_changed();
+}
+
 void GroupInfo::add_group_message(GroupMessageInfo *message)
 {
     _group_messages->append(message);

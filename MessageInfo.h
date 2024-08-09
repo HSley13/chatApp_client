@@ -25,6 +25,8 @@ public:
 
     const QDateTime date_time() const;
 
+    void hello();
+
 private:
     QString _text{};
     QString _audio_source{};

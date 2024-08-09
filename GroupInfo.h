@@ -14,8 +14,7 @@ class GroupInfo : public QObject
     Q_PROPERTY(int group_unread_message READ group_unread_message WRITE set_group_unread_message NOTIFY group_unread_message_changed)
 
     Q_PROPERTY(QList<ContactInfo *> group_members READ group_members WRITE set_group_members NOTIFY group_members_changed)
-
-    Q_PROPERTY(GroupChatListModel *group_messages READ group_messages CONSTANT FINAL)
+    Q_PROPERTY(GroupChatListModel *group_messages READ group_messages WRITE set_group_messages NOTIFY group_messages_changed)
 
 public:
     GroupInfo(QObject *parent = nullptr);
@@ -40,6 +39,7 @@ public:
 
     void add_group_message(GroupMessageInfo *group_message);
     GroupChatListModel *group_messages() const;
+    void set_group_messages(GroupChatListModel *group_messages);
 
     QDateTime last_message_time() const;
     void set_last_message_time(const QDateTime &time);

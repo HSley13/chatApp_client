@@ -40,7 +40,14 @@ Rectangle
         rightPadding: sendMessageButton.width;
         verticalAlignment: TextField.AlignVCenter;
 
-        onTextChanged: isSearching ? contact_list_model.contact_proxy_list_chat.setFilterFixedString(text) : "";
+        onTextChanged: 
+        {
+            if(isSearching) 
+            {
+                contact_list_model.contact_proxy_list_chat.setFilterFixedString(text);
+                group_list_model.group_proxy_list.setFilterFixedString(text);
+            }
+        }
 
         onAccepted:
         {

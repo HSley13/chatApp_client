@@ -66,7 +66,7 @@ public:
     void map_initialization();
 
     Q_INVOKABLE void send_sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer);
-    Q_INVOKABLE void send_login_request(const QString &phone_number, const QString &password, const QString &time_zone);
+    Q_INVOKABLE void send_login_request(const QString &phone_number, const QString &password);
 
 public slots:
     void on_text_message_received(const QString &data);
