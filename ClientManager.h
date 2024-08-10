@@ -17,42 +17,6 @@ class ClientManager : public QObject
     QML_ELEMENT
 
 public:
-    enum MessageType
-    {
-        TextMessage = Qt::UserRole + 1,
-        IsTyping,
-        SetName,
-        FileMessage,
-        AudioMessage,
-        SaveData,
-        ClientNewName,
-        ClientDisconnected,
-        ClientConnected,
-        AddedYou,
-        LookupFriend,
-        CreateConversation,
-        SaveMessage,
-        SignUp,
-        LoginRequest,
-        NewPasswordRequest,
-        UpdatePassword,
-        DeleteMessage,
-        DeleteGroupMessage,
-        NewGroup,
-        AddedToGroup,
-        GroupIsTyping,
-        GroupText,
-        GroupFile,
-        GroupAudio,
-        NewGroupMember,
-        RemoveGroupMember,
-        RequestData,
-        DeleteAccount,
-        LastMessageRead,
-        GroupLastMessageRead,
-        InvalidType
-    };
-
     ClientManager(QObject *parent = nullptr);
 
     void mount_audio_IDBFS();
@@ -72,9 +36,47 @@ public slots:
     void on_text_message_received(const QString &data);
     void on_disconnected();
 
+signals:
+    void notificationSignal(const QString &message);
+
 private:
     QWebSocket *_socket;
     QString _time_zone;
 
-    QHash<QString, MessageType> _map;
+    enum MessageType
+    {
+        SignUp = Qt::UserRole + 1,
+        IsTyping,
+        SetName,
+        FileMessage,
+        AudioMessage,
+        SaveData,
+        ClientNewName,
+        ClientDisconnected,
+        ClientConnected,
+        AddedYou,
+        LookupFriend,
+        CreateConversation,
+        SaveMessage,
+        TextMessage,
+        LoginRequest,
+        NewPasswordRequest,
+        UpdatePassword,
+        DeleteMessage,
+        DeleteGroupMessage,
+        NewGroup,
+        AddedToGroup,
+        GroupIsTyping,
+        GroupText,
+        GroupFile,
+        GroupAudio,
+        NewGroupMember,
+        RemoveGroupMember,
+        RequestData,
+        DeleteAccount,
+        LastMessageRead,
+        GroupLastMessageRead,
+        InvalidType
+    };
+    static QHash<QString, MessageType> _map;
 };

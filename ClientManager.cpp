@@ -1,5 +1,7 @@
 #include "ClientManager.h"
 
+QHash<QString, ClientManager::MessageType> ClientManager::_map;
+
 ClientManager::ClientManager(QObject *parent)
     : QObject(parent),
       _socket(new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this))
@@ -8,6 +10,8 @@ ClientManager::ClientManager(QObject *parent)
 
     connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
     connect(_socket, &QWebSocket::textMessageReceived, this, &ClientManager::on_text_message_received);
+
+    map_initialization();
 
     mount_audio_IDBFS();
     mount_file_IDBFS();
@@ -30,100 +34,79 @@ void ClientManager::on_text_message_received(const QString &message)
     {
     case SignUp:
     {
-        const QString &status = json_object["status"].toString();
-        const QString &message = json_object["message"].toString();
-        // FIXME:
+        const QString &message = QString("%1: %2")
+                                     .arg(json_object["status"].toString())
+                                     .arg(json_object["message"].toString());
+
+        emit notificationSignal(message);
+    }
+    break;
+    case LoginRequest:
+    {
+        const QString &message = QString("%1: %2")
+                                     .arg(json_object["status"].toString())
+                                     .arg(json_object["message"].toString());
+
+        emit notificationSignal(message);
     }
     break;
     case TextMessage:
-        // Handle TextMessage
         break;
     case IsTyping:
-        // Handle IsTyping
         break;
     case SetName:
-        // Handle SetName
         break;
     case FileMessage:
-        // Handle FileMessage
         break;
     case AudioMessage:
-        // Handle AudioMessage
         break;
     case SaveData:
-        // Handle SaveData
         break;
     case ClientNewName:
-        // Handle ClientNewName
         break;
     case ClientDisconnected:
-        // Handle ClientDisconnected
         break;
     case ClientConnected:
-        // Handle ClientConnected
         break;
     case AddedYou:
-        // Handle AddedYou
         break;
     case LookupFriend:
-        // Handle LookupFriend
         break;
     case CreateConversation:
-        // Handle CreateConversation
         break;
     case SaveMessage:
-        // Handle SaveMessage
-        break;
-    case LoginRequest:
-        // Handle LoginRequest
         break;
     case NewPasswordRequest:
-        // Handle NewPasswordRequest
         break;
     case UpdatePassword:
-        // Handle UpdatePassword
         break;
     case DeleteMessage:
-        // Handle DeleteMessage
         break;
     case DeleteGroupMessage:
-        // Handle DeleteGroupMessage
         break;
     case NewGroup:
-        // Handle NewGroup
         break;
     case AddedToGroup:
-        // Handle AddedToGroup
         break;
     case GroupIsTyping:
-        // Handle GroupIsTyping
         break;
     case GroupText:
-        // Handle GroupText
         break;
     case GroupFile:
-        // Handle GroupFile
         break;
     case GroupAudio:
-        // Handle GroupAudio
         break;
     case NewGroupMember:
-        // Handle NewGroupMember
         break;
     case RemoveGroupMember:
-        // Handle RemoveGroupMember
         break;
     case RequestData:
-        // Handle RequestData
         break;
     case DeleteAccount:
-        // Handle DeleteAccount
         break;
     case LastMessageRead:
-        // Handle LastMessageRead
         break;
     case GroupLastMessageRead:
-        // Handle GroupLastMessageRead
         break;
     default:
         qWarning() << "Unknown message type: " << json_object["type"].toString();
@@ -138,36 +121,6 @@ void ClientManager::on_disconnected()
 
 void ClientManager::send_sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
 {
-    if (!phone_number)
-    {
-        // FIXME: push notification
-        return;
-    }
-
-    if (first_name.isEmpty() || last_name.isEmpty())
-    {
-        // FIXME: push notification
-        return;
-    }
-
-    if (password.isEmpty())
-    {
-        // FIXME: push notification
-        return;
-    }
-
-    if (password.compare(password_confirmation))
-    {
-        // FIXME: push notification
-        return;
-    }
-
-    if (secret_question.isEmpty() || secret_answer.isEmpty())
-    {
-        // FIXME: push notification
-        return;
-    }
-
     QJsonObject json_object{
         {"type", "sign_up"},
         {"phone_number", phone_number},
@@ -287,9 +240,6 @@ QUrl ClientManager::get_audio_url(const QString &audio_name)
 
     if (!url)
     {
-        // _file_name = audio_name;
-
-        // _socket->sendBinaryMessage(_protocol->set_request_data_message(conversation_ID, UTC_time, type));
 
         return QUrl();
     }
@@ -481,9 +431,6 @@ QUrl ClientManager::get_file_url(const QString &file_name)
 
     if (!url)
     {
-        // _file_name = file_name;
-
-        // _socket->sendBinaryMessage(_protocol->set_request_data_message(conversation_ID, UTC_time, type));
 
         return QUrl();
     }
@@ -518,6 +465,7 @@ void ClientManager::get_user_time()
 void ClientManager::map_initialization()
 {
     _map["sign_up"] = SignUp;
+    _map["login_request"] = LoginRequest;
     _map["is_typing"] = IsTyping;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
@@ -531,7 +479,6 @@ void ClientManager::map_initialization()
     _map["create_conversation"] = CreateConversation;
     _map["save_message"] = SaveMessage;
     _map["text"] = TextMessage;
-    _map["login_request"] = LoginRequest;
     _map["new_password_request"] = NewPasswordRequest;
     _map["update_password"] = UpdatePassword;
     _map["delete_message"] = DeleteMessage;

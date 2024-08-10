@@ -13,11 +13,12 @@ Rectangle
     property alias echoMode: textInput.echoMode;
     property bool isMessage: false;
     property bool isSearching: false;
+    property color borderColor:  textInput.focus ? "#a10e7a" : "black";
 
     signal accepted(string value);  
 
     radius: 20;
-    border.color: textInput.focus ? "#a10e7a" : "black";
+    border.color: root.borderColor;
     border.width: textInput.focus ? 4 : 2;
     opacity: enabled ? 1 : 0.6;
 

@@ -138,7 +138,34 @@ Item
             id: mouseArea;
             anchors.fill: parent;
 
-            onClicked: client_manager(loginPhoneNumber.inputField, loginPassword.inputField);
+            onClicked: 
+            {
+                var valid = true;
+
+                if(loginPhoneNumber.inputField === "")
+                {
+                   loginPhoneNumber.borderColor = "red";
+                   valid = false;
+                }
+                else
+                loginPhoneNumber.borderColor = loginPhoneNumber.inputField.focus ? "#a10e7a" : "black";
+
+                if(loginPassword.inputField === "")
+                {
+                   loginPassword.borderColor = "red";
+                   valid = false;
+                }
+                else
+                loginPassword.borderColor = loginPassword.inputField.focus ? "#a10e7a" : "black";
+
+                 if(valid)
+                 {
+                    client_manager.send_login_request(loginPhoneNumber.inputField, loginPassword.inputField);
+
+                    loginPhoneNumber.inputField = "";
+                    loginPassword.inputField = "";
+                 }
+            }
         }
 
         anchors.top: passwordForgotten.bottom;
