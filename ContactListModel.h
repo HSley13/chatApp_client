@@ -51,7 +51,11 @@ public:
     Q_INVOKABLE void audio_sent();
     Q_INVOKABLE void file_sent();
 
-    QList<ContactInfo *> _contacts;
+    QList<ContactInfo *> _contacts{};
+    ClientManager *_client_manager{};
+
+public slots:
+    void on_sign_up(QJsonArray json_array);
 signals:
     void contacts_changed();
     void active_chat_changed();

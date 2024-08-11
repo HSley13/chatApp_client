@@ -21,14 +21,27 @@ ClientManager::ClientManager(QObject *parent)
 void ClientManager::on_text_message_received(const QString &message)
 {
     QJsonDocument json_doc = QJsonDocument::fromJson(message.toUtf8());
-    if (json_doc.isNull() || !json_doc.isObject())
+    if (json_doc.isNull() || !json_doc.isObject() || !json_doc.isArray())
     {
         qWarning() << "Invalid JSON received.";
         return;
     }
 
-    QJsonObject json_object = json_doc.object();
-    MessageType type = _map.value(json_object["type"].toString());
+    QJsonObject json_object;
+    QJsonArray json_array;
+    MessageType type;
+    if (json_doc.isObject())
+    {
+        json_object = json_doc.object();
+        MessageType type = _map.value(json_object["type"].toString());
+    }
+    else
+    {
+        json_array = json_doc.array();
+        MessageType type = _map.value(json_array.first()["type"].toString());
+    }
+
+    emit sign_up(json_array);
 
     switch (type)
     {
@@ -42,14 +55,8 @@ void ClientManager::on_text_message_received(const QString &message)
     }
     break;
     case LoginRequest:
-    {
-        const QString &message = QString("%1: %2")
-                                     .arg(json_object["status"].toString())
-                                     .arg(json_object["message"].toString());
-
-        emit notificationSignal(message);
-    }
-    break;
+        emit sign_up(json_array);
+        break;
     case TextMessage:
         break;
     case IsTyping:

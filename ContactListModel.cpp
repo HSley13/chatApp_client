@@ -7,12 +7,13 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _contact_proxy_list_chat(new ContactProxyList(this)),
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
+//   _client_manager(new ClientManager(this))
 {
-    ContactInfo *sleyHortes = new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 1, this);
-    sleyHortes->add_message(new MessageInfo(QString(), "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 2222, this));
-    sleyHortes->add_message(new MessageInfo("I created this app", QString(), QString(), 2222, this));
-    sleyHortes->add_message(new MessageInfo(QString(), QString(), "/Users/test/Downloads/Proof of Nationality_page-0001.jpg", 2222, this));
-    _contacts.append(sleyHortes);
+    // ContactInfo *sleyHortes = new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 1, this);
+    // sleyHortes->add_message(new MessageInfo(QString(), "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 2222, this));
+    // sleyHortes->add_message(new MessageInfo("I created this app", QString(), QString(), 2222, this));
+    // sleyHortes->add_message(new MessageInfo(QString(), QString(), "/Users/test/Downloads/Proof of Nationality_page-0001.jpg", 2222, this));
+    // _contacts.append(sleyHortes);
 
     ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
     bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 3333, this));
@@ -34,6 +35,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
     _contact_proxy_list->setSourceModel(this);
+
+    // connect(_client_manager, &ClientManager::sign_up, this, &ContactListModel::on_sign_up);
 }
 
 const QList<ContactInfo *> &ContactListModel::contacts() const
@@ -227,4 +230,24 @@ ContactProxyList *ContactListModel::contact_proxy_list_chat() const
 ContactProxyList *ContactListModel::contact_proxy_list() const
 {
     return _contact_proxy_list;
+}
+
+void ContactListModel::on_sign_up(QJsonArray json_array)
+{
+    qDebug() << "Within on_sign_up";
+
+    if (json_array.isEmpty())
+    {
+        qDebug() << "JsonArray is empty";
+        return;
+    }
+
+    for (const QJsonValue &value : json_array)
+    {
+        QJsonObject obj = value.toObject();
+        ContactInfo *contact = new ContactInfo(2, obj["first_name"].toString(), obj["_id"].toInt(), obj["status"].toBool(), obj["image_url"].toString(), 1, this);
+        _contacts.append(contact);
+    }
+
+    emit contacts_changed();
 }

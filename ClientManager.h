@@ -38,6 +38,7 @@ public slots:
 
 signals:
     void notificationSignal(const QString &message);
+    void sign_up(QJsonArray contacts);
 
 private:
     QWebSocket *_socket;
