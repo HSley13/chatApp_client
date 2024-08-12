@@ -23,7 +23,6 @@ void GroupInfo::set_group_name(const QString &new_group_name)
         return;
 
     _group_name = new_group_name;
-
     emit group_name_changed();
 }
 
@@ -38,7 +37,6 @@ void GroupInfo::set_group_members(const QList<ContactInfo *> &group_members)
         return;
 
     _group_members = group_members;
-
     emit group_members_changed();
 }
 
@@ -48,7 +46,6 @@ void GroupInfo::add_group_members(ContactInfo *new_member)
         return;
 
     _group_members.append(new_member);
-
     emit group_members_changed();
 }
 
@@ -63,7 +60,6 @@ void GroupInfo::set_group_image_url(const QString &group_new_image_url)
         return;
 
     _group_image_url = group_new_image_url;
-
     emit group_image_url_changed();
 }
 
@@ -78,7 +74,6 @@ void GroupInfo::set_group_unread_message(const int &group_new_unread_message)
         return;
 
     _group_unread_message = group_new_unread_message;
-
     emit group_unread_message_changed();
 }
 
@@ -93,7 +88,6 @@ void GroupInfo::set_group_ID(const int &new_ID)
         return;
 
     _group_ID = new_ID;
-
     emit group_ID_changed();
 }
 
@@ -108,14 +102,12 @@ void GroupInfo::set_group_messages(GroupChatListModel *group_messages)
         return;
 
     _group_messages = group_messages;
-
     emit group_messages_changed();
 }
 
 void GroupInfo::add_group_message(GroupMessageInfo *message)
 {
     _group_messages->append(message);
-
     emit group_messages_changed();
 }
 

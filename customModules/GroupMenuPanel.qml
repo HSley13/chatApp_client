@@ -21,7 +21,7 @@ Rectangle
             text: "+ Add";
             color: "white";
             Layout.fillWidth: true;
-            height: 22;
+            height: 10;
 
             onClicked:
             {
@@ -35,7 +35,7 @@ Rectangle
             text: "- Remove";
             color: "white";
             Layout.fillWidth: true;
-            height: 30;
+            height: 10;
 
             onClicked:
             {

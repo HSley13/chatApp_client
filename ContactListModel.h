@@ -38,7 +38,7 @@ public:
 
     const QStringList &contacts_name() const;
 
-    ContactInfo *main_user() const;
+    static ContactInfo *main_user();
     ContactProxyList *contact_proxy_list_chat() const;
     ContactProxyList *contact_proxy_list() const;
 
@@ -55,7 +55,8 @@ public:
     ClientManager *_client_manager{};
 
 public slots:
-    void on_sign_up(QJsonArray json_array);
+    void on_load_contacts(QJsonArray *json_array);
+
 signals:
     void contacts_changed();
     void active_chat_changed();
@@ -66,8 +67,7 @@ signals:
 
 private:
     ContactInfo *_active_chat{};
-    ContactInfo *_main_user{};
-
+    static ContactInfo *_main_user;
     ContactProxyList *_contact_proxy_list_chat{};
     ContactProxyList *_contact_proxy_list{};
     MediaController *_media_controller{};

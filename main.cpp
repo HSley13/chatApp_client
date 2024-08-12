@@ -1,10 +1,12 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQuickView>
 #include <QUrl>
 #include <QQmlEngine>
 #include <QApplication>
 
 #include "FileWatcher.h"
+#include "ClientManager.h"
+#include "ContactListModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,11 +24,13 @@ int main(int argc, char *argv[])
   view.show();
 
   FileWatcher watcher([&view, SOURCE_URL]()
-                      {
-                    view.engine()->clearComponentCache();
-                    view.setSource(SOURCE_URL); });
+                      { view.engine()->clearComponentCache();
+                        view.setSource(SOURCE_URL); });
 
   watcher.set_directory(DIRECTORY.absolutePath());
+
+  QObject::connect(&app, &QCoreApplication::aboutToQuit, []()
+                   { ClientManager::cleanup(); });
 
   return app.exec();
 }

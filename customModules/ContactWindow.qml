@@ -76,6 +76,7 @@ Item
 
                 onDialogAccepted:
                 {
+                    group_list_model.add_group(inputField, selectedItems);
                     //  add the group and its members
                     // FIXME: notify the server
                 }

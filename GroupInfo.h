@@ -28,7 +28,6 @@ public:
 
     const QList<ContactInfo *> &group_members() const;
     void set_group_members(const QList<ContactInfo *> &group_members);
-
     void add_group_members(ContactInfo *new_member);
 
     const QString &group_image_url() const;

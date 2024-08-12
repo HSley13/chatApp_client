@@ -98,7 +98,7 @@ Dialog
                         visible: root.checkable;
                         checked: false;
 
-                        onCheckedChanged: (checked) ? root.selectedItems.push(phone_number) : root.selectedItems.splice(root.selectedItems.indexOf(phone_number), 1);
+                        onCheckedChanged: (checked) ? root.selectedItems.push(contact_info) : root.selectedItems.splice(root.selectedItems.indexOf(contact_info), 1);
                     }
 
                     RowLayout
@@ -189,12 +189,8 @@ Dialog
             Button
             {
                 text: "OK";
-                onClicked:
-                {
-                    console.log("Selected Items: " + root.selectedItems);
-                    root.accept();
-                }
-
+                onClicked: root.accept();
+                
                 anchors.left: parent.left;
             }
 

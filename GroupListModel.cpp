@@ -4,14 +4,11 @@
 
 GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
-      _main_user(new ContactInfo(0, "Sley", 1234, true, "qrc:/QML/ClientApp/icons/name_icon.png", 0, this)),
       _active_group_chat(Q_NULLPTR),
-      _group_proxy_list(new GroupProxyList(this)),
-      _contact_list_model(new ContactListModel(this))
+      _group_proxy_list(new GroupProxyList(this))
 {
     GroupInfo *avengers = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
     avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", "", "", 3333, "Chris Evans", this));
-    avengers->set_group_members(_contact_list_model->contacts());
     _groups.append(avengers);
 
     GroupInfo *deadpool_wolverine = new GroupInfo(2222, "DeadPool & Wolverine", {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
@@ -23,11 +20,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     _groups.append(justiceLeague);
 
     _group_proxy_list->setSourceModel(this);
-}
-
-ContactListModel *GroupListModel::contact_list_model() const
-{
-    return _contact_list_model;
+    _client_manager = ClientManager::instance();
 }
 
 const QList<GroupInfo *> &GroupListModel::groups() const
@@ -58,17 +51,12 @@ void GroupListModel::set_active_group_chat(GroupInfo *new_group)
     emit active_group_chat_changed();
 }
 
-ContactInfo *GroupListModel::main_user() const
-{
-    return _main_user;
-}
-
 void GroupListModel::group_message_sent(const QString &group_message)
 {
     if (_active_group_chat == Q_NULLPTR)
         return;
 
-    GroupMessageInfo *new_message = new GroupMessageInfo(group_message, "", "", _main_user->phone_number(), "", _active_group_chat);
+    GroupMessageInfo *new_message = new GroupMessageInfo(group_message, "", "", ContactListModel::main_user()->phone_number(), "", _active_group_chat);
     _active_group_chat->add_group_message(new_message);
 
     _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
@@ -82,7 +70,7 @@ void GroupListModel::group_audio_sent()
     if (_active_group_chat == Q_NULLPTR || MediaController::_audio_path.isEmpty())
         return;
 
-    GroupMessageInfo *new_message = new GroupMessageInfo("", MediaController::_audio_path, "", _main_user->phone_number(), "", _active_group_chat);
+    GroupMessageInfo *new_message = new GroupMessageInfo("", MediaController::_audio_path, "", ContactListModel::main_user()->phone_number(), "", _active_group_chat);
     _active_group_chat->add_group_message(new_message);
     MediaController::_audio_path = QString();
 
@@ -97,7 +85,7 @@ void GroupListModel::group_file_sent()
     if (_active_group_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
         return;
 
-    GroupMessageInfo *new_message = new GroupMessageInfo("", "", MediaController::_file_path, _main_user->phone_number(), "", _active_group_chat);
+    GroupMessageInfo *new_message = new GroupMessageInfo("", "", MediaController::_file_path, ContactListModel::main_user()->phone_number(), "", _active_group_chat);
     _active_group_chat->add_group_message(new_message);
     MediaController::_file_path = QString();
 
@@ -193,12 +181,13 @@ GroupProxyList *GroupListModel::group_proxy_list() const
     return _group_proxy_list;
 }
 
-void GroupListModel::add_group(const QString &group_name, const QStringList &members_list)
+void GroupListModel::add_group(const QString &group_name, const QList<ContactInfo *> members)
 {
     beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
 
-    GroupInfo *new_group = new GroupInfo(9999, group_name, {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
+    GroupInfo *new_group = new GroupInfo(9999, group_name, members, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
     new_group->add_group_message(new GroupMessageInfo("New Group", "", "", 9999, "", this));
+    // new_group->set_group_messages();
     _groups.append(new_group);
 
     endInsertRows();

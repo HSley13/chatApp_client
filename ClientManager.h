@@ -18,19 +18,23 @@ class ClientManager : public QObject
 
 public:
     ClientManager(QObject *parent = nullptr);
+    ClientManager(const ClientManager &) = delete;
+    ClientManager &operator=(const ClientManager &) = delete;
 
     void mount_audio_IDBFS();
     void mount_file_IDBFS();
-    static void IDBFS_save_audio(const QString &audio_name, const QByteArray &audio_data, const int &size);
-    static void IDBFS_save_file(const QString &file_name, const QByteArray &file_data, const int &size);
-    static QUrl get_audio_url(const QString &audio_name);
-    static QUrl get_file_url(const QString &file_name);
+    void IDBFS_save_audio(const QString &audio_name, const QByteArray &audio_data, const int &size);
+    void IDBFS_save_file(const QString &file_name, const QByteArray &file_data, const int &size);
+    QUrl get_audio_url(const QString &audio_name);
+    QUrl get_file_url(const QString &file_name);
 
     void get_user_time();
     void map_initialization();
 
+    static void cleanup();
+
     Q_INVOKABLE void send_sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer);
-    Q_INVOKABLE void send_login_request(const QString &phone_number, const QString &password);
+    Q_INVOKABLE void send_login_request(const int &phone_number, const QString &password);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -38,11 +42,17 @@ public slots:
 
 signals:
     void notificationSignal(const QString &message);
-    void sign_up(QJsonArray contacts);
+
+    void load_contacts(QJsonArray *contacts);
+    void load_groups(QJsonArray *groups);
+
+public:
+    static ClientManager *instance();
 
 private:
-    QWebSocket *_socket;
+    static QWebSocket *_socket;
     QString _time_zone;
+    static ClientManager *_instance;
 
     enum MessageType
     {

@@ -1,19 +1,15 @@
 #include "ContactListModel.h"
 
+ContactInfo *ContactListModel::_main_user;
+
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
-      _main_user(new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this)),
       _active_chat(Q_NULLPTR),
       _contact_proxy_list_chat(new ContactProxyList(this)),
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
-//   _client_manager(new ClientManager(this))
 {
-    // ContactInfo *sleyHortes = new ContactInfo(1, "Sley HORTES", 1111, true, "qrc:/QML/ClientApp/icons/name_icon.png", 1, this);
-    // sleyHortes->add_message(new MessageInfo(QString(), "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 2222, this));
-    // sleyHortes->add_message(new MessageInfo("I created this app", QString(), QString(), 2222, this));
-    // sleyHortes->add_message(new MessageInfo(QString(), QString(), "/Users/test/Downloads/Proof of Nationality_page-0001.jpg", 2222, this));
-    // _contacts.append(sleyHortes);
+    _main_user = new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this);
 
     ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
     bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 3333, this));
@@ -36,7 +32,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     _contact_proxy_list->setSourceModel(this);
 
-    // connect(_client_manager, &ClientManager::sign_up, this, &ContactListModel::on_sign_up);
+    _client_manager = ClientManager::instance();
+    connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
 }
 
 const QList<ContactInfo *> &ContactListModel::contacts() const
@@ -67,7 +64,7 @@ void ContactListModel::set_active_chat(ContactInfo *new_chat)
     emit active_chat_changed();
 }
 
-ContactInfo *ContactListModel::main_user() const
+ContactInfo *ContactListModel::main_user()
 {
     return _main_user;
 }
@@ -232,21 +229,24 @@ ContactProxyList *ContactListModel::contact_proxy_list() const
     return _contact_proxy_list;
 }
 
-void ContactListModel::on_sign_up(QJsonArray json_array)
+void ContactListModel::on_load_contacts(QJsonArray *json_array)
 {
-    qDebug() << "Within on_sign_up";
-
-    if (json_array.isEmpty())
+    if (json_array->isEmpty())
     {
         qDebug() << "JsonArray is empty";
         return;
     }
 
-    for (const QJsonValue &value : json_array)
+    for (const QJsonValue &value : *json_array)
     {
         QJsonObject obj = value.toObject();
+
+        beginInsertRows(QModelIndex(), _contacts.count(), _contacts.count());
+
         ContactInfo *contact = new ContactInfo(2, obj["first_name"].toString(), obj["_id"].toInt(), obj["status"].toBool(), obj["image_url"].toString(), 1, this);
         _contacts.append(contact);
+
+        endInsertRows();
     }
 
     emit contacts_changed();

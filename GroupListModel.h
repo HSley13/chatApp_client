@@ -2,17 +2,14 @@
 
 #include "GroupInfo.h"
 #include "GroupProxyList.h"
-#include "ContactInfo.h"
 #include "ContactListModel.h"
-
+#include "ClientManager.h"
 class GroupListModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ELEMENT
 
     Q_PROPERTY(GroupInfo *active_group_chat READ active_group_chat WRITE set_active_group_chat NOTIFY active_group_chat_changed)
-    Q_PROPERTY(ContactInfo *main_user READ main_user NOTIFY main_user_changed)
-    Q_PROPERTY(ContactListModel *contact_list_model READ contact_list_model NOTIFY contact_list_model_changed)
     Q_PROPERTY(GroupProxyList *group_proxy_list READ group_proxy_list NOTIFY group_proxy_list_changed)
 
 public:
@@ -45,19 +42,17 @@ public:
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     Q_INVOKABLE void group_message_sent(const QString &group_message);
-    Q_INVOKABLE void add_group(const QString &group_name, const QStringList &members_list);
+    Q_INVOKABLE void add_group(const QString &group_name, const QList<ContactInfo *> members);
     Q_INVOKABLE void group_audio_sent();
     Q_INVOKABLE void group_file_sent();
-
-    ContactListModel *contact_list_model() const;
 
 private:
     QList<GroupInfo *> _groups;
     GroupInfo *_active_group_chat{};
     ContactInfo *_main_user{};
 
-    ContactListModel *_contact_list_model;
     GroupProxyList *_group_proxy_list{};
+    ClientManager *_client_manager{};
 
 signals:
     void groups_changed();
@@ -65,6 +60,4 @@ signals:
 
     void group_proxy_list_changed();
     void main_user_changed();
-
-    void contact_list_model_changed();
 };

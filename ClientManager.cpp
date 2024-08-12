@@ -1,47 +1,66 @@
 #include "ClientManager.h"
 
 QHash<QString, ClientManager::MessageType> ClientManager::_map;
+ClientManager *ClientManager::_instance = nullptr;
+QWebSocket *ClientManager::_socket = nullptr;
 
 ClientManager::ClientManager(QObject *parent)
-    : QObject(parent),
-      _socket(new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this))
+    : QObject(parent)
 {
-    _socket->open(QUrl(QString("wss://chatapp.hslay13.online")));
+    if (!_socket)
+    {
+        _socket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this);
+        _socket->open(QUrl(QString("wss://chatapp.hslay13.online")));
 
-    connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
-    connect(_socket, &QWebSocket::textMessageReceived, this, &ClientManager::on_text_message_received);
+        connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
+        connect(_socket, &QWebSocket::textMessageReceived, this, &ClientManager::on_text_message_received);
 
-    map_initialization();
+        map_initialization();
 
-    mount_audio_IDBFS();
-    mount_file_IDBFS();
-    get_user_time();
+        mount_audio_IDBFS();
+        mount_file_IDBFS();
+        get_user_time();
+    }
+}
+
+ClientManager *ClientManager::instance()
+{
+    if (!_instance)
+        _instance = new ClientManager();
+
+    return _instance;
+}
+
+void ClientManager::cleanup()
+{
+    delete _instance;
+    _instance = nullptr;
 }
 
 void ClientManager::on_text_message_received(const QString &message)
 {
     QJsonDocument json_doc = QJsonDocument::fromJson(message.toUtf8());
-    if (json_doc.isNull() || !json_doc.isObject() || !json_doc.isArray())
+
+    if (json_doc.isNull())
     {
-        qWarning() << "Invalid JSON received.";
+        qWarning() << "Invalid JSON document.";
         return;
     }
 
+    MessageType type;
     QJsonObject json_object;
     QJsonArray json_array;
-    MessageType type;
-    if (json_doc.isObject())
-    {
-        json_object = json_doc.object();
-        MessageType type = _map.value(json_object["type"].toString());
-    }
-    else
+
+    if (json_doc.isArray())
     {
         json_array = json_doc.array();
-        MessageType type = _map.value(json_array.first()["type"].toString());
+        type = _map.value(json_object["type"].toString());
     }
-
-    emit sign_up(json_array);
+    else if (json_doc.isObject())
+    {
+        json_object = json_doc.object();
+        type = _map.value(json_object["type"].toString());
+    }
 
     switch (type)
     {
@@ -55,8 +74,12 @@ void ClientManager::on_text_message_received(const QString &message)
     }
     break;
     case LoginRequest:
-        emit sign_up(json_array);
-        break;
+    {
+        qDebug() << "JsonArray emitted: " << json_array << "\n";
+        emit load_contacts(&json_array);
+        // emit load_groups(&)
+    }
+    break;
     case TextMessage:
         break;
     case IsTyping:
@@ -142,7 +165,7 @@ void ClientManager::send_sign_up(const int &phone_number, const QString &first_n
     _socket->sendTextMessage(QString::fromUtf8(Json_doc.toJson()));
 }
 
-void ClientManager::send_login_request(const QString &phone_number, const QString &password)
+void ClientManager::send_login_request(const int &phone_number, const QString &password)
 {
     QJsonObject json_object{
         {"type", "login_request"},

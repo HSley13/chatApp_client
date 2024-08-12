@@ -26,6 +26,8 @@ MediaController::MediaController(QObject *parent)
     _recorder->setEncodingMode(QMediaRecorder::ConstantQualityEncoding);
 
     connect(_recorder, &QMediaRecorder::durationChanged, this, &MediaController::on_duration_changed);
+
+    _client_manager = ClientManager::instance();
 }
 
 const QString &MediaController::time_display() const
@@ -107,10 +109,10 @@ void MediaController::stop_recording()
         }
 
         const QString &IDBFS_audio_name = QString("%1_%2").arg(current_time, audio_name);
-        ClientManager::IDBFS_save_audio(IDBFS_audio_name, _audio_data, static_cast<int>(_audio_data.size()));
+        _client_manager->IDBFS_save_audio(IDBFS_audio_name, _audio_data, static_cast<int>(_audio_data.size()));
         _audio_name = IDBFS_audio_name;
 
-        _audio_path = ClientManager::get_audio_url(IDBFS_audio_name).toString();
+        _audio_path = _client_manager->get_audio_url(IDBFS_audio_name).toString();
 #else
         _audio_path = audio_path;
 #endif
@@ -138,7 +140,7 @@ void MediaController::view_file(const QString &file_path)
     if (!file_path.isEmpty())
     {
 #ifdef __EMSCRIPTEN__
-        QDesktopServices::openUrl(ClientManager::get_file_url(file_path));
+        QDesktopServices::openUrl(_client_manager->get_file_url(file_path));
 #else
         QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
 #endif
@@ -162,7 +164,7 @@ void MediaController::send_file()
             _file_data = file_data;
             _file_name = file_name;
             QString IDBFS_file_name = QString("%1_%2").arg(current_time, QFileInfo(file_name).fileName());
-            ClientManager::IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
+            _client_manager->IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
 
             _file_path = IDBFS_file_name;
 #else
