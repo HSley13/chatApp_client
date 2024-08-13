@@ -37,7 +37,7 @@ QHash<int, QByteArray> ChatListModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
 
-    roles[ConversationIDRole] = "conversation_ID";
+    roles[ChatIDRole] = "chat_ID";
     roles[PhoneNumberRole] = "phone_number";
     roles[TextRole] = "text";
     roles[AudioSourceRole] = "audio_source";

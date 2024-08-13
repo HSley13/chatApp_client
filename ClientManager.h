@@ -48,7 +48,7 @@ public slots:
 
 signals:
     void load_contacts(QJsonArray contacts);
-    void load_groups(QJsonArray groups);
+    void load_groups(QJsonArray json_array);
 
     void signup_message_changed();
     void login_message_changed();

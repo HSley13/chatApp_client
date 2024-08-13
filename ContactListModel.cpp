@@ -2,6 +2,8 @@
 
 ContactInfo *ContactListModel::_main_user;
 
+QList<ContactInfo *> *ContactListModel::_contacts_ptr;
+
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _active_chat(Q_NULLPTR),
@@ -34,7 +36,11 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
     connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
+
+    _contacts_ptr = &_contacts;
 }
+
+ContactListModel::~ContactListModel() { _contacts.clear(); }
 
 const QList<ContactInfo *> &ContactListModel::contacts() const
 {
@@ -138,8 +144,8 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
 
     switch (ContactRoles(role))
     {
-    case conversation_IDRole:
-        return contact_info->conversation_ID();
+    case chat_IDRole:
+        return contact_info->chat_ID();
     case NameRole:
         return contact_info->name();
     case PhoneNumberRole:
@@ -165,7 +171,7 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
 
-    roles[conversation_IDRole] = "conversation_ID";
+    roles[chat_IDRole] = "chat_ID";
     roles[NameRole] = "name";
     roles[PhoneNumberRole] = "phone_number";
     roles[StatusRole] = "status";
@@ -187,8 +193,8 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
 
     switch (ContactRoles(role))
     {
-    case conversation_IDRole:
-        contact_info->set_conversation_ID(value.toInt());
+    case chat_IDRole:
+        contact_info->set_chat_ID(value.toInt());
         break;
     case NameRole:
         contact_info->set_name(value.toString());
@@ -204,9 +210,6 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
         break;
     case ImageUrlRole:
         contact_info->set_image_url(value.toString());
-        break;
-    case MessagesRole:
-        contact_info->set_messages(value.value<ChatListModel *>());
         break;
     case LastMessageTimeRole:
         contact_info->set_last_message_time(value.value<QDateTime>());
@@ -237,15 +240,12 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
         return;
     }
 
-    beginResetModel();
-
-    for (const QJsonValue &value : json_array)
+    for (const QJsonValue &obj : json_array)
     {
-        QJsonObject obj = value.toObject();
         QJsonObject contact_info = obj["contactInfo"].toObject();
         QJsonArray chat_messages = obj["chatMessages"].toArray();
 
-        ContactInfo *contact = new ContactInfo(0, contact_info["first_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
+        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
 
         // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
         for (const QJsonValue &message : chat_messages)

@@ -3,9 +3,9 @@
 ContactInfo::ContactInfo(QObject *parent)
     : QObject(parent), _messages(new ChatListModel(this)) {}
 
-ContactInfo::ContactInfo(const int &conversation_ID, const QString &name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent)
+ContactInfo::ContactInfo(const int &chat_ID, const QString &name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent)
     : QObject(parent),
-      _conversation_ID(conversation_ID),
+      _chat_ID(chat_ID),
       _name(name),
       _phone_number(phone_number),
       _status(status),
@@ -88,34 +88,24 @@ void ContactInfo::set_unread_message(const int &new_unread_message)
     emit unread_message_changed();
 }
 
-const int &ContactInfo::conversation_ID() const
+const int &ContactInfo::chat_ID() const
 {
-    return _conversation_ID;
+    return _chat_ID;
 }
 
-void ContactInfo::set_conversation_ID(const int &new_ID)
+void ContactInfo::set_chat_ID(const int &new_ID)
 {
-    if (_conversation_ID == new_ID)
+    if (_chat_ID == new_ID)
         return;
 
-    _conversation_ID = new_ID;
+    _chat_ID = new_ID;
 
-    emit conversation_ID_changed();
+    emit chat_ID_changed();
 }
 
 ChatListModel *ContactInfo::messages() const
 {
     return _messages;
-}
-
-void ContactInfo::set_messages(ChatListModel *messages)
-{
-    if (messages == _messages)
-        return;
-
-    _messages = messages;
-
-    emit messages_changed();
 }
 
 void ContactInfo::add_message(MessageInfo *message)

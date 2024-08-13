@@ -78,7 +78,7 @@ CREATE TABLE password_security
 ```mysql
  CREATE TABLE conversations 
             (
-                conversation_ID INT PRIMARY KEY,
+                chat_ID INT PRIMARY KEY,
                 participant1 TEXT,
                 participant1_ID INT,
                 last_message_read1 TEXT,
@@ -95,7 +95,7 @@ CREATE TABLE password_security
             (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 date_time VARCHAR(100) NOT NULL UNIQUE,
-                conversation_ID INT,
+                chat_ID INT,
                 sender_ID INT,
                 receiver_ID INT,
                 content TEXT,
@@ -109,7 +109,7 @@ CREATE TABLE binary_data
             (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 date_time VARCHAR(100) NOT NULL UNIQUE,
-                conversation_ID INT,
+                chat_ID INT,
                 sender_ID INT,
                 receiver_ID INT,
                 file_name TEXT,
@@ -176,8 +176,8 @@ CREATE TRIGGER default_alias BEFORE INSERT ON accounts
 CREATE TRIGGER add_file_message AFTER INSERT ON binary_data 
             FOR EACH ROW 
                 BEGIN
-                    INSERT INTO messages (date_time, conversation_ID, sender_ID, receiver_ID, content, message_type)
-                    VALUES (NEW.date_time, NEW.conversation_ID, NEW.sender_ID, NEW.receiver_ID, NEW.file_name, NEW.data_type);
+                    INSERT INTO messages (date_time, chat_ID, sender_ID, receiver_ID, content, message_type)
+                    VALUES (NEW.date_time, NEW.chat_ID, NEW.sender_ID, NEW.receiver_ID, NEW.file_name, NEW.data_type);
                 END;
 
  ```
@@ -187,7 +187,7 @@ CREATE TRIGGER add_file_message AFTER INSERT ON binary_data
 CREATE TRIGGER update_message_deletion AFTER DELETE ON messages 
             FOR EACH ROW 
                 BEGIN
-                    DELETE FROM binary_data WHERE date_time = OLD.date_time AND conversation_ID = OLD.conversation_ID;
+                    DELETE FROM binary_data WHERE date_time = OLD.date_time AND chat_ID = OLD.chat_ID;
                 END;
  ```
 

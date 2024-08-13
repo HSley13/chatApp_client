@@ -16,7 +16,7 @@ class GroupMessageInfo : public QObject
 
 public:
     GroupMessageInfo(QObject *parent = nullptr);
-    GroupMessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, const QString &sender_name, QObject *parent = nullptr);
+    GroupMessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, const QString &sender_name, const QString &time, QObject *parent = nullptr);
 
     const QString &text();
     const QString &audio_source();

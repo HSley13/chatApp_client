@@ -15,20 +15,8 @@ class ContactListModel : public QAbstractListModel
     Q_PROPERTY(QList<ContactInfo *> contacts READ contacts WRITE set_contacts NOTIFY contacts_changed)
 
 public:
-    enum ContactRoles
-    {
-        conversation_IDRole = Qt::UserRole + 1,
-        PhoneNumberRole,
-        NameRole,
-        StatusRole,
-        UnreadMessageRole,
-        ImageUrlRole,
-        MessagesRole,
-        ContactObjectRole,
-        LastMessageTimeRole
-    };
-
     ContactListModel(QAbstractListModel *parent = nullptr);
+    ~ContactListModel();
 
     const QList<ContactInfo *> &contacts() const;
     void set_contacts(const QList<ContactInfo *> &new_contacts);
@@ -51,8 +39,9 @@ public:
     Q_INVOKABLE void audio_sent();
     Q_INVOKABLE void file_sent();
 
-    QList<ContactInfo *> _contacts{};
     ClientManager *_client_manager{nullptr};
+
+    static QList<ContactInfo *> *_contacts_ptr;
 
 private slots:
     void on_load_contacts(QJsonArray json_array);
@@ -65,8 +54,23 @@ signals:
     void contact_proxy_list_changed();
     void main_user_changed();
 
+public:
+    enum ContactRoles
+    {
+        chat_IDRole = Qt::UserRole + 1,
+        PhoneNumberRole,
+        NameRole,
+        StatusRole,
+        UnreadMessageRole,
+        ImageUrlRole,
+        MessagesRole,
+        ContactObjectRole,
+        LastMessageTimeRole
+    };
+
 private:
     ContactInfo *_active_chat{nullptr};
+    QList<ContactInfo *> _contacts;
     static ContactInfo *_main_user;
     ContactProxyList *_contact_proxy_list_chat{nullptr};
     ContactProxyList *_contact_proxy_list{nullptr};

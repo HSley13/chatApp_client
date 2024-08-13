@@ -26,6 +26,7 @@ public:
     };
 
     GroupListModel(QAbstractListModel *parent = nullptr);
+    ~GroupListModel();
 
     const QList<GroupInfo *> &groups() const;
     void set_groups(const QList<GroupInfo *> &new_groups);

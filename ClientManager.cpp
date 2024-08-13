@@ -71,7 +71,6 @@ void ClientManager::on_text_message_received(const QString &message)
         emit login_message_changed();
 
         emit load_contacts(json_object["contacts"].toArray());
-
         emit load_groups(json_object["groups"].toArray());
     }
     break;

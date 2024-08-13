@@ -7,16 +7,16 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
       _active_group_chat(Q_NULLPTR),
       _group_proxy_list(new GroupProxyList(this))
 {
-    GroupInfo *avengers = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
-    avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", "", "", 3333, "Chris Evans", this));
+    GroupInfo *avengers = new GroupInfo(1111, "Avengers", *ContactListModel::_contacts_ptr, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
+    avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", QString(), QString(), 3333, "Chris Evans", QTime::currentTime().toString("HH:mm"), this));
     _groups.append(avengers);
 
     GroupInfo *deadpool_wolverine = new GroupInfo(2222, "DeadPool & Wolverine", {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
-    deadpool_wolverine->add_group_message(new GroupMessageInfo("Let's get the People what They came for", "", "", 4444, "Ryan Reynolds", this));
+    deadpool_wolverine->add_group_message(new GroupMessageInfo("Let's get the People what They came for", QString(), QString(), 4444, "Ryan Reynolds", QTime::currentTime().toString("HH:mm"), this));
     _groups.append(deadpool_wolverine);
 
     GroupInfo *justiceLeague = new GroupInfo(3333, "Justice League", {}, "qrc:/QML/ClientApp/icons/justice_league_icon.png", 1, this);
-    justiceLeague->add_group_message(new GroupMessageInfo("Superman, tell me, do u bleed?", "", "", 5555, "Ben Affleck", this));
+    justiceLeague->add_group_message(new GroupMessageInfo("Superman, tell me, do u bleed?", QString(), QString(), 5555, "Ben Affleck", QTime::currentTime().toString("HH:mm"), this));
     _groups.append(justiceLeague);
 
     _group_proxy_list->setSourceModel(this);
@@ -24,6 +24,8 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     _client_manager = ClientManager::instance();
     connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
 }
+
+GroupListModel::~GroupListModel() { _groups.clear(); }
 
 const QList<GroupInfo *> &GroupListModel::groups() const
 {
@@ -58,7 +60,7 @@ void GroupListModel::group_message_sent(const QString &group_message)
     if (_active_group_chat == Q_NULLPTR)
         return;
 
-    GroupMessageInfo *new_message = new GroupMessageInfo(group_message, "", "", ContactListModel::main_user()->phone_number(), "", _active_group_chat);
+    GroupMessageInfo *new_message = new GroupMessageInfo(group_message, QString(), QString(), ContactListModel::main_user()->phone_number(), QString(), QTime::currentTime().toString("HH:mm"), _active_group_chat);
     _active_group_chat->add_group_message(new_message);
 
     _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
@@ -72,7 +74,7 @@ void GroupListModel::group_audio_sent()
     if (_active_group_chat == Q_NULLPTR || MediaController::_audio_path.isEmpty())
         return;
 
-    GroupMessageInfo *new_message = new GroupMessageInfo("", MediaController::_audio_path, "", ContactListModel::main_user()->phone_number(), "", _active_group_chat);
+    GroupMessageInfo *new_message = new GroupMessageInfo(QString(), MediaController::_audio_path, QString(), ContactListModel::main_user()->phone_number(), QString(), QTime::currentTime().toString("HH:mm"), _active_group_chat);
     _active_group_chat->add_group_message(new_message);
     MediaController::_audio_path = QString();
 
@@ -87,7 +89,7 @@ void GroupListModel::group_file_sent()
     if (_active_group_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
         return;
 
-    GroupMessageInfo *new_message = new GroupMessageInfo("", "", MediaController::_file_path, ContactListModel::main_user()->phone_number(), "", _active_group_chat);
+    GroupMessageInfo *new_message = new GroupMessageInfo(QString(), QString(), MediaController::_file_path, ContactListModel::main_user()->phone_number(), QString(), QTime::currentTime().toString("HH:mm"), _active_group_chat);
     _active_group_chat->add_group_message(new_message);
     MediaController::_file_path = QString();
 
@@ -151,9 +153,6 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case LastMessageTimeRole:
         group_info->set_last_message_time(value.value<QDateTime>());
         break;
-    case GroupMembersRole:
-        group_info->set_group_members(value.value<QList<ContactInfo *>>());
-        break;
     default:
         return false;
     }
@@ -188,8 +187,7 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
     beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
 
     GroupInfo *new_group = new GroupInfo(9999, group_name, members, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
-    new_group->add_group_message(new GroupMessageInfo("New Group", "", "", 9999, "", this));
-    // new_group->set_group_messages();
+    new_group->add_group_message(new GroupMessageInfo("New Group", QString(), QString(), 9999, QString(), QTime::currentTime().toString("HH:mm"), this));
     _groups.append(new_group);
 
     endInsertRows();
@@ -199,25 +197,47 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
 
 void GroupListModel::on_load_groups(QJsonArray json_array)
 {
-    qDebug() << "JsonArray ---> on_load_groups(): " << json_array;
-
     if (json_array.isEmpty())
     {
         qDebug() << "JsonArray is empty, on_load_groups";
         return;
     }
 
-    for (const QJsonValue &value : json_array)
+    for (const QJsonValue &groups : json_array)
     {
-        QJsonObject obj = value.toObject();
+        QJsonArray members_ID = groups["membersID"].toArray();
+        QJsonArray messages = groups["messages"].toArray();
+
+        QList<ContactInfo *> group_members;
+
+        for (QJsonValue ID : members_ID)
+        {
+            bool found = false;
+
+            for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
+            {
+                if (ContactListModel::main_user()->phone_number() == ID.toInt())
+                    break;
+
+                if (contact->phone_number() == ID.toInt())
+                {
+                    group_members << contact;
+                    break;
+                }
+            }
+        }
+
+        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["groupName"].toString(), group_members, groups["imageUrl"].toString(), 1, this);
+
+        // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
+        for (const QJsonValue &message : messages)
+            group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), QString(), message["sender"].toInt(), message["sender"].toString(), QTime::currentTime().toString("HH:mm"), this));
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
-
-        // GroupInfo *group = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
-        // group->set_group_messages(new GroupMessageInfo("Avengers Assemble", "", "", 3333, "Chris Evans", this));
-        // _groups.append(group);
-
+        _groups.append(group);
         endInsertRows();
+
+        group_members.clear();
     }
 
     emit groups_changed();

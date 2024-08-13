@@ -12,6 +12,8 @@ GroupInfo::GroupInfo(const int &group_ID, const QString &group_name, const QList
       _group_unread_message(group_unread_message),
       _group_messages(new GroupChatListModel(this)) {}
 
+GroupInfo::~GroupInfo() { _group_members.clear(); }
+
 const QString &GroupInfo::group_name() const
 {
     return _group_name;
@@ -29,15 +31,6 @@ void GroupInfo::set_group_name(const QString &new_group_name)
 const QList<ContactInfo *> &GroupInfo::group_members() const
 {
     return _group_members;
-}
-
-void GroupInfo::set_group_members(const QList<ContactInfo *> &group_members)
-{
-    if (group_members.isEmpty() || group_members == _group_members)
-        return;
-
-    _group_members = group_members;
-    emit group_members_changed();
 }
 
 void GroupInfo::add_group_members(ContactInfo *new_member)
@@ -94,15 +87,6 @@ void GroupInfo::set_group_ID(const int &new_ID)
 GroupChatListModel *GroupInfo::group_messages() const
 {
     return _group_messages;
-}
-
-void GroupInfo::set_group_messages(GroupChatListModel *group_messages)
-{
-    if (_group_messages == group_messages)
-        return;
-
-    _group_messages = group_messages;
-    emit group_messages_changed();
 }
 
 void GroupInfo::add_group_message(GroupMessageInfo *message)
