@@ -6,7 +6,6 @@
 
 #include "FileWatcher.h"
 #include "ClientManager.h"
-#include "ContactListModel.h"
 
 int main(int argc, char *argv[])
 {

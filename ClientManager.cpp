@@ -40,27 +40,14 @@ void ClientManager::cleanup()
 void ClientManager::on_text_message_received(const QString &message)
 {
     QJsonDocument json_doc = QJsonDocument::fromJson(message.toUtf8());
-
     if (json_doc.isNull())
     {
         qWarning() << "Invalid JSON document.";
         return;
     }
 
-    MessageType type;
-    QJsonObject json_object;
-    QJsonArray json_array;
-
-    if (json_doc.isArray())
-    {
-        json_array = json_doc.array();
-        type = _map.value(json_object["type"].toString());
-    }
-    else if (json_doc.isObject())
-    {
-        json_object = json_doc.object();
-        type = _map.value(json_object["type"].toString());
-    }
+    QJsonObject json_object = json_doc.object();
+    MessageType type = _map.value(json_object["type"].toString());
 
     switch (type)
     {
@@ -70,14 +57,22 @@ void ClientManager::on_text_message_received(const QString &message)
                                      .arg(json_object["status"].toString())
                                      .arg(json_object["message"].toString());
 
-        emit notificationSignal(message);
+        _signup_message = message;
+        emit signup_message_changed();
     }
     break;
     case LoginRequest:
     {
-        qDebug() << "JsonArray emitted: " << json_array << "\n";
-        emit load_contacts(&json_array);
-        // emit load_groups(&)
+        const QString &message = QString("%1: %2")
+                                     .arg(json_object["status"].toString())
+                                     .arg(json_object["message"].toString());
+
+        _login_message = message;
+        emit login_message_changed();
+
+        emit load_contacts(json_object["contacts"].toArray());
+
+        emit load_groups(json_object["groups"].toArray());
     }
     break;
     case TextMessage:
@@ -176,6 +171,16 @@ void ClientManager::send_login_request(const int &phone_number, const QString &p
     QJsonDocument json_doc(json_object);
 
     _socket->sendTextMessage(QString::fromUtf8(json_doc.toJson()));
+}
+
+const QString &ClientManager::signup_message() const
+{
+    return _signup_message;
+}
+
+const QString &ClientManager::login_message() const
+{
+    return _login_message;
 }
 
 void ClientManager::mount_audio_IDBFS()

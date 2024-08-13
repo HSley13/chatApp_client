@@ -136,7 +136,6 @@ void MediaController::on_duration_changed(qint64 duration)
 
 void MediaController::view_file(const QString &file_path)
 {
-    qDebug() << "file Path opened: " << _file_path;
     if (!file_path.isEmpty())
     {
 #ifdef __EMSCRIPTEN__

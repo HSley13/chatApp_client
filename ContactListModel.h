@@ -52,10 +52,10 @@ public:
     Q_INVOKABLE void file_sent();
 
     QList<ContactInfo *> _contacts{};
-    ClientManager *_client_manager{};
+    ClientManager *_client_manager{nullptr};
 
-public slots:
-    void on_load_contacts(QJsonArray *json_array);
+private slots:
+    void on_load_contacts(QJsonArray json_array);
 
 signals:
     void contacts_changed();
@@ -66,9 +66,9 @@ signals:
     void main_user_changed();
 
 private:
-    ContactInfo *_active_chat{};
+    ContactInfo *_active_chat{nullptr};
     static ContactInfo *_main_user;
-    ContactProxyList *_contact_proxy_list_chat{};
-    ContactProxyList *_contact_proxy_list{};
-    MediaController *_media_controller{};
+    ContactProxyList *_contact_proxy_list_chat{nullptr};
+    ContactProxyList *_contact_proxy_list{nullptr};
+    MediaController *_media_controller{nullptr};
 };

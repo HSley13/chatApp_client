@@ -126,7 +126,7 @@ qt_add_qml_module(app
 
                     RESOURCES
                     ${ICONS}
-                    )
+                )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto")
@@ -140,5 +140,5 @@ if (APPLE)
     set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
     set_target_properties(app PROPERTIES
                             MACOSX_BUNDLE_INFO_PLIST ${MACOSX_BUNDLE_INFO_PLIST}
-                        )
+                         )
 endif()

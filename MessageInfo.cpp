@@ -3,12 +3,12 @@
 MessageInfo::MessageInfo(QObject *parent)
     : QObject(parent) {}
 
-MessageInfo::MessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, QObject *parent)
+MessageInfo::MessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, const QString &time, QObject *parent)
     : QObject(parent),
       _text(text),
       _audio_source(audio_source),
       _file_source(file_source),
-      _time(QTime::currentTime().toString("HH:mm")),
+      _time(time),
       _sender_ID(sender_ID) {}
 
 const QString &MessageInfo::text()

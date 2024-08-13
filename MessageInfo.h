@@ -15,7 +15,7 @@ class MessageInfo : public QObject
 
 public:
     MessageInfo(QObject *parent = nullptr);
-    MessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, QObject *parent = nullptr);
+    MessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, const QString &time, QObject *parent = nullptr);
 
     const QString &text();
     const QString &audio_source();

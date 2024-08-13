@@ -9,22 +9,22 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
 {
-    _main_user = new ContactInfo(0, "Sley", 1234, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this);
+    _main_user = new ContactInfo(0, "Sley", 1111, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this);
 
     ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
-    bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 3333, this));
+    bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 3333, QTime::currentTime().toString("HH:mm"), this));
     _contacts.append(bruceWayne);
 
     ContactInfo *tonyStark = new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this);
-    tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 4444, this));
+    tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 4444, QTime::currentTime().toString("HH:mm"), this));
     _contacts.append(tonyStark);
 
     ContactInfo *clarkKent = new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this);
-    clarkKent->add_message(new MessageInfo("I killed Doomsday", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 5555, this));
+    clarkKent->add_message(new MessageInfo("I killed Doomsday", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 5555, QTime::currentTime().toString("HH:mm"), this));
     _contacts.append(clarkKent);
 
     ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
-    steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 6666, this));
+    steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 6666, QTime::currentTime().toString("HH:mm"), this));
     _contacts.append(steveRogers);
 
     _contact_proxy_list_chat->setSourceModel(this);
@@ -74,7 +74,7 @@ void ContactListModel::message_sent(const QString &message)
     if (_active_chat == Q_NULLPTR)
         return;
 
-    MessageInfo *new_message = new MessageInfo(message, QString(), QString(), _main_user->phone_number(), _active_chat);
+    MessageInfo *new_message = new MessageInfo(message, QString(), QString(), _main_user->phone_number(), QTime::currentTime().toString("HH:mm"), _active_chat);
     _active_chat->add_message(new_message);
 
     _active_chat->set_last_message_time(QDateTime::currentDateTime());
@@ -90,7 +90,7 @@ void ContactListModel::audio_sent()
     if (_active_chat == Q_NULLPTR || _media_controller->_audio_path.isEmpty())
         return;
 
-    MessageInfo *new_message = new MessageInfo(QString(), _media_controller->_audio_path, QString(), _main_user->phone_number(), _active_chat);
+    MessageInfo *new_message = new MessageInfo(QString(), _media_controller->_audio_path, QString(), _main_user->phone_number(), QTime::currentTime().toString("HH:mm"), _active_chat);
     _active_chat->add_message(new_message);
 
     _active_chat->set_last_message_time(QDateTime::currentDateTime());
@@ -109,7 +109,7 @@ void ContactListModel::file_sent()
     if (_active_chat == Q_NULLPTR || _media_controller->_file_path.isEmpty())
         return;
 
-    MessageInfo *new_message = new MessageInfo(QString(), QString(), _media_controller->_file_path, _main_user->phone_number(), _active_chat);
+    MessageInfo *new_message = new MessageInfo(QString(), QString(), _media_controller->_file_path, _main_user->phone_number(), QTime::currentTime().toString("HH:mm"), _active_chat);
     _active_chat->add_message(new_message);
 
     _active_chat->set_last_message_time(QDateTime::currentDateTime());
@@ -229,23 +229,30 @@ ContactProxyList *ContactListModel::contact_proxy_list() const
     return _contact_proxy_list;
 }
 
-void ContactListModel::on_load_contacts(QJsonArray *json_array)
+void ContactListModel::on_load_contacts(QJsonArray json_array)
 {
-    if (json_array->isEmpty())
+    if (json_array.isEmpty())
     {
-        qDebug() << "JsonArray is empty";
+        qDebug() << "JsonArray is empty, on_load_contacts()";
         return;
     }
 
-    for (const QJsonValue &value : *json_array)
+    beginResetModel();
+
+    for (const QJsonValue &value : json_array)
     {
         QJsonObject obj = value.toObject();
+        QJsonObject contact_info = obj["contactInfo"].toObject();
+        QJsonArray chat_messages = obj["chatMessages"].toArray();
+
+        ContactInfo *contact = new ContactInfo(0, contact_info["first_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
+
+        // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
+        for (const QJsonValue &message : chat_messages)
+            contact->add_message(new MessageInfo(message["message"].toString(), QString(), QString(), message["sender"].toInt(), QTime::currentTime().toString("HH:mm"), this));
 
         beginInsertRows(QModelIndex(), _contacts.count(), _contacts.count());
-
-        ContactInfo *contact = new ContactInfo(2, obj["first_name"].toString(), obj["_id"].toInt(), obj["status"].toBool(), obj["image_url"].toString(), 1, this);
         _contacts.append(contact);
-
         endInsertRows();
     }
 

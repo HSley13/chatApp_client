@@ -20,7 +20,9 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     _groups.append(justiceLeague);
 
     _group_proxy_list->setSourceModel(this);
+
     _client_manager = ClientManager::instance();
+    connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
 }
 
 const QList<GroupInfo *> &GroupListModel::groups() const
@@ -191,6 +193,32 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
     _groups.append(new_group);
 
     endInsertRows();
+
+    emit groups_changed();
+}
+
+void GroupListModel::on_load_groups(QJsonArray json_array)
+{
+    qDebug() << "JsonArray ---> on_load_groups(): " << json_array;
+
+    if (json_array.isEmpty())
+    {
+        qDebug() << "JsonArray is empty, on_load_groups";
+        return;
+    }
+
+    for (const QJsonValue &value : json_array)
+    {
+        QJsonObject obj = value.toObject();
+
+        beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
+
+        // GroupInfo *group = new GroupInfo(1111, "Avengers", {}, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
+        // group->set_group_messages(new GroupMessageInfo("Avengers Assemble", "", "", 3333, "Chris Evans", this));
+        // _groups.append(group);
+
+        endInsertRows();
+    }
 
     emit groups_changed();
 }

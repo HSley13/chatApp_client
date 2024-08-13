@@ -46,13 +46,15 @@ public:
     Q_INVOKABLE void group_audio_sent();
     Q_INVOKABLE void group_file_sent();
 
+private slots:
+    void on_load_groups(QJsonArray json_array);
+
 private:
     QList<GroupInfo *> _groups;
-    GroupInfo *_active_group_chat{};
-    ContactInfo *_main_user{};
+    GroupInfo *_active_group_chat{nullptr};
 
-    GroupProxyList *_group_proxy_list{};
-    ClientManager *_client_manager{};
+    GroupProxyList *_group_proxy_list{nullptr};
+    ClientManager *_client_manager{nullptr};
 
 signals:
     void groups_changed();

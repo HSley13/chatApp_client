@@ -6,6 +6,60 @@ Item
 {
     id: root;
 
+    Rectangle
+    {
+        id: notificationBar;
+        visible: false;
+        height: 40;
+        width:  120;
+        color: "#DE02B5";
+        opacity: 0.9;
+        radius: 10;
+    
+        Text
+        {
+            id: notificationText;
+            anchors.centerIn: parent;
+            color: "white";
+            font.bold: true;
+            text: "";
+        }
+    
+        Behavior on opacity
+        {
+            NumberAnimation
+            {
+                target: notificationBar;
+                property: "opacity";
+                from: 0;
+                to: 0.9;
+                duration: 300
+            }
+        }
+
+        Timer
+        {
+            id: hideNotificationTimer;
+            interval: 5000;
+            repeat: false;
+            onTriggered: notificationBar.visible = false;
+        }
+    
+        anchors.top: parent.top;
+        anchors.margins: 10;
+        anchors.left: parent.left;
+    }
+
+    Component.onCompleted: 
+    {
+        client_manager.login_message_changed.connect(() =>
+        {
+            notificationText.text = client_manager.login_message;
+            notificationBar.visible = true;
+            stackView.push(contactWindow);
+        });
+    }
+
     Image
     {
         id: welcomeImage;

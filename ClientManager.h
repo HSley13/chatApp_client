@@ -16,6 +16,9 @@ class ClientManager : public QObject
     Q_OBJECT
     QML_ELEMENT
 
+    Q_PROPERTY(QString signup_message READ signup_message NOTIFY signup_message_changed)
+    Q_PROPERTY(QString login_message READ login_message NOTIFY login_message_changed)
+
 public:
     ClientManager(QObject *parent = nullptr);
     ClientManager(const ClientManager &) = delete;
@@ -27,6 +30,9 @@ public:
     void IDBFS_save_file(const QString &file_name, const QByteArray &file_data, const int &size);
     QUrl get_audio_url(const QString &audio_name);
     QUrl get_file_url(const QString &file_name);
+
+    const QString &signup_message() const;
+    const QString &login_message() const;
 
     void get_user_time();
     void map_initialization();
@@ -41,10 +47,11 @@ public slots:
     void on_disconnected();
 
 signals:
-    void notificationSignal(const QString &message);
+    void load_contacts(QJsonArray contacts);
+    void load_groups(QJsonArray groups);
 
-    void load_contacts(QJsonArray *contacts);
-    void load_groups(QJsonArray *groups);
+    void signup_message_changed();
+    void login_message_changed();
 
 public:
     static ClientManager *instance();
@@ -53,6 +60,9 @@ private:
     static QWebSocket *_socket;
     QString _time_zone;
     static ClientManager *_instance;
+
+    QString _signup_message{};
+    QString _login_message{};
 
     enum MessageType
     {

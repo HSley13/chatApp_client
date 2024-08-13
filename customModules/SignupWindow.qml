@@ -10,23 +10,23 @@ Item
     {
         id: notificationBar;
         visible: false;
-        height: 50;
-        width: parenotificationTextnt.width + 10;
+        height: 40;
+        width:  120;
         color: "#DE02B5";
         opacity: 0.9;
         radius: 10;
-        
+    
         Text
         {
             id: notificationText;
             anchors.centerIn: parent;
             color: "white";
             font.bold: true;
+            text: "";
         }
-        
-        Behavior on visible
+    
+        Behavior on opacity
         {
-            enabled: visible;
             NumberAnimation
             {
                 target: notificationBar;
@@ -44,25 +44,19 @@ Item
             repeat: false;
             onTriggered: notificationBar.visible = false;
         }
-
-        anchors.horizontalCenter: parent.horizontalCenter;
+    
         anchors.top: parent.top;
         anchors.margins: 10;
-        anchors.right: parent.right;
+        anchors.left: parent.left;
     }
 
-    
-    function showNotification(message)
+    Component.onCompleted: 
     {
-        notificationText.text = message;
-        notificationBar.visible = true;
-        hideNotificationTimer.start();
-    }
-
-    Connections
-    {
-        target: client_manager;  
-        onNotificationSignal: showNotification;  
+        client_manager.signup_message_changed.connect(() =>
+        {
+            notificationText.text = client_manager.signup_message;
+            notificationBar.visible = true;
+        });
     }
 
     Image
