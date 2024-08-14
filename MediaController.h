@@ -23,7 +23,7 @@ public:
     Q_INVOKABLE void start_recording();
     Q_INVOKABLE void stop_recording();
 
-    Q_INVOKABLE void send_file();
+    Q_INVOKABLE void send_file(bool);
     Q_INVOKABLE void view_file(const QString &file_path);
 
     void ask_microphone_permission();

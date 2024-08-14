@@ -43,6 +43,7 @@ public:
 
     static QList<ContactInfo *> *_contacts_ptr;
 
+    static ContactInfo *_main_user;
 private slots:
     void on_load_contacts(QJsonArray json_array);
 
@@ -71,7 +72,6 @@ public:
 private:
     ContactInfo *_active_chat{nullptr};
     QList<ContactInfo *> _contacts;
-    static ContactInfo *_main_user;
     ContactProxyList *_contact_proxy_list_chat{nullptr};
     ContactProxyList *_contact_proxy_list{nullptr};
     MediaController *_media_controller{nullptr};

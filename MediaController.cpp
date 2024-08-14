@@ -146,7 +146,7 @@ void MediaController::view_file(const QString &file_path)
     }
 }
 
-void MediaController::send_file()
+void MediaController::send_file(bool true_or_false)
 {
     std::function<void(const QString &, const QByteArray &)> file_content_ready = [=](const QString &file_name, const QByteArray &file_data)
     {
@@ -158,6 +158,8 @@ void MediaController::send_file()
             // const QString &UTC_time = QDateTime::fromString(current_time, "yyyy-MM-dd HH:mm:ss")
             //                               .toUTC()
             //                               .toString();
+            if (!true_or_false)
+                _client_manager->update_profile(QFileInfo(file_name).fileName(), file_data);
 
 #ifdef __EMSCRIPTEN__
             _file_data = file_data;

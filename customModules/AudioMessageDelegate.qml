@@ -23,7 +23,7 @@ Item
         MediaPlayer
         {
             id: mediaPlayer;
-            source: client_manager.get_audio_url("1111_audio.m41");
+            source: "https://slays3.s3.amazonaws.com/06-1.mp3";
             autoPlay: false;
             audioOutput: audioOutput;
 

@@ -11,16 +11,22 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
 {
+    _main_user = new ContactInfo(0, QString(), 0, true, QString(), 0, this);
+
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
     _contact_proxy_list->setSourceModel(this);
 
     _client_manager = ClientManager::instance();
+
     connect(_client_manager, &ClientManager::my_phone_number, this, [=](const int &phone_number)
-            { qDebug() << "Setting the phone_number";  _main_user = new ContactInfo(0, QString(), phone_number, true, QString(), 0, this); });
+            { qDebug() << "Setting the phone_number"; _main_user->set_phone_number(phone_number); });
 
     connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
+
+    connect(_client_manager, &ClientManager::profile_image, this, [=](const QString &image_url)
+            { _main_user->set_image_url(image_url); });
 
     _contacts_ptr = &_contacts;
 }

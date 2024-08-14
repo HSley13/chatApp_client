@@ -148,10 +148,7 @@ Item
                         color: "white";
                         Layout.fillWidth: true;
 
-                        onClicked:
-                        {
-                            console.log("Upload Picture Button Clicked");
-                        }
+                        onClicked: media_controller.send_file(false);
                     }
                 }
 

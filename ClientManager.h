@@ -43,6 +43,8 @@ public:
     Q_INVOKABLE void login_request(const int &phone_number, const QString &password);
     Q_INVOKABLE void lookup_friend(const int &phone_number);
 
+    void update_profile(const QString &file_name, const QByteArray &file_data);
+
 public slots:
     void on_text_message_received(const QString &data);
     void on_disconnected();
@@ -55,6 +57,7 @@ signals:
     void login_message_changed();
 
     void my_phone_number(const int &phone_number);
+    void profile_image(const QString &image_url);
 
 public:
     static ClientManager *instance();
@@ -72,6 +75,7 @@ private:
         SignUp = Qt::UserRole + 1,
         IsTyping,
         SetName,
+        ProfileImage,
         FileMessage,
         AudioMessage,
         SaveData,

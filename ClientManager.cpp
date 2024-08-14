@@ -80,6 +80,9 @@ void ClientManager::on_text_message_received(const QString &message)
     case AddedYou:
         emit load_contacts(json_object["json_array"].toArray());
         break;
+    case ProfileImage:
+        emit profile_image(json_object["image_url"].toString());
+        break;
     case AudioMessage:
         break;
     case TextMessage:
@@ -176,6 +179,17 @@ void ClientManager::lookup_friend(const int &phone_number)
 {
     QJsonObject json_object{{"type", "lookup_friend"},
                             {"phone_number", phone_number}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::update_profile(const QString &file_name, const QByteArray &file_data)
+{
+    QString data = QString::fromUtf8(file_data.toBase64());
+
+    QJsonObject json_object{{"type", "profile_image"},
+                            {"file_name", file_name},
+                            {"file_data", data}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -510,6 +524,7 @@ void ClientManager::map_initialization()
     _map["login_request"] = LoginRequest;
     _map["lookup_friend"] = LookupFriend;
     _map["is_typing"] = IsTyping;
+    _map["profile_image"] = ProfileImage;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
     _map["audio"] = AudioMessage;

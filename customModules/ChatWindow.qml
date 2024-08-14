@@ -107,7 +107,7 @@ Item
 
             onItemClicked: 
             {
-                media_controller.send_file();
+                media_controller.send_file(true);
                 contact_list_model.file_sent();
             }
 
