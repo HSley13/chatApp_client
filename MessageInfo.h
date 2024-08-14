@@ -32,5 +32,5 @@ private:
     QString _audio_source{};
     QString _file_source{};
     QString _time{};
-    int _sender_ID{0};
+    int _sender_ID{};
 };

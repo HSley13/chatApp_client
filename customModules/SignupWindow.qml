@@ -272,7 +272,7 @@ Rectangle
 
             if (valid)
             {
-                client_manager.send_sign_up(signUpphone_number.inputField, signUpFirstName.inputField, signUpLastName.inputField, signUpPassword.inputField, signUpPasswordConfirmation.inputField, secret_question.inputField, secret_answer.inputField);
+                client_manager.sign_up(signUpphone_number.inputField, signUpFirstName.inputField, signUpLastName.inputField, signUpPassword.inputField, signUpPasswordConfirmation.inputField, secret_question.inputField, secret_answer.inputField);
 
                 signUpphone_number.inputField = "";
                 signUpFirstName.inputField = "";

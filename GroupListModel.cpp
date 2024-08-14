@@ -7,18 +7,6 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
       _active_group_chat(Q_NULLPTR),
       _group_proxy_list(new GroupProxyList(this))
 {
-    GroupInfo *avengers = new GroupInfo(1111, "Avengers", *ContactListModel::_contacts_ptr, "qrc:/QML/ClientApp/icons/avengers_icon.png", 1, this);
-    avengers->add_group_message(new GroupMessageInfo("Avengers Assemble", QString(), QString(), 3333, "Chris Evans", QTime::currentTime().toString("HH:mm"), this));
-    _groups.append(avengers);
-
-    GroupInfo *deadpool_wolverine = new GroupInfo(2222, "DeadPool & Wolverine", {}, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
-    deadpool_wolverine->add_group_message(new GroupMessageInfo("Let's get the People what They came for", QString(), QString(), 4444, "Ryan Reynolds", QTime::currentTime().toString("HH:mm"), this));
-    _groups.append(deadpool_wolverine);
-
-    GroupInfo *justiceLeague = new GroupInfo(3333, "Justice League", {}, "qrc:/QML/ClientApp/icons/justice_league_icon.png", 1, this);
-    justiceLeague->add_group_message(new GroupMessageInfo("Superman, tell me, do u bleed?", QString(), QString(), 5555, "Ben Affleck", QTime::currentTime().toString("HH:mm"), this));
-    _groups.append(justiceLeague);
-
     _group_proxy_list->setSourceModel(this);
 
     _client_manager = ClientManager::instance();
@@ -198,10 +186,7 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
 void GroupListModel::on_load_groups(QJsonArray json_array)
 {
     if (json_array.isEmpty())
-    {
-        qDebug() << "JsonArray is empty, on_load_groups";
         return;
-    }
 
     for (const QJsonValue &groups : json_array)
     {

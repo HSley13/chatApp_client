@@ -89,11 +89,7 @@ Item
                 title: "Add New Friend";
                 placeHolder: "Enter Phone number";
 
-                onDialogAccepted:
-                {
-                    // FIXME: notify the server
-                    console.log("input: " + inputField);
-                }
+                onDialogAccepted: client_manager.lookup_friend(inputField);
             }
         }
     }

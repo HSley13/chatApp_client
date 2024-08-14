@@ -28,7 +28,7 @@ public:
     void mount_file_IDBFS();
     void IDBFS_save_audio(const QString &audio_name, const QByteArray &audio_data, const int &size);
     void IDBFS_save_file(const QString &file_name, const QByteArray &file_data, const int &size);
-    QUrl get_audio_url(const QString &audio_name);
+    Q_INVOKABLE QUrl get_audio_url(const QString &audio_name);
     QUrl get_file_url(const QString &file_name);
 
     const QString &signup_message() const;
@@ -39,8 +39,9 @@ public:
 
     static void cleanup();
 
-    Q_INVOKABLE void send_sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer);
-    Q_INVOKABLE void send_login_request(const int &phone_number, const QString &password);
+    Q_INVOKABLE void sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer);
+    Q_INVOKABLE void login_request(const int &phone_number, const QString &password);
+    Q_INVOKABLE void lookup_friend(const int &phone_number);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -52,6 +53,8 @@ signals:
 
     void signup_message_changed();
     void login_message_changed();
+
+    void my_phone_number(const int &phone_number);
 
 public:
     static ClientManager *instance();

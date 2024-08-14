@@ -74,6 +74,14 @@ void ClientManager::on_text_message_received(const QString &message)
         emit load_groups(json_object["groups"].toArray());
     }
     break;
+    case LookupFriend:
+        emit load_contacts(json_object["json_array"].toArray());
+        break;
+    case AddedYou:
+        emit load_contacts(json_object["json_array"].toArray());
+        break;
+    case AudioMessage:
+        break;
     case TextMessage:
         break;
     case IsTyping:
@@ -82,8 +90,6 @@ void ClientManager::on_text_message_received(const QString &message)
         break;
     case FileMessage:
         break;
-    case AudioMessage:
-        break;
     case SaveData:
         break;
     case ClientNewName:
@@ -91,10 +97,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case ClientDisconnected:
         break;
     case ClientConnected:
-        break;
-    case AddedYou:
-        break;
-    case LookupFriend:
         break;
     case CreateConversation:
         break;
@@ -143,7 +145,7 @@ void ClientManager::on_disconnected()
 }
 /*-------------------------------------------------------------------- Functions --------------------------------------------------------------*/
 
-void ClientManager::send_sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
+void ClientManager::sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
 {
     QJsonObject json_object{
         {"type", "sign_up"},
@@ -154,22 +156,28 @@ void ClientManager::send_sign_up(const int &phone_number, const QString &first_n
         {"secret_question", secret_question},
         {"secret_answer", secret_answer}};
 
-    QJsonDocument Json_doc(json_object);
-
-    _socket->sendTextMessage(QString::fromUtf8(Json_doc.toJson()));
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_login_request(const int &phone_number, const QString &password)
+void ClientManager::login_request(const int &phone_number, const QString &password)
 {
+    emit my_phone_number(phone_number);
+
     QJsonObject json_object{
         {"type", "login_request"},
         {"phone_number", phone_number},
         {"password", password},
         {"time_zone", _time_zone}};
 
-    QJsonDocument json_doc(json_object);
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
 
-    _socket->sendTextMessage(QString::fromUtf8(json_doc.toJson()));
+void ClientManager::lookup_friend(const int &phone_number)
+{
+    QJsonObject json_object{{"type", "lookup_friend"},
+                            {"phone_number", phone_number}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
 const QString &ClientManager::signup_message() const
@@ -500,6 +508,7 @@ void ClientManager::map_initialization()
 {
     _map["sign_up"] = SignUp;
     _map["login_request"] = LoginRequest;
+    _map["lookup_friend"] = LookupFriend;
     _map["is_typing"] = IsTyping;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
@@ -509,7 +518,6 @@ void ClientManager::map_initialization()
     _map["client_disconnected"] = ClientDisconnected;
     _map["client_connected"] = ClientConnected;
     _map["added_you"] = AddedYou;
-    _map["lookup_friend"] = LookupFriend;
     _map["create_conversation"] = CreateConversation;
     _map["save_message"] = SaveMessage;
     _map["text"] = TextMessage;

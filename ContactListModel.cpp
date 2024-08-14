@@ -11,30 +11,15 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
 {
-    _main_user = new ContactInfo(0, "Sley", 1111, true, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 0, this);
-
-    ContactInfo *bruceWayne = new ContactInfo(2, "Bruce Wayne", 2222, true, "qrc:/QML/ClientApp/icons/batman_icon1.png", 1, this);
-    bruceWayne->add_message(new MessageInfo("I killed the Joker", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 3333, QTime::currentTime().toString("HH:mm"), this));
-    _contacts.append(bruceWayne);
-
-    ContactInfo *tonyStark = new ContactInfo(3, "Tony Stark", 3333, false, "qrc:/QML/ClientApp/icons/ironman_icon.png", 1, this);
-    tonyStark->add_message(new MessageInfo("I survived the Snap in EndGame", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 4444, QTime::currentTime().toString("HH:mm"), this));
-    _contacts.append(tonyStark);
-
-    ContactInfo *clarkKent = new ContactInfo(4, "Clark Kent", 4444, false, "qrc:/QML/ClientApp/icons/superman_icon.png", 1, this);
-    clarkKent->add_message(new MessageInfo("I killed Doomsday", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 5555, QTime::currentTime().toString("HH:mm"), this));
-    _contacts.append(clarkKent);
-
-    ContactInfo *steveRogers = new ContactInfo(5, "Steve Rogers", 5555, true, "qrc:/QML/ClientApp/icons/captain_icon.png", 1, this);
-    steveRogers->add_message(new MessageInfo("I had the dance with Peggy", "/Users/test/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/06-4.mp3", QString(), 6666, QTime::currentTime().toString("HH:mm"), this));
-    _contacts.append(steveRogers);
-
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
     _contact_proxy_list->setSourceModel(this);
 
     _client_manager = ClientManager::instance();
+    connect(_client_manager, &ClientManager::my_phone_number, this, [=](const int &phone_number)
+            { qDebug() << "Setting the phone_number";  _main_user = new ContactInfo(0, QString(), phone_number, true, QString(), 0, this); });
+
     connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
 
     _contacts_ptr = &_contacts;
@@ -235,10 +220,7 @@ ContactProxyList *ContactListModel::contact_proxy_list() const
 void ContactListModel::on_load_contacts(QJsonArray json_array)
 {
     if (json_array.isEmpty())
-    {
-        qDebug() << "JsonArray is empty, on_load_contacts()";
         return;
-    }
 
     for (const QJsonValue &obj : json_array)
     {

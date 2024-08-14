@@ -23,7 +23,7 @@ Item
         MediaPlayer
         {
             id: mediaPlayer;
-            source: model.audio_source;
+            source: client_manager.get_audio_url("1111_audio.m41");
             autoPlay: false;
             audioOutput: audioOutput;
 

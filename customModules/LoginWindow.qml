@@ -50,16 +50,6 @@ Item
         anchors.left: parent.left;
     }
 
-    Component.onCompleted: 
-    {
-        client_manager.login_message_changed.connect(() =>
-        {
-            notificationText.text = client_manager.login_message;
-            notificationBar.visible = true;
-            stackView.push(contactWindow);
-        });
-    }
-
     Image
     {
         id: welcomeImage;
@@ -214,7 +204,7 @@ Item
 
                  if(valid)
                  {
-                    client_manager.send_login_request(loginPhoneNumber.inputField, loginPassword.inputField);
+                    client_manager.login_request(loginPhoneNumber.inputField, loginPassword.inputField);
 
                     loginPhoneNumber.inputField = "";
                     loginPassword.inputField = "";
@@ -283,5 +273,15 @@ Item
         anchors.topMargin: 10;
         anchors.left: rowLayout.left;
         anchors.right: rowLayout.right;
+    }
+
+    Component.onCompleted: 
+    {
+        client_manager.login_message_changed.connect(() =>
+        {
+            notificationText.text = client_manager.login_message;
+            notificationBar.visible = true;
+            stackView.push(contactWindow);
+        });
     }
 }

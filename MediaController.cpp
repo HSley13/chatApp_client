@@ -67,7 +67,7 @@ void MediaController::start_recording()
     case Qt::PermissionStatus::Undetermined:
         qApp->requestPermission(microphonePermission, this, [=]()
                                 {
-                qDebug() << "Microphone permission granted!";
+    qDebug() << "Microphone permission granted!";
                 setup_recording(); });
         break;
 
@@ -175,3 +175,35 @@ void MediaController::send_file()
 
     QFileDialog::getOpenFileContent("All Files (*)", file_content_ready);
 }
+
+// void MediaController::play_audio(const QUrl &source)
+// {
+//     if (!_player)
+//     {
+//         _player = new QMediaPlayer(this);
+//         _audio_output = new QAudioOutput(this);
+//         _player->setAudioOutput(_audio_output);
+
+//         connect(_player, &QMediaPlayer::playbackStateChanged, this, [=](QMediaPlayer::PlaybackState state)
+//                 {
+//                     if (state == QMediaPlayer::StoppedState)
+//                     {
+//                         _paused_position = 0;
+//                         _is_playing = false;
+//                     } });
+//     }
+
+//     if (!_is_playing)
+//     {
+//         _player->setSource(source);
+//         _audio_output->setVolume(0.5); // Volume can be adjusted as needed
+//         _player->play();
+
+//         _is_playing = true;
+//     }
+//     else
+//     {
+//         _player->pause();
+//         _is_playing = false;
+//     }
+// }
