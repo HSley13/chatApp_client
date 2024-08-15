@@ -161,6 +161,9 @@ void MediaController::send_file(bool true_or_false)
             if (!true_or_false)
                 _client_manager->update_profile(QFileInfo(file_name).fileName(), file_data);
 
+            if (true_or_false && GroupListModel::active_group_chat() != Q_NULLPTR)
+                _client_manager->update_group_profile(GroupListModel::active_group_chat()->group_ID(), QFileInfo(file_name).fileName(), file_data);
+
 #ifdef __EMSCRIPTEN__
             _file_data = file_data;
             _file_name = file_name;

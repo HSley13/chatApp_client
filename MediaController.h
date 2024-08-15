@@ -4,6 +4,7 @@
 #include <QAudioInput>
 #include <QMediaCaptureSession>
 #include "ClientManager.h"
+#include "GroupListModel.h"
 class MediaController : public QObject
 {
     Q_OBJECT

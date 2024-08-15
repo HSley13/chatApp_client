@@ -189,7 +189,11 @@ Dialog
             Button
             {
                 text: "OK";
-                onClicked: root.accept();
+                onClicked:
+                {
+                    textInput.inputField = "";
+                    root.accept();
+                } 
                 
                 anchors.left: parent.left;
             }
@@ -197,7 +201,12 @@ Dialog
             Button
             {
                 text: "Cancel";
-                onClicked: root.reject();
+
+                onClicked: 
+                {
+                    textInput.inputField = "";
+                    root.reject();
+                }
 
                 anchors.right: parent.right;
             }

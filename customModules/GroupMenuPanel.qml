@@ -50,13 +50,11 @@ Rectangle
         id: membersList;
 
         anchors.top: buttons.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.right: parent.right;
         anchors.left: parent.left;
-        anchors.bottom: parent.bottom;
+        anchors.bottom: rectangle.top;
         anchors.horizontalCenter: parent.horizontalCenter;
-
-        anchors.margins: 5;
 
         spacing: 10;
         clip: true;
@@ -168,6 +166,24 @@ Rectangle
                     stackView.push(chatWindow);
                 }
             }
+        }
+    }
+
+    Rectangle
+    {
+        id: rectangle;
+        anchors.bottom: parent.bottom;
+        height: 20;
+        width: parent.width;
+
+        RoundedButton
+        {
+            text: "Change Profile";
+            color: "white";
+            height: parent.height;
+            anchors.centerIn: parent;
+
+            onClicked: media_controller.send_file(true);
         }
     }
 }

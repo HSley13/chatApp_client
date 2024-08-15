@@ -41,6 +41,7 @@ public:
     Q_INVOKABLE void disconnect() { _socket->close(); };
 
     void update_profile(const QString &file_name, const QByteArray &file_data);
+    void update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data);
     void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
     void new_group(const QString &group_name, QJsonArray json_array);
     void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
@@ -55,6 +56,8 @@ signals:
     void load_my_info(QJsonObject my_info);
 
     void profile_image(const QString &image_url);
+    void group_profile_image(const int &group_ID, const QString &image_url);
+
     void text_received(const int &chatID, const QString &message, const QString &time);
 
     void client_connected(const int &phone_number);
@@ -84,6 +87,7 @@ private:
         Text,
         GroupText,
         ProfileImage,
+        GroupProfileImage,
         ClientProfileImage,
         ClientDisconnected,
         ClientConnected,

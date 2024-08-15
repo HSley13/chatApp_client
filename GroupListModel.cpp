@@ -1,10 +1,12 @@
 #include "GroupListModel.h"
 #include "MediaController.h"
+#include "ContactListModel.h"
 #include "GroupMessageInfo.h"
+
+GroupInfo *GroupListModel::_active_group_chat{Q_NULLPTR};
 
 GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
-      _active_group_chat(Q_NULLPTR),
       _group_proxy_list(new GroupProxyList(this))
 {
     _group_proxy_list->setSourceModel(this);
@@ -13,6 +15,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
 
     connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
     connect(_client_manager, &ClientManager::group_text_received, this, &GroupListModel::on_group_text_received);
+    connect(_client_manager, &ClientManager::group_profile_image, this, &GroupListModel::on_group_profile_image);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -28,10 +31,11 @@ void GroupListModel::set_groups(const QList<GroupInfo *> &new_groups)
         return;
 
     _groups = new_groups;
+
     emit groups_changed();
 }
 
-GroupInfo *GroupListModel::active_group_chat() const
+GroupInfo *GroupListModel::active_group_chat()
 {
     return _active_group_chat;
 }
@@ -42,6 +46,7 @@ void GroupListModel::set_active_group_chat(GroupInfo *new_group)
         return;
 
     _active_group_chat = new_group;
+
     emit active_group_chat_changed();
 }
 
@@ -108,6 +113,8 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
     {
     case GroupIDRole:
         return group_info->group_ID();
+    case GroupAdminRole:
+        return group_info->group_admin();
     case GroupNameRole:
         return group_info->group_name();
     case GroupMembersRole:
@@ -139,6 +146,9 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case GroupNameRole:
         group_info->set_group_name(value.toString());
         break;
+    case GroupAdminRole:
+        group_info->set_group_admin(value.toInt());
+        break;
     case GroupUnreadMessageRole:
         group_info->set_group_unread_message(value.toInt());
         break;
@@ -157,7 +167,8 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
 {
     QHash<int, QByteArray> roles{};
 
-    roles[GroupIDRole] = "Group_ID";
+    roles[GroupIDRole] = "groupID";
+    roles[GroupAdminRole] = "group_admin";
     roles[GroupNameRole] = "group_name";
     roles[GroupMembersRole] = "group_members";
     roles[GroupUnreadMessageRole] = "group_unread_message";
@@ -198,13 +209,11 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         QList<ContactInfo *> group_members;
         for (QJsonValue ID : members_ID)
         {
-            bool found = false;
+            if (ContactListModel::main_user()->phone_number() == ID.toInt())
+                continue;
 
             for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
             {
-                if (ContactListModel::main_user()->phone_number() == ID.toInt())
-                    break;
-
                 if (contact->phone_number() == ID.toInt())
                 {
                     group_members << contact;
@@ -213,7 +222,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
             }
         }
 
-        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["unread_messages"].toInt(), this);
+        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_admin"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["unread_messages"].toInt(), this);
 
         // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
 
@@ -240,6 +249,26 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
+
+            return;
+        }
+    }
+}
+
+void GroupListModel::on_group_profile_image(const int &group_ID, const QString &group_image_url)
+{
+    if (!group_ID || group_image_url.isEmpty())
+        return;
+
+    for (size_t i{0}; i < _groups.size(); i++)
+    {
+        GroupInfo *group = _groups[i];
+        if (group->group_ID() == group_ID)
+        {
+            group->set_group_image_url(group_image_url);
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {GroupImageUrlRole});
 
             return;
         }

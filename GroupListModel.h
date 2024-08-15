@@ -2,7 +2,6 @@
 
 #include "GroupInfo.h"
 #include "GroupProxyList.h"
-#include "ContactListModel.h"
 #include "ClientManager.h"
 class GroupListModel : public QAbstractListModel
 {
@@ -19,6 +18,7 @@ public:
         GroupMembersRole,
         GroupNameRole,
         GroupUnreadMessageRole,
+        GroupAdminRole,
         GroupImageUrlRole,
         GroupMessagesRole,
         GroupObjectRole,
@@ -34,7 +34,7 @@ public:
     ContactInfo *main_user() const;
     GroupProxyList *group_proxy_list() const;
 
-    GroupInfo *active_group_chat() const;
+    static GroupInfo *active_group_chat();
     void set_active_group_chat(GroupInfo *new_group_chat);
 
     virtual int rowCount(const QModelIndex &parent) const override;
@@ -50,10 +50,11 @@ public:
 private slots:
     void on_load_groups(QJsonArray json_array);
     void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
+    void on_group_profile_image(const int &group_ID, const QString &group_image_url);
 
 private:
     QList<GroupInfo *> _groups;
-    GroupInfo *_active_group_chat{nullptr};
+    static GroupInfo *_active_group_chat;
 
     GroupProxyList *_group_proxy_list{nullptr};
     ClientManager *_client_manager{nullptr};

@@ -10,6 +10,7 @@ class GroupInfo : public QObject
 
     Q_PROPERTY(int group_ID READ group_ID WRITE set_group_ID NOTIFY group_ID_changed)
     Q_PROPERTY(QString group_name READ group_name WRITE set_group_name NOTIFY group_name_changed)
+    Q_PROPERTY(int group_admin READ group_admin WRITE set_group_admin NOTIFY group_admin_changed)
     Q_PROPERTY(QString group_image_url READ group_image_url WRITE set_group_image_url NOTIFY group_image_url_changed)
     Q_PROPERTY(int group_unread_message READ group_unread_message WRITE set_group_unread_message NOTIFY group_unread_message_changed)
 
@@ -18,7 +19,7 @@ class GroupInfo : public QObject
 
 public:
     GroupInfo(QObject *parent = nullptr);
-    GroupInfo(const int &group_ID, const QString &group_name, const QList<ContactInfo *> &group_members, const QString &group_image_url, const int &group_unread_message, QObject *parent = nullptr);
+    GroupInfo(const int &group_ID, const int &group_admin, const QString &group_name, const QList<ContactInfo *> &group_members, const QString &group_image_url, const int &group_unread_message, QObject *parent = nullptr);
     ~GroupInfo();
 
     const int &group_ID() const;
@@ -26,6 +27,9 @@ public:
 
     const QString &group_name() const;
     void set_group_name(const QString &new_name);
+
+    const int &group_admin() const;
+    void set_group_admin(const int &new_admin);
 
     const QList<ContactInfo *> &group_members() const;
     void add_group_members(ContactInfo *new_member);
@@ -48,6 +52,7 @@ private:
     QList<ContactInfo *> _group_members;
     QString _group_image_url{};
     int _group_unread_message{};
+    int _group_admin{0};
 
     GroupChatListModel *_group_messages;
 
@@ -59,6 +64,7 @@ signals:
     void group_image_url_changed();
     void group_unread_message_changed();
     void group_ID_changed();
+    void group_admin_changed();
 
     void group_messages_changed();
 };

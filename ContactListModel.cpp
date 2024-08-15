@@ -25,7 +25,6 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
 
     connect(_client_manager, &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
-    connect(_client_manager, &ClientManager::client_disconnected, this, &ContactListModel::on_client_disconnected);
 
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);

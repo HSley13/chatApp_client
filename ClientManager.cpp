@@ -82,6 +82,9 @@ void ClientManager::on_text_message_received(const QString &message)
     case ProfileImage:
         emit profile_image(json_object["image_url"].toString());
         break;
+    case GroupProfileImage:
+        emit group_profile_image(json_object["groupID"].toInt(), json_object["group_image_url"].toString());
+        break;
     case ClientProfileImage:
         emit client_profile_image(json_object["phone_number"].toInt(), json_object["image_url"].toString());
         break;
@@ -198,6 +201,18 @@ void ClientManager::update_profile(const QString &file_name, const QByteArray &f
     QString data = QString::fromUtf8(file_data.toBase64());
 
     QJsonObject json_object{{"type", "profile_image"},
+                            {"file_name", file_name},
+                            {"file_data", data}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data)
+{
+    QString data = QString::fromUtf8(file_data.toBase64());
+
+    QJsonObject json_object{{"type", "group_profile_image"},
+                            {"groupID", group_ID},
                             {"file_name", file_name},
                             {"file_data", data}};
 
@@ -557,6 +572,7 @@ void ClientManager::map_initialization()
     _map["is_typing"] = IsTyping;
     _map["text"] = Text;
     _map["profile_image"] = ProfileImage;
+    _map["group_profile_image"] = GroupProfileImage;
     _map["client_profile_image"] = ClientProfileImage;
     _map["client_disconnected"] = ClientDisconnected;
     _map["client_connected"] = ClientConnected;
