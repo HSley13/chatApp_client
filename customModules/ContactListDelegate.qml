@@ -69,7 +69,7 @@ Rectangle
 
             Text
             {
-                text: name;
+                text: first_name;
                 color: "black";
                 font.pixelSize: 14;
                 Layout.fillWidth: true;

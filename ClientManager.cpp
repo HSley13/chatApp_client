@@ -58,7 +58,6 @@ void ClientManager::on_text_message_received(const QString &message)
                                      .arg(json_object["message"].toString());
 
         _signup_message = message;
-        emit signup_message_changed();
     }
     break;
     case LoginRequest:
@@ -68,7 +67,6 @@ void ClientManager::on_text_message_received(const QString &message)
                                      .arg(json_object["message"].toString());
 
         _login_message = message;
-        emit login_message_changed();
 
         emit load_my_info(json_object["my_info"].toObject());
         emit load_contacts(json_object["contacts"].toArray());
@@ -96,6 +94,9 @@ void ClientManager::on_text_message_received(const QString &message)
     case ClientDisconnected:
         emit client_disconnected(json_object["phone_number"].toInt());
         break;
+    case AddedToGroup:
+        emit load_groups(json_object["groups"].toArray());
+        break;
     case AudioMessage:
         break;
     case IsTyping:
@@ -117,10 +118,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case DeleteMessage:
         break;
     case DeleteGroupMessage:
-        break;
-    case NewGroup:
-        break;
-    case AddedToGroup:
         break;
     case GroupIsTyping:
         break;
@@ -217,14 +214,13 @@ void ClientManager::send_text(const int &receiver, const QString &message, const
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-const QString &ClientManager::signup_message() const
+void ClientManager::new_group(const QString &group_name, QJsonArray json_array)
 {
-    return _signup_message;
-}
+    QJsonObject json_object{{"type", "new_group"},
+                            {"group_name", group_name},
+                            {"group_members", json_array}};
 
-const QString &ClientManager::login_message() const
-{
-    return _login_message;
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
 void ClientManager::mount_audio_IDBFS()
@@ -553,6 +549,7 @@ void ClientManager::map_initialization()
     _map["client_disconnected"] = ClientDisconnected;
     _map["client_connected"] = ClientConnected;
     _map["added_you"] = AddedYou;
+    _map["added_to_group"] = AddedToGroup;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
     _map["audio"] = AudioMessage;
@@ -563,8 +560,6 @@ void ClientManager::map_initialization()
     _map["update_password"] = UpdatePassword;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
-    _map["new_group"] = NewGroup;
-    _map["added_to_group"] = AddedToGroup;
     _map["group_is_typing"] = GroupIsTyping;
     _map["group_text"] = GroupText;
     _map["group_file"] = GroupFile;

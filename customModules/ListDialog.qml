@@ -142,7 +142,7 @@ Dialog
 
                             Text
                             {
-                                text: name;
+                                text: first_name;
                                 color: "black";
                                 font.pixelSize: 12;
                                 Layout.fillWidth: true;

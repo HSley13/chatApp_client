@@ -277,11 +277,11 @@ Item
 
     Component.onCompleted: 
     {
-        client_manager.login_message_changed.connect(() =>
-        {
-            notificationText.text = client_manager.login_message;
-            notificationBar.visible = true;
-            stackView.push(contactWindow);
-        });
+        // client_manager.login_message_changed.connect(() =>
+        // {
+        //     notificationText.text = client_manager.login_message;
+        //     notificationBar.visible = true;
+        //     stackView.push(contactWindow);
+        // });
     }
 }

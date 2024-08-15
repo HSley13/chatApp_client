@@ -56,7 +56,7 @@ Item
                 Text
                 {
                     id: userName;
-                    text: (contact_list_model.active_chat === null) ? "" : contact_list_model.active_chat.name;
+                    text: (contact_list_model.active_chat === null) ? "" : contact_list_model.active_chat.first_name;
                     color: "black";
                     font.pixelSize: 16;
                     font.bold: true;

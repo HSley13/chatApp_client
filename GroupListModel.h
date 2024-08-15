@@ -49,6 +49,7 @@ public:
 
 private slots:
     void on_load_groups(QJsonArray json_array);
+    void on_group_ID(const int &groupID, const QString &group_name);
 
 private:
     QList<GroupInfo *> _groups;

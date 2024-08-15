@@ -3,29 +3,45 @@
 ContactInfo::ContactInfo(QObject *parent)
     : QObject(parent), _messages(new ChatListModel(this)) {}
 
-ContactInfo::ContactInfo(const int &chat_ID, const QString &name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent)
+ContactInfo::ContactInfo(const int &chat_ID, const QString &first_name, const QString &last_name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent)
     : QObject(parent),
       _chat_ID(chat_ID),
-      _name(name),
+      _first_name(first_name),
+      _last_name(last_name),
       _phone_number(phone_number),
       _status(status),
       _image_url(image_url),
       _unread_message(unread_message),
       _messages(new ChatListModel(this)) {}
 
-const QString &ContactInfo::name() const
+const QString &ContactInfo::first_name() const
 {
-    return _name;
+    return _first_name;
 }
 
-void ContactInfo::set_name(const QString &new_name)
+const QString &ContactInfo::last_name() const
 {
-    if (!_name.compare(new_name))
+    return _last_name;
+}
+
+void ContactInfo::set_first_name(const QString &new_first_name)
+{
+    if (!_first_name.compare(new_first_name))
         return;
 
-    _name = new_name;
+    _first_name = new_first_name;
 
-    emit name_changed();
+    emit first_name_changed();
+}
+
+void ContactInfo::set_last_name(const QString &new_last_name)
+{
+    if (!_last_name.compare(new_last_name))
+        return;
+
+    _last_name = new_last_name;
+
+    emit last_name_changed();
 }
 
 const int &ContactInfo::phone_number() const

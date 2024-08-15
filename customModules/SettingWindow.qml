@@ -189,7 +189,7 @@ Item
             {
                 image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
                 echoMode: TextInput.Normal;
-                placeHolder: "First Name";
+                placeHolder: contact_list_model.main_user.first_name;
                 Layout.fillWidth: true;
                 height: 40;
             }
@@ -198,7 +198,7 @@ Item
             {
                 image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
                 echoMode: TextInput.Normal;
-                placeHolder: "Last Name";
+                placeHolder: contact_list_model.main_user.last_name;
                 Layout.fillWidth: true;
                 height: 40;
             }
@@ -397,7 +397,7 @@ Item
             onClicked:
             {
                 stackView.replace(loginWindow, StackView.PopTransition);
-                console.log("Log out Button Clicked");
+                client_manager.disconnect();
             }
         }
     }

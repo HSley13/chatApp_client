@@ -11,7 +11,7 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
       _contact_proxy_list(new ContactProxyList(this)),
       _media_controller(new MediaController(this))
 {
-    _main_user = new ContactInfo(0, QString(), 0, true, QString(), 0, this);
+    _main_user = new ContactInfo(0, QString(), QString(), 0, true, QString(), 0, this);
 
     _client_manager = ClientManager::instance();
 
@@ -141,8 +141,10 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
     {
     case chat_IDRole:
         return contact_info->chat_ID();
-    case NameRole:
-        return contact_info->name();
+    case FirstNameRole:
+        return contact_info->first_name();
+    case LastNameRole:
+        return contact_info->last_name();
     case PhoneNumberRole:
         return contact_info->phone_number();
     case StatusRole:
@@ -167,7 +169,8 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     QHash<int, QByteArray> roles;
 
     roles[chat_IDRole] = "chat_ID";
-    roles[NameRole] = "name";
+    roles[FirstNameRole] = "first_name";
+    roles[LastNameRole] = "last_name";
     roles[PhoneNumberRole] = "phone_number";
     roles[StatusRole] = "status";
     roles[UnreadMessageRole] = "unread_message";
@@ -191,8 +194,11 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     case chat_IDRole:
         contact_info->set_chat_ID(value.toInt());
         break;
-    case NameRole:
-        contact_info->set_name(value.toString());
+    case FirstNameRole:
+        contact_info->set_first_name(value.toString());
+        break;
+    case LastNameRole:
+        contact_info->set_last_name(value.toString());
         break;
     case PhoneNumberRole:
         contact_info->set_phone_number(value.toLongLong());
@@ -232,7 +238,8 @@ void ContactListModel::on_load_my_info(QJsonObject my_info)
     if (my_info.isEmpty())
         return;
 
-    _main_user->set_name(my_info["first_name"].toString());
+    _main_user->set_first_name(my_info["first_name"].toString());
+    _main_user->set_last_name(my_info["last_name"].toString());
     _main_user->set_phone_number(my_info["_id"].toInt());
     _main_user->set_image_url(my_info["image_url"].toString());
 }
@@ -256,7 +263,7 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
         QJsonObject contact_info = obj["contactInfo"].toObject();
         QJsonArray chat_messages = obj["chatMessages"].toArray();
 
-        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
+        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
 
         // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
         for (const QJsonValue &message : chat_messages)
@@ -328,4 +335,17 @@ void ContactListModel::on_client_disconnected(const int &phone_number)
             break;
         }
     }
+}
+
+void ContactListModel::lookup_friend(const int &phone_number)
+{
+    for (const ContactInfo *contact : _contacts)
+    {
+        if (contact->phone_number() == phone_number)
+            return;
+    }
+
+    _client_manager->lookup_friend(phone_number);
+
+    // FIXME: send pop up notification
 }

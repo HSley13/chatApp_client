@@ -135,7 +135,7 @@ Rectangle
 
                     Text
                     {
-                        text: modelData.name;
+                        text: modelData.first_name;
                         color: "black";
                         font.pixelSize: 12;
                         Layout.fillWidth: true;

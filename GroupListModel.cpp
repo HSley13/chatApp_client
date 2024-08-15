@@ -12,6 +12,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     _client_manager = ClientManager::instance();
 
     connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
+    connect(_client_manager, &ClientManager::group_ID, this, &GroupListModel::on_group_ID);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -173,15 +174,30 @@ GroupProxyList *GroupListModel::group_proxy_list() const
 
 void GroupListModel::add_group(const QString &group_name, const QList<ContactInfo *> members)
 {
-    beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
+    QJsonArray json_array;
+    for (ContactInfo *contact : members)
+        json_array.append(contact->phone_number());
 
-    GroupInfo *new_group = new GroupInfo(9999, group_name, members, "https://lumiere-a.akamaihd.net/v1/images/deadpool_wolverine_mobile_640x480_ad8020fd.png", 1, this);
-    new_group->add_group_message(new GroupMessageInfo("New Group", QString(), QString(), 9999, QString(), QTime::currentTime().toString("HH:mm"), this));
-    _groups.append(new_group);
+    json_array.append(ContactListModel::main_user()->phone_number());
 
-    endInsertRows();
+    _client_manager->new_group(group_name, json_array);
+}
 
-    emit groups_changed();
+void GroupListModel::on_group_ID(const int &groupID, const QString &group_name)
+{
+    if (!groupID || group_name.isEmpty())
+        return;
+
+    for (size_t i{0}; i < _groups.size(); i++)
+    {
+        GroupInfo *group = _groups[i];
+        if (group->group_name().compare(group_name))
+        {
+            group->set_group_ID(groupID);
+
+            break;
+        }
+    }
 }
 
 void GroupListModel::on_load_groups(QJsonArray json_array)
@@ -191,11 +207,10 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
 
     for (const QJsonValue &groups : json_array)
     {
-        QJsonArray members_ID = groups["membersID"].toArray();
+        QJsonArray members_ID = groups["group_members"].toArray();
         QJsonArray messages = groups["messages"].toArray();
 
         QList<ContactInfo *> group_members;
-
         for (QJsonValue ID : members_ID)
         {
             bool found = false;
@@ -213,11 +228,15 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
             }
         }
 
-        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["groupName"].toString(), group_members, groups["imageUrl"].toString(), 1, this);
+        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["unread_messages"].toInt(), this);
 
         // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
-        for (const QJsonValue &message : messages)
-            group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), QString(), message["sender"].toInt(), message["sender"].toString(), QTime::currentTime().toString("HH:mm"), this));
+
+        if (!messages.isEmpty())
+        {
+            for (const QJsonValue &message : messages)
+                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), QString(), message["sender"].toInt(), message["sender"].toString(), QTime::currentTime().toString("HH:mm"), this));
+        }
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
         _groups.append(group);

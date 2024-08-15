@@ -7,7 +7,8 @@ class ContactInfo : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(QString name READ name WRITE set_name NOTIFY name_changed)
+    Q_PROPERTY(QString first_name READ first_name WRITE set_first_name NOTIFY first_name_changed)
+    Q_PROPERTY(QString last_name READ last_name WRITE set_last_name NOTIFY last_name_changed)
     Q_PROPERTY(int phone_number READ phone_number WRITE set_phone_number NOTIFY phone_number_changed)
     Q_PROPERTY(bool status READ status WRITE set_status NOTIFY status_changed)
     Q_PROPERTY(QString image_url READ image_url WRITE set_image_url NOTIFY image_url_changed)
@@ -17,13 +18,16 @@ class ContactInfo : public QObject
 
 public:
     ContactInfo(QObject *parent = nullptr);
-    ContactInfo(const int &chat_ID, const QString &name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent = nullptr);
+    ContactInfo(const int &chat_ID, const QString &first_name, const QString &last_name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent = nullptr);
 
     const int &chat_ID() const;
     void set_chat_ID(const int &new_ID);
 
-    const QString &name() const;
-    void set_name(const QString &new_name);
+    const QString &first_name() const;
+    void set_first_name(const QString &new_first_name);
+
+    const QString &last_name() const;
+    void set_last_name(const QString &new_first_name);
 
     const int &phone_number() const;
     void set_phone_number(const int &new_phone_number);
@@ -45,7 +49,8 @@ public:
 
 private:
     int _chat_ID{0};
-    QString _name{};
+    QString _first_name{};
+    QString _last_name{};
     int _phone_number{0};
     bool _status{false};
     QString _image_url{};
@@ -56,7 +61,8 @@ private:
     QDateTime _last_message_time = QDateTime::currentDateTime();
 
 signals:
-    void name_changed();
+    void first_name_changed();
+    void last_name_changed();
     void phone_number_changed();
     void status_changed();
     void image_url_changed();

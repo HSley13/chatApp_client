@@ -50,15 +50,6 @@ Item
         anchors.left: parent.left;
     }
 
-    Component.onCompleted: 
-    {
-        client_manager.signup_message_changed.connect(() =>
-        {
-            notificationText.text = client_manager.signup_message;
-            notificationBar.visible = true;
-        });
-    }
-
     Image
     {
         id: welcomeImage;
@@ -197,98 +188,98 @@ Item
         }
     }
 
-Rectangle
-{
-    id: signUpButton;
-    color: mouseArea.pressed ? "#ed7bb4" : "black";
-
-    width: parent.width * 0.6;
-    height: 50;
-    radius: 15;
-
-    Text
+    Rectangle
     {
-        text: "SIGN UP";
-        color: "white";
-        anchors.centerIn: parent;
-    }
-
-    MouseArea
-    {
-        id: mouseArea;
-        anchors.fill: parent;
-
-        onClicked:
+        id: signUpButton;
+        color: mouseArea.pressed ? "#ed7bb4" : "black";
+    
+        width: parent.width * 0.6;
+        height: 50;
+        radius: 15;
+    
+        Text
         {
-            var valid = true;
-
-            if (signUpphone_number.inputField === "")
+            text: "SIGN UP";
+            color: "white";
+            anchors.centerIn: parent;
+        }
+    
+        MouseArea
+        {
+            id: mouseArea;
+            anchors.fill: parent;
+    
+            onClicked:
             {
-                signUpphone_number.borderColor = "red";
-                valid = false;
-            }
-            else
-                signUpphone_number.borderColor = signUpphone_number.inputField.focus ? "#a10e7a" : "black";
-
-            if (signUpFirstName.inputField === "" || signUpLastName.inputField === "")
-            {
-                signUpFirstName.borderColor = signUpFirstName.inputField === "" ? "red" : signUpFirstName.inputField.focus ? "#a10e7a" : "black";
-                signUpLastName.borderColor = signUpLastName.inputField === "" ? "red" : signUpLastName.inputField.focus ? "#a10e7a" : "black";
-                valid = false;
-            }
-            else
-            {
-                signUpFirstName.borderColor = signUpFirstName.inputField.focus ? "#a10e7a" : "black";
-                signUpLastName.borderColor = signUpLastName.inputField.focus ? "#a10e7a" : "black";
-            }
-
-            if (signUpPassword.inputField === "")
-            {
-                signUpPassword.borderColor = "red";
-                valid = false;
-            }
-            else
-                signUpPassword.borderColor = signUpPassword.inputField.focus ? "#a10e7a" : "black";
-
-            if (signUpPasswordConfirmation.inputField === "" || signUpPassword.inputField !== signUpPasswordConfirmation.inputField)
-            {
-                signUpPasswordConfirmation.borderColor = "red";
-                valid = false;
-            }
-            else
-                signUpPasswordConfirmation.borderColor = signUpPasswordConfirmation.inputField.focus ? "#a10e7a" : "black";
-
-            if (secret_question.inputField === "" || secret_answer.inputField === "")
-            {
-                secret_question.borderColor = secret_question.inputField === "" ? "red" : secret_question.inputField.focus ? "#a10e7a" : "black";
-                secret_answer.borderColor = secret_answer.inputField === "" ? "red" : secret_answer.inputField.focus ? "#a10e7a" : "black";
-                valid = false;
-            }
-            else
-            {
-                secret_question.borderColor = secret_question.inputField.focus ? "#a10e7a" : "black";
-                secret_answer.borderColor = secret_answer.inputField.focus ? "#a10e7a" : "black";
-            }
-
-            if (valid)
-            {
-                client_manager.sign_up(signUpphone_number.inputField, signUpFirstName.inputField, signUpLastName.inputField, signUpPassword.inputField, signUpPasswordConfirmation.inputField, secret_question.inputField, secret_answer.inputField);
-
-                signUpphone_number.inputField = "";
-                signUpFirstName.inputField = "";
-                signUpLastName.inputField = "";
-                signUpPassword.inputField = "";
-                signUpPasswordConfirmation.inputField = "";
-                secret_question.inputField = "";
-                secret_answer.inputField = "";
+                var valid = true;
+    
+                if (signUpphone_number.inputField === "")
+                {
+                    signUpphone_number.borderColor = "red";
+                    valid = false;
+                }
+                else
+                    signUpphone_number.borderColor = signUpphone_number.inputField.focus ? "#a10e7a" : "black";
+    
+                if (signUpFirstName.inputField === "" || signUpLastName.inputField === "")
+                {
+                    signUpFirstName.borderColor = signUpFirstName.inputField === "" ? "red" : signUpFirstName.inputField.focus ? "#a10e7a" : "black";
+                    signUpLastName.borderColor = signUpLastName.inputField === "" ? "red" : signUpLastName.inputField.focus ? "#a10e7a" : "black";
+                    valid = false;
+                }
+                else
+                {
+                    signUpFirstName.borderColor = signUpFirstName.inputField.focus ? "#a10e7a" : "black";
+                    signUpLastName.borderColor = signUpLastName.inputField.focus ? "#a10e7a" : "black";
+                }
+    
+                if (signUpPassword.inputField === "")
+                {
+                    signUpPassword.borderColor = "red";
+                    valid = false;
+                }
+                else
+                    signUpPassword.borderColor = signUpPassword.inputField.focus ? "#a10e7a" : "black";
+    
+                if (signUpPasswordConfirmation.inputField === "" || signUpPassword.inputField !== signUpPasswordConfirmation.inputField)
+                {
+                    signUpPasswordConfirmation.borderColor = "red";
+                    valid = false;
+                }
+                else
+                    signUpPasswordConfirmation.borderColor = signUpPasswordConfirmation.inputField.focus ? "#a10e7a" : "black";
+    
+                if (secret_question.inputField === "" || secret_answer.inputField === "")
+                {
+                    secret_question.borderColor = secret_question.inputField === "" ? "red" : secret_question.inputField.focus ? "#a10e7a" : "black";
+                    secret_answer.borderColor = secret_answer.inputField === "" ? "red" : secret_answer.inputField.focus ? "#a10e7a" : "black";
+                    valid = false;
+                }
+                else
+                {
+                    secret_question.borderColor = secret_question.inputField.focus ? "#a10e7a" : "black";
+                    secret_answer.borderColor = secret_answer.inputField.focus ? "#a10e7a" : "black";
+                }
+    
+                if (valid)
+                {
+                    client_manager.sign_up(signUpphone_number.inputField, signUpFirstName.inputField, signUpLastName.inputField, signUpPassword.inputField, signUpPasswordConfirmation.inputField, secret_question.inputField, secret_answer.inputField);
+    
+                    signUpphone_number.inputField = "";
+                    signUpFirstName.inputField = "";
+                    signUpLastName.inputField = "";
+                    signUpPassword.inputField = "";
+                    signUpPasswordConfirmation.inputField = "";
+                    secret_question.inputField = "";
+                    secret_answer.inputField = "";
+                }
             }
         }
+    
+        anchors.top: signupInfo.bottom;
+        anchors.topMargin: 20;
+        anchors.horizontalCenter: parent.horizontalCenter;
     }
-
-    anchors.top: signupInfo.bottom;
-    anchors.topMargin: 20;
-    anchors.horizontalCenter: parent.horizontalCenter;
-}
 
 
     RowLayout
@@ -315,5 +306,14 @@ Rectangle
 
             onClicked: stackView.replace(loginWindow, StackView.PopTransition);
         }
+    }
+
+    Component.onCompleted: 
+    {
+        // client_manager.signup_message_changed.connect(() =>
+        // {
+        //     notificationText.text = client_manager.signup_message;
+        //     notificationBar.visible = true;
+        // });
     }
 }

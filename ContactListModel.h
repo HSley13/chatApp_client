@@ -39,6 +39,8 @@ public:
     Q_INVOKABLE void audio_sent();
     Q_INVOKABLE void file_sent();
 
+    Q_INVOKABLE void lookup_friend(const int &phone_number);
+
     ClientManager *_client_manager{nullptr};
 
     static QList<ContactInfo *> *_contacts_ptr;
@@ -68,7 +70,8 @@ public:
     {
         chat_IDRole = Qt::UserRole + 1,
         PhoneNumberRole,
-        NameRole,
+        FirstNameRole,
+        LastNameRole,
         StatusRole,
         UnreadMessageRole,
         ImageUrlRole,

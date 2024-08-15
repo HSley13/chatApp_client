@@ -74,12 +74,7 @@ Item
                 placeHolder: "Enter Group Name";
                 model: contact_list_model.contact_proxy_list;
 
-                onDialogAccepted:
-                {
-                    group_list_model.add_group(inputField, selectedItems);
-                    //  add the group and its members
-                    // FIXME: notify the server
-                }
+                onDialogAccepted: group_list_model.add_group(inputField, selectedItems);
             }
 
             ListDialog
@@ -89,7 +84,7 @@ Item
                 title: "Add New Friend";
                 placeHolder: "Enter Phone number";
 
-                onDialogAccepted: client_manager.lookup_friend(inputField);
+                onDialogAccepted: contact_list_model.lookup_friend(inputField);
             }
         }
     }

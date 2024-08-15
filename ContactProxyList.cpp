@@ -3,9 +3,9 @@
 
 ContactProxyList::ContactProxyList(QObject *parent)
     : QSortFilterProxyModel(parent),
-      _custom_sort_role(ContactListModel::ContactRoles::NameRole)
+      _custom_sort_role(ContactListModel::ContactRoles::FirstNameRole)
 {
-    setFilterRole(ContactListModel::ContactRoles::NameRole);
+    setFilterRole(ContactListModel::ContactRoles::FirstNameRole);
     setFilterCaseSensitivity(Qt::CaseInsensitive);
     setSortRole(_custom_sort_role);
     sort(0, Qt::AscendingOrder);
