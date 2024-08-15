@@ -90,10 +90,10 @@ void ClientManager::on_text_message_received(const QString &message)
     case TextMessage:
         emit text_received(json_object["chatID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
         break;
-    case ClientDisconnected:
+    case ClientConnected:
         emit client_connected(json_object["phone_number"].toInt());
         break;
-    case ClientConnected:
+    case ClientDisconnected:
         emit client_disconnected(json_object["phone_number"].toInt());
         break;
     case AudioMessage:
@@ -107,8 +107,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case SaveData:
         break;
     case ClientNewName:
-        break;
-    case CreateConversation:
         break;
     case SaveMessage:
         break;
@@ -545,13 +543,12 @@ void ClientManager::map_initialization()
     _map["client_profile_image"] = ClientProfileImage;
     _map["client_disconnected"] = ClientDisconnected;
     _map["client_connected"] = ClientConnected;
+    _map["added_you"] = AddedYou;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
     _map["audio"] = AudioMessage;
     _map["save_data"] = SaveData;
     _map["client_new_name"] = ClientNewName;
-    _map["added_you"] = AddedYou;
-    _map["create_conversation"] = CreateConversation;
     _map["save_message"] = SaveMessage;
     _map["new_password_request"] = NewPasswordRequest;
     _map["update_password"] = UpdatePassword;

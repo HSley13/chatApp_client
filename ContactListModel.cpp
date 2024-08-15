@@ -13,11 +13,6 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 {
     _main_user = new ContactInfo(0, QString(), 0, true, QString(), 0, this);
 
-    _contact_proxy_list_chat->setSourceModel(this);
-    _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
-
-    _contact_proxy_list->setSourceModel(this);
-
     _client_manager = ClientManager::instance();
 
     connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
@@ -31,6 +26,11 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     connect(_client_manager, &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
     connect(_client_manager, &ClientManager::client_disconnected, this, &ContactListModel::on_client_disconnected);
+
+    _contact_proxy_list_chat->setSourceModel(this);
+    _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
+
+    _contact_proxy_list->setSourceModel(this);
 
     _contacts_ptr = &_contacts;
 }
@@ -275,12 +275,17 @@ void ContactListModel::on_client_profile_image(const int &phone_number, const QS
     if (!phone_number || image_url.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
+    for (size_t i{0}; i < _contacts.size(); i++)
     {
+        ContactInfo *contact = _contacts[i];
         if (contact->phone_number() == phone_number)
         {
-            qDebug() << "Contact found, setting the profile";
             contact->set_image_url(image_url);
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {ImageUrlRole});
+
+            break;
         }
     }
 }
@@ -290,12 +295,17 @@ void ContactListModel::on_client_connected(const int &phone_number)
     if (!phone_number)
         return;
 
-    for (ContactInfo *contact : _contacts)
+    for (size_t i{0}; i < _contacts.size(); i++)
     {
+        ContactInfo *contact = _contacts[i];
         if (contact->phone_number() == phone_number)
         {
-            qDebug() << "Contact found, setting the connected status";
             contact->set_status(true);
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {StatusRole});
+
+            break;
         }
     }
 }
@@ -305,12 +315,17 @@ void ContactListModel::on_client_disconnected(const int &phone_number)
     if (!phone_number)
         return;
 
-    for (ContactInfo *contact : _contacts)
+    for (size_t i{0}; i < _contacts.size(); i++)
     {
+        ContactInfo *contact = _contacts[i];
         if (contact->phone_number() == phone_number)
         {
-            qDebug() << "Contact found, setting the disconnected status";
             contact->set_status(false);
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {StatusRole});
+
+            break;
         }
     }
 }
