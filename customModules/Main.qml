@@ -79,7 +79,7 @@ Rectangle
         id: stackView;
 
         anchors.fill: parent;
-        
+
         initialItem: loginWindow;
     }
 }

@@ -43,6 +43,8 @@ public:
     Q_INVOKABLE void login_request(const int &phone_number, const QString &password);
     Q_INVOKABLE void lookup_friend(const int &phone_number);
 
+    Q_INVOKABLE void profile_image_deleted();
+
     void update_profile(const QString &file_name, const QByteArray &file_data);
     void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
 
@@ -65,6 +67,8 @@ signals:
     void client_disconnected(const int &phone_number);
 
     void client_profile_image(const int &phone_number, const QString &image_url);
+
+    void disconnected();
 
 public:
     static ClientManager *instance();

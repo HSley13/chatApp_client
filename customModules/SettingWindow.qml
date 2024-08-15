@@ -173,7 +173,7 @@ Item
                         {
                             contact_list_model.main_user.image_url = "qrc:/QML/ClientApp/icons/name_icon.png";
 
-                            // FIXME: Notify the server;
+                            client_manager.profile_image_deleted();
                         }
                     }
                 }

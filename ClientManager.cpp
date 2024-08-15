@@ -150,6 +150,8 @@ void ClientManager::on_text_message_received(const QString &message)
 
 void ClientManager::on_disconnected()
 {
+    emit disconnected();
+    qDebug() << "Disconnected Signal emitted";
 }
 /*-------------------------------------------------------------------- Functions --------------------------------------------------------------*/
 
@@ -182,6 +184,13 @@ void ClientManager::lookup_friend(const int &phone_number)
 {
     QJsonObject json_object{{"type", "lookup_friend"},
                             {"phone_number", phone_number}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::profile_image_deleted()
+{
+    QJsonObject json_object{{"type", "profile_image_deleted"}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
