@@ -49,7 +49,7 @@ public:
 
 private slots:
     void on_load_groups(QJsonArray json_array);
-    void on_group_ID(const int &groupID, const QString &group_name);
+    void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
 
 private:
     QList<GroupInfo *> _groups;

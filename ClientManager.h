@@ -43,6 +43,7 @@ public:
     void update_profile(const QString &file_name, const QByteArray &file_data);
     void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
     void new_group(const QString &group_name, QJsonArray json_array);
+    void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -62,6 +63,7 @@ signals:
     void client_profile_image(const int &phone_number, const QString &image_url);
 
     void group_ID(const int &groupID, const QString &group_name);
+    void group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
 
     void disconnected();
 
@@ -79,7 +81,8 @@ private:
     enum MessageType
     {
         SignUp = Qt::UserRole + 1,
-        TextMessage,
+        Text,
+        GroupText,
         ProfileImage,
         ClientProfileImage,
         ClientDisconnected,
@@ -100,7 +103,6 @@ private:
         DeleteMessage,
         DeleteGroupMessage,
         GroupIsTyping,
-        GroupText,
         GroupFile,
         GroupAudio,
         NewGroupMember,

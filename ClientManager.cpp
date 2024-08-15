@@ -85,7 +85,7 @@ void ClientManager::on_text_message_received(const QString &message)
     case ClientProfileImage:
         emit client_profile_image(json_object["phone_number"].toInt(), json_object["image_url"].toString());
         break;
-    case TextMessage:
+    case Text:
         emit text_received(json_object["chatID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
         break;
     case ClientConnected:
@@ -96,6 +96,9 @@ void ClientManager::on_text_message_received(const QString &message)
         break;
     case AddedToGroup:
         emit load_groups(json_object["groups"].toArray());
+        break;
+    case GroupText:
+        emit group_text_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["message"].toString(), json_object["time"].toString());
         break;
     case AudioMessage:
         break;
@@ -120,8 +123,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case DeleteGroupMessage:
         break;
     case GroupIsTyping:
-        break;
-    case GroupText:
         break;
     case GroupFile:
         break;
@@ -210,6 +211,17 @@ void ClientManager::send_text(const int &receiver, const QString &message, const
                             {"message", message},
                             {"time", time},
                             {"chatID", chat_ID}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time)
+{
+    QJsonObject json_object{{"type", "group_text"},
+                            {"groupID", groupID},
+                            {"message", message},
+                            {"sender_name", sender_name},
+                            {"time", time}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -543,7 +555,7 @@ void ClientManager::map_initialization()
     _map["login_request"] = LoginRequest;
     _map["lookup_friend"] = LookupFriend;
     _map["is_typing"] = IsTyping;
-    _map["text"] = TextMessage;
+    _map["text"] = Text;
     _map["profile_image"] = ProfileImage;
     _map["client_profile_image"] = ClientProfileImage;
     _map["client_disconnected"] = ClientDisconnected;

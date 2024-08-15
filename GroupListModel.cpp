@@ -12,7 +12,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     _client_manager = ClientManager::instance();
 
     connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
-    connect(_client_manager, &ClientManager::group_ID, this, &GroupListModel::on_group_ID);
+    connect(_client_manager, &ClientManager::group_text_received, this, &GroupListModel::on_group_text_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -57,6 +57,8 @@ void GroupListModel::group_message_sent(const QString &group_message)
     QModelIndex top_left = index(0, 0);
     QModelIndex bottom_right = index(_groups.size() - 1, 0);
     emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+
+    _client_manager->send_group_text(_active_group_chat->group_ID(), ContactListModel::main_user()->first_name(), group_message, new_message->time());
 }
 
 void GroupListModel::group_audio_sent()
@@ -183,23 +185,6 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
     _client_manager->new_group(group_name, json_array);
 }
 
-void GroupListModel::on_group_ID(const int &groupID, const QString &group_name)
-{
-    if (!groupID || group_name.isEmpty())
-        return;
-
-    for (size_t i{0}; i < _groups.size(); i++)
-    {
-        GroupInfo *group = _groups[i];
-        if (group->group_name().compare(group_name))
-        {
-            group->set_group_ID(groupID);
-
-            break;
-        }
-    }
-}
-
 void GroupListModel::on_load_groups(QJsonArray json_array)
 {
     if (json_array.isEmpty())
@@ -208,7 +193,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
     for (const QJsonValue &groups : json_array)
     {
         QJsonArray members_ID = groups["group_members"].toArray();
-        QJsonArray messages = groups["messages"].toArray();
+        QJsonArray messages = groups["group_messages"].toArray();
 
         QList<ContactInfo *> group_members;
         for (QJsonValue ID : members_ID)
@@ -235,7 +220,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         if (!messages.isEmpty())
         {
             for (const QJsonValue &message : messages)
-                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), QString(), message["sender"].toInt(), message["sender"].toString(), QTime::currentTime().toString("HH:mm"), this));
+                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), QString(), message["sender_ID"].toInt(), message["sender_name"].toString(), message["time"].toString(), this));
         }
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
@@ -246,4 +231,17 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
     }
 
     emit groups_changed();
+}
+
+void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
+{
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
+
+            return;
+        }
+    }
 }

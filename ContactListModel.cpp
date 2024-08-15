@@ -250,6 +250,8 @@ void ContactListModel::on_text_received(const int &chatID, const QString &messag
     {
         if (contact->chat_ID() == chatID)
             contact->add_message(new MessageInfo(message, QString(), QString(), contact->phone_number(), time, this));
+
+        return;
     }
 }
 
@@ -292,7 +294,7 @@ void ContactListModel::on_client_profile_image(const int &phone_number, const QS
             QModelIndex index = createIndex(i, 0);
             emit dataChanged(index, index, {ImageUrlRole});
 
-            break;
+            return;
         }
     }
 }
