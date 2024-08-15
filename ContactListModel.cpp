@@ -20,13 +20,17 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
 
-    connect(_client_manager, &ClientManager::my_phone_number, this, [=](const int &phone_number)
-            { qDebug() << "Setting the phone_number"; _main_user->set_phone_number(phone_number); });
-
     connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
+    connect(_client_manager, &ClientManager::load_my_info, this, &ContactListModel::on_load_my_info);
+
+    connect(_client_manager, &ClientManager::text_received, this, &ContactListModel::on_text_received);
 
     connect(_client_manager, &ClientManager::profile_image, this, [=](const QString &image_url)
             { _main_user->set_image_url(image_url); });
+    connect(_client_manager, &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
+
+    connect(_client_manager, &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
+    connect(_client_manager, &ClientManager::client_disconnected, this, &ContactListModel::on_client_disconnected);
 
     _contacts_ptr = &_contacts;
 }
@@ -79,7 +83,7 @@ void ContactListModel::message_sent(const QString &message)
     QModelIndex bottom_right = index(_contacts.size() - 1, 0);
     emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
-    // _client_manager->send_text(_main_user->phone_number(), _active_chat->phone_number(), message, new_message->time());
+    _client_manager->send_text(_active_chat->phone_number(), message, new_message->time(), _active_chat->chat_ID());
 }
 
 void ContactListModel::audio_sent()
@@ -223,6 +227,25 @@ ContactProxyList *ContactListModel::contact_proxy_list() const
     return _contact_proxy_list;
 }
 
+void ContactListModel::on_load_my_info(QJsonObject my_info)
+{
+    if (my_info.isEmpty())
+        return;
+
+    _main_user->set_name(my_info["first_name"].toString());
+    _main_user->set_phone_number(my_info["_id"].toInt());
+    _main_user->set_image_url(my_info["image_url"].toString());
+}
+
+void ContactListModel::on_text_received(const int &chatID, const QString &message, const QString &time)
+{
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->chat_ID() == chatID)
+            contact->add_message(new MessageInfo(message, QString(), QString(), contact->phone_number(), time, this));
+    }
+}
+
 void ContactListModel::on_load_contacts(QJsonArray json_array)
 {
     if (json_array.isEmpty())
@@ -245,4 +268,49 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
     }
 
     emit contacts_changed();
+}
+
+void ContactListModel::on_client_profile_image(const int &phone_number, const QString &image_url)
+{
+    if (!phone_number || image_url.isEmpty())
+        return;
+
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->phone_number() == phone_number)
+        {
+            qDebug() << "Contact found, setting the profile";
+            contact->set_image_url(image_url);
+        }
+    }
+}
+
+void ContactListModel::on_client_connected(const int &phone_number)
+{
+    if (!phone_number)
+        return;
+
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->phone_number() == phone_number)
+        {
+            qDebug() << "Contact found, setting the connected status";
+            contact->set_status(true);
+        }
+    }
+}
+
+void ContactListModel::on_client_disconnected(const int &phone_number)
+{
+    if (!phone_number)
+        return;
+
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->phone_number() == phone_number)
+        {
+            qDebug() << "Contact found, setting the disconnected status";
+            contact->set_status(false);
+        }
+    }
 }

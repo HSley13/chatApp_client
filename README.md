@@ -2,7 +2,7 @@
 
 # The App was done but I didn't like the GUI cause it was implemented using QtWidgets. Now I am doing it using QML to make it more appealing. (It You would like to see the QtWidgets implementation, lemme know)
 
-+ **Server app source code [click me](https://github.com/HSley13/chatApp-Server)**
++ **Server app source code [click me](https://github.com/HSley13/chatApp_server)**
 
 ---
 

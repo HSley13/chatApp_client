@@ -70,6 +70,7 @@ void ClientManager::on_text_message_received(const QString &message)
         _login_message = message;
         emit login_message_changed();
 
+        emit load_my_info(json_object["my_info"].toObject());
         emit load_contacts(json_object["contacts"].toArray());
         emit load_groups(json_object["groups"].toArray());
     }
@@ -83,9 +84,19 @@ void ClientManager::on_text_message_received(const QString &message)
     case ProfileImage:
         emit profile_image(json_object["image_url"].toString());
         break;
-    case AudioMessage:
+    case ClientProfileImage:
+        emit client_profile_image(json_object["phone_number"].toInt(), json_object["image_url"].toString());
         break;
     case TextMessage:
+        emit text_received(json_object["chatID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
+        break;
+    case ClientDisconnected:
+        emit client_connected(json_object["phone_number"].toInt());
+        break;
+    case ClientConnected:
+        emit client_disconnected(json_object["phone_number"].toInt());
+        break;
+    case AudioMessage:
         break;
     case IsTyping:
         break;
@@ -96,10 +107,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case SaveData:
         break;
     case ClientNewName:
-        break;
-    case ClientDisconnected:
-        break;
-    case ClientConnected:
         break;
     case CreateConversation:
         break;
@@ -164,8 +171,6 @@ void ClientManager::sign_up(const int &phone_number, const QString &first_name, 
 
 void ClientManager::login_request(const int &phone_number, const QString &password)
 {
-    emit my_phone_number(phone_number);
-
     QJsonObject json_object{
         {"type", "login_request"},
         {"phone_number", phone_number},
@@ -190,6 +195,17 @@ void ClientManager::update_profile(const QString &file_name, const QByteArray &f
     QJsonObject json_object{{"type", "profile_image"},
                             {"file_name", file_name},
                             {"file_data", data}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID)
+{
+    QJsonObject json_object{{"type", "text"},
+                            {"receiver", receiver},
+                            {"message", message},
+                            {"time", time},
+                            {"chatID", chat_ID}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -524,18 +540,19 @@ void ClientManager::map_initialization()
     _map["login_request"] = LoginRequest;
     _map["lookup_friend"] = LookupFriend;
     _map["is_typing"] = IsTyping;
+    _map["text"] = TextMessage;
     _map["profile_image"] = ProfileImage;
+    _map["client_profile_image"] = ClientProfileImage;
+    _map["client_disconnected"] = ClientDisconnected;
+    _map["client_connected"] = ClientConnected;
     _map["set_name"] = SetName;
     _map["file"] = FileMessage;
     _map["audio"] = AudioMessage;
     _map["save_data"] = SaveData;
     _map["client_new_name"] = ClientNewName;
-    _map["client_disconnected"] = ClientDisconnected;
-    _map["client_connected"] = ClientConnected;
     _map["added_you"] = AddedYou;
     _map["create_conversation"] = CreateConversation;
     _map["save_message"] = SaveMessage;
-    _map["text"] = TextMessage;
     _map["new_password_request"] = NewPasswordRequest;
     _map["update_password"] = UpdatePassword;
     _map["delete_message"] = DeleteMessage;

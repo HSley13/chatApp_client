@@ -44,8 +44,16 @@ public:
     static QList<ContactInfo *> *_contacts_ptr;
 
     static ContactInfo *_main_user;
+
 private slots:
     void on_load_contacts(QJsonArray json_array);
+    void on_load_my_info(QJsonObject my_info);
+    void on_text_received(const int &chatID, const QString &message, const QString &time);
+
+    void on_client_connected(const int &phone_number);
+    void on_client_disconnected(const int &phone_number);
+
+    void on_client_profile_image(const int &phone_number, const QString &image_url);
 
 signals:
     void contacts_changed();

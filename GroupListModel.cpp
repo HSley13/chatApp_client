@@ -11,9 +11,6 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
 
-    connect(_client_manager, &ClientManager::my_phone_number, this, [=](const int &phone_number)
-            { qDebug() << "Setting the phone_number"; ContactListModel::_main_user->set_phone_number(phone_number); });
-
     connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
 }
 

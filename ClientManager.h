@@ -44,6 +44,7 @@ public:
     Q_INVOKABLE void lookup_friend(const int &phone_number);
 
     void update_profile(const QString &file_name, const QByteArray &file_data);
+    void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -52,12 +53,18 @@ public slots:
 signals:
     void load_contacts(QJsonArray contacts);
     void load_groups(QJsonArray json_array);
+    void load_my_info(QJsonObject my_info);
 
     void signup_message_changed();
     void login_message_changed();
 
-    void my_phone_number(const int &phone_number);
     void profile_image(const QString &image_url);
+    void text_received(const int &chatID, const QString &message, const QString &time);
+
+    void client_connected(const int &phone_number);
+    void client_disconnected(const int &phone_number);
+
+    void client_profile_image(const int &phone_number, const QString &image_url);
 
 public:
     static ClientManager *instance();
@@ -76,6 +83,7 @@ private:
         IsTyping,
         SetName,
         ProfileImage,
+        ClientProfileImage,
         FileMessage,
         AudioMessage,
         SaveData,

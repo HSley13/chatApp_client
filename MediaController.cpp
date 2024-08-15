@@ -170,7 +170,6 @@ void MediaController::send_file(bool true_or_false)
             _file_path = IDBFS_file_name;
 #else
             _file_path = QFileInfo(file_name).absoluteFilePath();
-            qDebug() << "file Path selected: " << _file_path;
 #endif
         }
     };
