@@ -148,7 +148,7 @@ Item
                         color: "white";
                         Layout.fillWidth: true;
 
-                        onClicked: media_controller.send_file(false);
+                        onClicked: media_controller.send_file(1);
                     }
                 }
 

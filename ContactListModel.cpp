@@ -1,15 +1,13 @@
 #include "ContactListModel.h"
 
-ContactInfo *ContactListModel::_main_user;
-
-QList<ContactInfo *> *ContactListModel::_contacts_ptr;
+ContactInfo *ContactListModel::_main_user{nullptr};
+ContactInfo *ContactListModel::_active_chat{Q_NULLPTR};
+QList<ContactInfo *> *ContactListModel::_contacts_ptr{nullptr};
 
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
-      _active_chat(Q_NULLPTR),
       _contact_proxy_list_chat(new ContactProxyList(this)),
-      _contact_proxy_list(new ContactProxyList(this)),
-      _media_controller(new MediaController(this))
+      _contact_proxy_list(new ContactProxyList(this))
 {
     _main_user = new ContactInfo(0, QString(), QString(), 0, true, QString(), 0, this);
 
@@ -25,6 +23,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
 
     connect(_client_manager, &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
+
+    connect(_client_manager, &ClientManager::file_received, this, &ContactListModel::on_file_received);
 
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
@@ -50,7 +50,7 @@ void ContactListModel::set_contacts(const QList<ContactInfo *> &new_contacts)
     emit contacts_changed();
 }
 
-ContactInfo *ContactListModel::active_chat() const
+ContactInfo *ContactListModel::active_chat()
 {
     return _active_chat;
 }
@@ -85,42 +85,25 @@ void ContactListModel::message_sent(const QString &message)
     _client_manager->send_text(_active_chat->phone_number(), message, new_message->time(), _active_chat->chat_ID());
 }
 
-void ContactListModel::audio_sent()
+void ContactListModel::on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time)
 {
-    if (_active_chat == Q_NULLPTR || _media_controller->_audio_path.isEmpty())
+    if (!chatID || !sender_ID || file_url.isEmpty())
         return;
 
-    MessageInfo *new_message = new MessageInfo(QString(), _media_controller->_audio_path, QString(), _main_user->phone_number(), QTime::currentTime().toString("HH:mm"), _active_chat);
-    _active_chat->add_message(new_message);
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->chat_ID() == chatID)
+        {
+            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, time, this));
 
-    _active_chat->set_last_message_time(QDateTime::currentDateTime());
-    QModelIndex top_left = index(0, 0);
-    QModelIndex bottom_right = index(_contacts.size() - 1, 0);
-    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+            contact->set_last_message_time(QDateTime::currentDateTime());
+            QModelIndex top_left = index(0, 0);
+            QModelIndex bottom_right = index(_contacts.size() - 1, 0);
+            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
-    // _client_manager->send_audio(_main_user->phone_number(), _active_chat->phone_number(), _media_controller->_audio_name, _media_controller->_audio_data, new_message->time());
-    _media_controller->_audio_path = QString();
-    _media_controller->_audio_name = QString();
-    _media_controller->_audio_data = QByteArray();
-}
-
-void ContactListModel::file_sent()
-{
-    if (_active_chat == Q_NULLPTR || _media_controller->_file_path.isEmpty())
-        return;
-
-    MessageInfo *new_message = new MessageInfo(QString(), QString(), _media_controller->_file_path, _main_user->phone_number(), QTime::currentTime().toString("HH:mm"), _active_chat);
-    _active_chat->add_message(new_message);
-
-    _active_chat->set_last_message_time(QDateTime::currentDateTime());
-    QModelIndex top_left = index(0, 0);
-    QModelIndex bottom_right = index(_contacts.size() - 1, 0);
-    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
-
-    // _client_manager->send_file(_main_user->phone_number(), _active_chat->phone_number(), _media_controller->_file_name, _media_controller->_file_data, new_message->time());
-    _media_controller->_file_path = QString();
-    _media_controller->_file_name = QString();
-    _media_controller->_file_data = QByteArray();
+            return;
+        }
+    }
 }
 
 int ContactListModel::rowCount(const QModelIndex &parent) const
@@ -248,7 +231,10 @@ void ContactListModel::on_text_received(const int &chatID, const QString &messag
     for (ContactInfo *contact : _contacts)
     {
         if (contact->chat_ID() == chatID)
+        {
             contact->add_message(new MessageInfo(message, QString(), QString(), contact->phone_number(), time, this));
+            contact->set_last_message_time(QDateTime::currentDateTime());
+        }
 
         return;
     }
@@ -268,7 +254,7 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
 
         // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
         for (const QJsonValue &message : chat_messages)
-            contact->add_message(new MessageInfo(message["message"].toString(), QString(), QString(), message["sender"].toInt(), QTime::currentTime().toString("HH:mm"), this));
+            contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), QTime::currentTime().toString("HH:mm"), this));
 
         beginInsertRows(QModelIndex(), _contacts.count(), _contacts.count());
         _contacts.append(contact);

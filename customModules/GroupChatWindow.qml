@@ -109,11 +109,7 @@ Item
             height: parent.width * 0.1;
             width: 40;
 
-            onItemClicked:
-            {
-                media_controller.send_file();
-                group_list_model.group_file_sent();
-            }
+            onItemClicked: media_controller.send_file(4);
 
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;

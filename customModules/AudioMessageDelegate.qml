@@ -23,7 +23,7 @@ Item
         MediaPlayer
         {
             id: mediaPlayer;
-            source: "https://slays3.s3.amazonaws.com/06-1.mp3";
+            source: model.audio_source;
             autoPlay: false;
             audioOutput: audioOutput;
 

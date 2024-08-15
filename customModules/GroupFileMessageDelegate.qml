@@ -13,8 +13,8 @@ Item
     Rectangle
     {
         id: file_bubble;
-        width: Math.min(image.width, groupChatListView.width * 0.8);
-        height: image.height;
+        width: Math.min(Math.max(image.width, senderNameText.implicitWidth) + 10, groupChatListView.width * 0.8);
+        height: image.height + 15;
         radius: 10;
 
         x: sender ? groupChatListView.width - width : 0;
@@ -50,7 +50,7 @@ Item
             text: model.time;
 
             anchors.top: file_bubble.bottom;
-            anchors.topMargin: 5;
+            anchors.margins: 5;
             anchors.right: sender ? parent.right : undefined;
             horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
 
@@ -79,7 +79,7 @@ Item
     {
         id: senderNameText;
         text: model.sender_name;
-        visible: model.sender_name !== "";
+        visible: model.sender_name !== contact_list_model.main_user.first_name;
 
         anchors.left: file_bubble.left;
         anchors.leftMargin: 12;

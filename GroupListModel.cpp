@@ -16,6 +16,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
     connect(_client_manager, &ClientManager::group_text_received, this, &GroupListModel::on_group_text_received);
     connect(_client_manager, &ClientManager::group_profile_image, this, &GroupListModel::on_group_profile_image);
+    connect(_client_manager, &ClientManager::group_file_received, this, &GroupListModel::on_group_file_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -66,34 +67,38 @@ void GroupListModel::group_message_sent(const QString &group_message)
     _client_manager->send_group_text(_active_group_chat->group_ID(), ContactListModel::main_user()->first_name(), group_message, new_message->time());
 }
 
-void GroupListModel::group_audio_sent()
+void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
 {
-    if (_active_group_chat == Q_NULLPTR || MediaController::_audio_path.isEmpty())
-        return;
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
+            group->set_last_message_time(QDateTime::currentDateTime());
+            QModelIndex top_left = index(0, 0);
+            QModelIndex bottom_right = index(_groups.size() - 1, 0);
+            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
-    GroupMessageInfo *new_message = new GroupMessageInfo(QString(), MediaController::_audio_path, QString(), ContactListModel::main_user()->phone_number(), QString(), QTime::currentTime().toString("HH:mm"), _active_group_chat);
-    _active_group_chat->add_group_message(new_message);
-    MediaController::_audio_path = QString();
-
-    _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
-    QModelIndex top_left = index(0, 0);
-    QModelIndex bottom_right = index(_groups.size() - 1, 0);
-    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+            return;
+        }
+    }
 }
 
-void GroupListModel::group_file_sent()
+void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time)
 {
-    if (_active_group_chat == Q_NULLPTR || MediaController::_file_path.isEmpty())
-        return;
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, time, this));
+            group->set_last_message_time(QDateTime::currentDateTime());
+            QModelIndex top_left = index(0, 0);
+            QModelIndex bottom_right = index(_groups.size() - 1, 0);
+            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
-    GroupMessageInfo *new_message = new GroupMessageInfo(QString(), QString(), MediaController::_file_path, ContactListModel::main_user()->phone_number(), QString(), QTime::currentTime().toString("HH:mm"), _active_group_chat);
-    _active_group_chat->add_group_message(new_message);
-    MediaController::_file_path = QString();
-
-    _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
-    QModelIndex top_left = index(0, 0);
-    QModelIndex bottom_right = index(_groups.size() - 1, 0);
-    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+            return;
+        }
+    }
 }
 
 int GroupListModel::rowCount(const QModelIndex &parent) const
@@ -229,7 +234,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         if (!messages.isEmpty())
         {
             for (const QJsonValue &message : messages)
-                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), QString(), message["sender_ID"].toInt(), message["sender_name"].toString(), message["time"].toString(), this));
+                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), message["time"].toString(), this));
         }
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
@@ -240,19 +245,6 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
     }
 
     emit groups_changed();
-}
-
-void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
-{
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
-            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
-
-            return;
-        }
-    }
 }
 
 void GroupListModel::on_group_profile_image(const int &group_ID, const QString &group_image_url)

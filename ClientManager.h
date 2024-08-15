@@ -21,13 +21,6 @@ public:
     ClientManager(const ClientManager &) = delete;
     ClientManager &operator=(const ClientManager &) = delete;
 
-    void mount_audio_IDBFS();
-    void mount_file_IDBFS();
-    void IDBFS_save_audio(const QString &audio_name, const QByteArray &audio_data, const int &size);
-    void IDBFS_save_file(const QString &file_name, const QByteArray &file_data, const int &size);
-    Q_INVOKABLE QUrl get_audio_url(const QString &audio_name);
-    QUrl get_file_url(const QString &file_name);
-
     void get_user_time();
     void map_initialization();
 
@@ -45,6 +38,8 @@ public:
     void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
     void new_group(const QString &group_name, QJsonArray json_array);
     void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
+    void send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data, const QString &time);
+    void send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data, const QString &time);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -67,6 +62,9 @@ signals:
 
     void group_ID(const int &groupID, const QString &group_name);
     void group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
+
+    void file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time);
+    void group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
 
     void disconnected();
 
@@ -94,7 +92,7 @@ private:
         AddedYou,
         LookupFriend,
         AddedToGroup,
-        FileMessage,
+        File,
         IsTyping,
         SetName,
         AudioMessage,

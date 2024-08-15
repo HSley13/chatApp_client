@@ -44,13 +44,12 @@ public:
 
     Q_INVOKABLE void group_message_sent(const QString &group_message);
     Q_INVOKABLE void add_group(const QString &group_name, const QList<ContactInfo *> members);
-    Q_INVOKABLE void group_audio_sent();
-    Q_INVOKABLE void group_file_sent();
 
 private slots:
     void on_load_groups(QJsonArray json_array);
     void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
     void on_group_profile_image(const int &group_ID, const QString &group_image_url);
+    void on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
 
 private:
     QList<GroupInfo *> _groups;

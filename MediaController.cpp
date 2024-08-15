@@ -1,6 +1,7 @@
 #include "MediaController.h"
 #include <QDebug>
 #include <QDateTime>
+#include <QTime>
 #include <QFileDialog>
 #include "ClientManager.h"
 
@@ -97,26 +98,6 @@ void MediaController::stop_recording()
 
         QString audio_path = _recorder->outputLocation().toLocalFile();
 
-#ifdef __EMSCRIPTEN__
-        const QString &current_time = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-        const QString &audio_name = QString("%1_%2").arg("1111", "audio.m4a");
-
-        QFile audio(audio_path);
-        if (audio.open(QIODevice::ReadOnly))
-        {
-            _audio_data = audio.readAll();
-            audio.close();
-        }
-
-        const QString &IDBFS_audio_name = QString("%1_%2").arg(current_time, audio_name);
-        _client_manager->IDBFS_save_audio(IDBFS_audio_name, _audio_data, static_cast<int>(_audio_data.size()));
-        _audio_name = IDBFS_audio_name;
-
-        _audio_path = _client_manager->get_audio_url(IDBFS_audio_name).toString();
-#else
-        _audio_path = audio_path;
-#endif
-
         set_audio_source(audio_path);
         set_time_display("00:00");
     }
@@ -136,17 +117,10 @@ void MediaController::on_duration_changed(qint64 duration)
 
 void MediaController::view_file(const QString &file_path)
 {
-    if (!file_path.isEmpty())
-    {
-#ifdef __EMSCRIPTEN__
-        QDesktopServices::openUrl(_client_manager->get_file_url(file_path));
-#else
-        QDesktopServices::openUrl(QUrl::fromLocalFile(file_path));
-#endif
-    }
+    QDesktopServices::openUrl(file_path);
 }
 
-void MediaController::send_file(bool true_or_false)
+void MediaController::send_file(const int &value)
 {
     std::function<void(const QString &, const QByteArray &)> file_content_ready = [=](const QString &file_name, const QByteArray &file_data)
     {
@@ -158,22 +132,24 @@ void MediaController::send_file(bool true_or_false)
             // const QString &UTC_time = QDateTime::fromString(current_time, "yyyy-MM-dd HH:mm:ss")
             //                               .toUTC()
             //                               .toString();
-            if (!true_or_false)
+
+            switch (value)
+            {
+            case 1:
                 _client_manager->update_profile(QFileInfo(file_name).fileName(), file_data);
-
-            if (true_or_false && GroupListModel::active_group_chat() != Q_NULLPTR)
+                break;
+            case 2:
                 _client_manager->update_group_profile(GroupListModel::active_group_chat()->group_ID(), QFileInfo(file_name).fileName(), file_data);
-
-#ifdef __EMSCRIPTEN__
-            _file_data = file_data;
-            _file_name = file_name;
-            QString IDBFS_file_name = QString("%1_%2").arg(current_time, QFileInfo(file_name).fileName());
-            _client_manager->IDBFS_save_file(IDBFS_file_name, file_data, static_cast<int>(file_data.size()));
-
-            _file_path = IDBFS_file_name;
-#else
-            _file_path = QFileInfo(file_name).absoluteFilePath();
-#endif
+                break;
+            case 3:
+                _client_manager->send_file(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("HH:mm"));
+                break;
+            case 4:
+                _client_manager->send_group_file(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("HH:mm"));
+                break;
+            default:
+                break;
+            }
         }
     };
 

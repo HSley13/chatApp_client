@@ -2,7 +2,7 @@
 
 #include "ContactInfo.h"
 #include "ContactProxyList.h"
-#include "MediaController.h"
+#include "ClientManager.h"
 class ContactListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -21,7 +21,7 @@ public:
     const QList<ContactInfo *> &contacts() const;
     void set_contacts(const QList<ContactInfo *> &new_contacts);
 
-    ContactInfo *active_chat() const;
+    static ContactInfo *active_chat();
     void set_active_chat(ContactInfo *new_chat);
 
     const QStringList &contacts_name() const;
@@ -36,9 +36,6 @@ public:
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     Q_INVOKABLE void message_sent(const QString &message);
-    Q_INVOKABLE void audio_sent();
-    Q_INVOKABLE void file_sent();
-
     Q_INVOKABLE void lookup_friend(const int &phone_number);
 
     ClientManager *_client_manager{nullptr};
@@ -56,6 +53,8 @@ private slots:
     void on_client_disconnected(const int &phone_number);
 
     void on_client_profile_image(const int &phone_number, const QString &image_url);
+
+    void on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time);
 
 signals:
     void contacts_changed();
@@ -81,9 +80,8 @@ public:
     };
 
 private:
-    ContactInfo *_active_chat{nullptr};
+    static ContactInfo *_active_chat;
     QList<ContactInfo *> _contacts;
     ContactProxyList *_contact_proxy_list_chat{nullptr};
     ContactProxyList *_contact_proxy_list{nullptr};
-    MediaController *_media_controller{nullptr};
 };

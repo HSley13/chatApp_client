@@ -105,11 +105,7 @@ Item
             height: parent.width * 0.1;
             width: 40;
 
-            onItemClicked: 
-            {
-                media_controller.send_file(true);
-                contact_list_model.file_sent();
-            }
+            onItemClicked: media_controller.send_file(3);
 
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;

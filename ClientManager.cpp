@@ -1,8 +1,8 @@
 #include "ClientManager.h"
 
 QHash<QString, ClientManager::MessageType> ClientManager::_map;
-ClientManager *ClientManager::_instance = nullptr;
-QWebSocket *ClientManager::_socket = nullptr;
+ClientManager *ClientManager::_instance{nullptr};
+QWebSocket *ClientManager::_socket{nullptr};
 
 ClientManager::ClientManager(QObject *parent)
     : QObject(parent)
@@ -17,8 +17,6 @@ ClientManager::ClientManager(QObject *parent)
 
         map_initialization();
 
-        mount_audio_IDBFS();
-        mount_file_IDBFS();
         get_user_time();
     }
 }
@@ -103,13 +101,17 @@ void ClientManager::on_text_message_received(const QString &message)
     case GroupText:
         emit group_text_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["message"].toString(), json_object["time"].toString());
         break;
+    case File:
+        emit file_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["file_url"].toString(), json_object["time"].toString());
+        break;
+    case GroupFile:
+        emit group_file_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["file_url"].toString(), json_object["time"].toString());
+        break;
     case AudioMessage:
         break;
     case IsTyping:
         break;
     case SetName:
-        break;
-    case FileMessage:
         break;
     case SaveData:
         break;
@@ -126,8 +128,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case DeleteGroupMessage:
         break;
     case GroupIsTyping:
-        break;
-    case GroupFile:
         break;
     case GroupAudio:
         break;
@@ -241,6 +241,34 @@ void ClientManager::send_group_text(const int &groupID, QString sender_name, con
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data, const QString &time)
+{
+    QString data = QString::fromUtf8(file_data.toBase64());
+
+    QJsonObject json_object{{"type", "file"},
+                            {"chatID", chatID},
+                            {"receiver", receiver},
+                            {"file_name", file_name},
+                            {"file_data", data},
+                            {"time", time}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data, const QString &time)
+{
+    QString data = QString::fromUtf8(file_data.toBase64());
+
+    QJsonObject json_object{{"type", "group_file"},
+                            {"groupID", groupID},
+                            {"sender_name", sender_name},
+                            {"file_name", file_name},
+                            {"file_data", data},
+                            {"time", time}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::new_group(const QString &group_name, QJsonArray json_array)
 {
     QJsonObject json_object{{"type", "new_group"},
@@ -248,302 +276,6 @@ void ClientManager::new_group(const QString &group_name, QJsonArray json_array)
                             {"group_members", json_array}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
-}
-
-void ClientManager::mount_audio_IDBFS()
-{
-#ifdef __EMSCRIPTEN__
-    EM_ASM({
-        FS.mkdir('/audio');
-        FS.mount(IDBFS, {}, '/audio');
-        FS.syncfs(true);
-    });
-#endif
-}
-
-void ClientManager::mount_file_IDBFS()
-{
-#ifdef __EMSCRIPTEN__
-    EM_ASM({
-        FS.mkdir('/file');
-        FS.mount(IDBFS, {}, '/file');
-        FS.syncfs(true);
-    });
-#endif
-}
-
-void ClientManager::IDBFS_save_audio(const QString &audio_name, const QByteArray &audio_data, const int &size)
-{
-#ifdef __EMSCRIPTEN__
-    std::string audio_path = "/audio/" + audio_name.toStdString();
-
-    FILE *file = fopen(audio_path.c_str(), "wb");
-    if (file)
-    {
-        fwrite(audio_data, 1, size, file);
-        fclose(file);
-    }
-
-    EM_ASM({ FS.syncfs(); });
-#endif
-}
-
-void ClientManager::IDBFS_save_file(const QString &file_name, const QByteArray &file_data, const int &size)
-{
-#ifdef __EMSCRIPTEN__
-    std::string file_path = "/file/" + file_name.toStdString();
-
-    FILE *file = fopen(file_path.c_str(), "wb");
-    if (file)
-    {
-        fwrite(file_data, 1, size, file);
-        fclose(file);
-    }
-
-    EM_ASM({ FS.syncfs(); });
-#endif
-}
-
-QUrl ClientManager::get_audio_url(const QString &audio_name)
-{
-#ifdef __EMSCRIPTEN__
-    const QString full_audio_path = "/audio/" + audio_name;
-
-    qDebug() << "ClientManager --> get_audio_url() --> audio full_path: " << full_audio_path;
-
-    char *url = (char *)EM_ASM_PTR(
-        {
-            var audio_path = UTF8ToString($0);
-            try
-            {
-                var audio_data = FS.readFile(audio_path);
-
-                if (!audio_data)
-                    throw 'Audio data not found';
-
-                var blob = new Blob([audio_data],
-                                    { type: 'audio/*' });
-                var url = URL.createObjectURL(blob);
-
-                var url_length = lengthBytesUTF8(url) + 1;
-                var stringOnWasmHeap = _malloc(url_length);
-
-                stringToUTF8(url, stringOnWasmHeap, url_length);
-
-                return stringOnWasmHeap;
-            }
-            catch (e)
-            {
-                console.error('Error creating Audio URL:', e);
-                return 0;
-            }
-        },
-        full_audio_path.toUtf8().constData());
-
-    if (!url)
-    {
-
-        return QUrl();
-    }
-
-    QString qUrl = QString::fromUtf8(url);
-    free(url);
-
-    return QUrl(qUrl);
-#else
-    return QUrl();
-#endif
-}
-
-QUrl ClientManager::get_file_url(const QString &file_name)
-{
-#ifdef __EMSCRIPTEN__
-    const QString full_file_path = "/file/" + file_name;
-
-    char *url = (char *)EM_ASM_PTR(
-        {
-            var file_path = UTF8ToString($0);
-            try
-            {
-                var file_data = FS.readFile(file_path);
-
-                if (!file_data)
-                    return null;
-
-                var mime_type = 'application/octet-stream';
-                var extension = file_path.split('.').pop().toLowerCase();
-
-                switch (extension)
-                {
-                case 'pdf':
-                    mime_type = 'application/pdf';
-                    break;
-                case 'jpg':
-                case 'jpeg':
-                case 'png':
-                case 'webp':
-                case 'gif':
-                case 'bmp':
-                case 'svg':
-                    mime_type = 'image/*';
-                    break;
-                case 'txt':
-                    mime_type = 'text/plain';
-                    break;
-                case 'html':
-                case 'htm':
-                    mime_type = 'text/html';
-                    break;
-                case 'css':
-                    mime_type = 'text/css';
-                    break;
-                case 'js':
-                    mime_type = 'application/javascript';
-                    break;
-                case 'json':
-                    mime_type = 'application/json';
-                    break;
-                case 'xml':
-                    mime_type = 'application/xml';
-                    break;
-                case 'csv':
-                    mime_type = 'text/csv';
-                    break;
-                case 'doc':
-                    mime_type = 'application/msword';
-                    break;
-                case 'docx':
-                    mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-                    break;
-                case 'xls':
-                    mime_type = 'application/vnd.ms-excel';
-                    break;
-                case 'xlsx':
-                    mime_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                    break;
-                case 'ppt':
-                    mime_type = 'application/vnd.ms-powerpoint';
-                    break;
-                case 'pptx':
-                    mime_type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
-                    break;
-                case 'mp4':
-                    mime_type = 'video/mp4';
-                    break;
-                case 'avi':
-                    mime_type = 'video/x-msvideo';
-                    break;
-                case 'mov':
-                    mime_type = 'video/quicktime';
-                    break;
-                case 'zip':
-                    mime_type = 'application/zip';
-                    break;
-                case 'rar':
-                    mime_type = 'application/vnd.rar';
-                    break;
-                case 'tar':
-                    mime_type = 'application/x-tar';
-                    break;
-                case '7z':
-                    mime_type = 'application/x-7z-compressed';
-                    break;
-                case 'epub':
-                    mime_type = 'application/epub+zip';
-                    break;
-                case 'mobi':
-                    mime_type = 'application/x-mobipocket-ebook';
-                    break;
-                case 'azw':
-                    mime_type = 'application/vnd.amazon.ebook';
-                    break;
-                case 'webm':
-                    mime_type = 'video/webm';
-                    break;
-                case 'mkv':
-                    mime_type = 'video/x-matroska';
-                    break;
-                case 'rtf':
-                    mime_type = 'application/rtf';
-                    break;
-                case 'psd':
-                    mime_type = 'image/vnd.adobe.photoshop';
-                    break;
-                case 'ai':
-                case 'eps':
-                case 'ps':
-                    mime_type = 'application/postscript';
-                    break;
-                case 'tex':
-                    mime_type = 'application/x-tex';
-                    break;
-                case 'latex':
-                    mime_type = 'application/x-latex';
-                    break;
-                case 'md':
-                    mime_type = 'text/markdown';
-                    break;
-                case 'log':
-                    mime_type = 'text/plain';
-                    break;
-                case 'c':
-                case 'cpp':
-                case 'h':
-                case 'hpp':
-                    mime_type = 'text/x-c';
-                    break;
-                case 'py':
-                    mime_type = 'text/x-python';
-                    break;
-                case 'java':
-                    mime_type = 'text/x-java-source';
-                    break;
-                case 'sh':
-                    mime_type = 'application/x-sh';
-                    break;
-                case 'bat':
-                    mime_type = 'application/x-msdos-program';
-                    break;
-                case 'exe':
-                    mime_type = 'application/x-msdownload';
-                    break;
-                default:
-                    console.warn("Unknown file extension:", extension);
-                    break;
-                }
-
-                var blob = new Blob([file_data],
-                                    { type: mime_type });
-                var url = URL.createObjectURL(blob);
-
-                var url_length = lengthBytesUTF8(url) + 1;
-                var stringOnWasmHeap = _malloc(url_length);
-
-                stringToUTF8(url, stringOnWasmHeap, url_length);
-
-                return stringOnWasmHeap;
-            }
-            catch (e)
-            {
-                console.error('Error creating File URL:', e);
-                return 0;
-            }
-        },
-        full_file_path.toUtf8().constData());
-
-    if (!url)
-    {
-
-        return QUrl();
-    }
-
-    QString qUrl = QString::fromUtf8(url);
-    free(url);
-
-    return QUrl(qUrl);
-#else
-    return QUrl();
-#endif
 }
 
 void ClientManager::get_user_time()
@@ -571,6 +303,7 @@ void ClientManager::map_initialization()
     _map["lookup_friend"] = LookupFriend;
     _map["is_typing"] = IsTyping;
     _map["text"] = Text;
+    _map["group_text"] = GroupText;
     _map["profile_image"] = ProfileImage;
     _map["group_profile_image"] = GroupProfileImage;
     _map["client_profile_image"] = ClientProfileImage;
@@ -578,8 +311,9 @@ void ClientManager::map_initialization()
     _map["client_connected"] = ClientConnected;
     _map["added_you"] = AddedYou;
     _map["added_to_group"] = AddedToGroup;
+    _map["file"] = File;
+    _map["group_file"] = GroupFile;
     _map["set_name"] = SetName;
-    _map["file"] = FileMessage;
     _map["audio"] = AudioMessage;
     _map["save_data"] = SaveData;
     _map["client_new_name"] = ClientNewName;
@@ -589,8 +323,6 @@ void ClientManager::map_initialization()
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
     _map["group_is_typing"] = GroupIsTyping;
-    _map["group_text"] = GroupText;
-    _map["group_file"] = GroupFile;
     _map["group_audio"] = GroupAudio;
     _map["new_group_member"] = NewGroupMember;
     _map["remove_group_member"] = RemoveGroupMember;

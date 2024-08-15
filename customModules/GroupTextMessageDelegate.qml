@@ -13,7 +13,7 @@ Item
     {
         id: bubble;
 
-        width: Math.min(messageText.implicitWidth + 24, groupChatListView.width * 0.8);
+        width: Math.min(Math.max(messageText.implicitWidth, senderNameText.implicitWidth) + 24, groupChatListView.width * 0.8);
         height: messageText.implicitHeight + 24;
 
         x: sender ? groupChatListView.width - width : 0;
@@ -65,7 +65,7 @@ Item
     {
         id: senderNameText;
         text: model.sender_name;
-        visible: model.sender_name !== "";
+        visible: model.sender_name !== contact_list_model.main_user.first_name;
 
         anchors.left: bubble.left;
         anchors.leftMargin: 12;

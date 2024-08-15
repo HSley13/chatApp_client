@@ -183,7 +183,7 @@ Rectangle
             height: parent.height;
             anchors.centerIn: parent;
 
-            onClicked: media_controller.send_file(true);
+            onClicked: media_controller.send_file(2);
         }
     }
 }

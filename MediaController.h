@@ -5,6 +5,7 @@
 #include <QMediaCaptureSession>
 #include "ClientManager.h"
 #include "GroupListModel.h"
+#include "ContactListModel.h"
 class MediaController : public QObject
 {
     Q_OBJECT
@@ -24,7 +25,7 @@ public:
     Q_INVOKABLE void start_recording();
     Q_INVOKABLE void stop_recording();
 
-    Q_INVOKABLE void send_file(bool);
+    Q_INVOKABLE void send_file(const int &value);
     Q_INVOKABLE void view_file(const QString &file_path);
 
     void ask_microphone_permission();
