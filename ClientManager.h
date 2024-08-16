@@ -78,6 +78,7 @@ signals:
     void disconnected();
 
     void question_answer(const QString &secret_question, const QString &secret_answer);
+    void login_status_message(const bool &true_or_false, const QString &message);
 
 public:
     static ClientManager *instance();
@@ -86,9 +87,6 @@ private:
     static QWebSocket *_socket;
     QString _time_zone;
     static ClientManager *_instance;
-
-    QString _signup_message{};
-    QString _login_message{};
 
     enum MessageType
     {

@@ -31,6 +31,7 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
 
     connect(_client_manager, &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
+    connect(_client_manager, &ClientManager::login_status_message, this, &ContactListModel::on_login_status_message);
 
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
@@ -110,6 +111,10 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return contact_info->unread_message();
     case ImageUrlRole:
         return contact_info->image_url();
+    case LoginMessageRole:
+        return contact_info->login_message();
+    case LoginStatusRole:
+        return contact_info->login_status();
     case MessagesRole:
         return QVariant::fromValue(contact_info->messages());
     case ContactObjectRole:
@@ -131,6 +136,8 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     roles[FirstNameRole] = "first_name";
     roles[LastNameRole] = "last_name";
     roles[PhoneNumberRole] = "phone_number";
+    roles[LoginMessageRole] = "login_message";
+    roles[LoginStatusRole] = "login_status";
     roles[IsTypingRole] = "is_typing";
     roles[StatusRole] = "status";
     roles[UnreadMessageRole] = "unread_message";
@@ -162,6 +169,11 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
         break;
     case SecretQuestionRole:
         contact_info->set_secret_question(value.toString());
+        break;
+    case LoginMessageRole:
+        contact_info->set_login_message(value.toString());
+    case LoginStatusRole:
+        contact_info->set_login_status(value.toBool());
         break;
     case secretAnswerRole:
         contact_info->set_secret_answer(value.toString());
@@ -396,4 +408,10 @@ void ContactListModel::on_question_answer(const QString &secret_question, const 
 {
     _main_user->set_secret_question(QString("%1 ????").arg(secret_question));
     _main_user->set_secret_answer(secret_answer);
+}
+
+void ContactListModel::on_login_status_message(const bool &true_or_false, const QString &message)
+{
+    _main_user->set_login_status(true_or_false);
+    _main_user->set_login_message(message);
 }

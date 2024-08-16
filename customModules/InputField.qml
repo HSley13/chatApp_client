@@ -115,8 +115,10 @@ Rectangle
 
         let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
+        if(contact_list_model.active_chat !== null)
         client_manager.send_text(contact_list_model.active_chat.phone_number, textInput.text, time, contact_list_model.active_chat.chat_ID);
 
+        if(group_list_model.active_group_chat !== null)
         client_manager.send_group_text(group_list_model.active_group_chat.group_ID, contact_list_model.main_user.first_name, textInput.text, time);
 
         textInput.text = "";

@@ -202,13 +202,13 @@ Item
                 else
                 loginPassword.borderColor = loginPassword.inputField.focus ? "#a10e7a" : "black";
 
-                 if(valid)
-                 {
-                    client_manager.login_request(loginPhoneNumber.inputField, loginPassword.inputField);
+                if(valid)
+                {
+                   client_manager.login_request(loginPhoneNumber.inputField, loginPassword.inputField);
 
-                    loginPhoneNumber.inputField = "";
-                    loginPassword.inputField = "";
-                 }
+                   loginPhoneNumber.inputField = "";
+                   loginPassword.inputField = "";
+                }
             }
         }
 
@@ -277,11 +277,18 @@ Item
 
     Component.onCompleted: 
     {
-        // client_manager.login_message_changed.connect(() =>
-        // {
-        //     notificationText.text = client_manager.login_message;
-        //     notificationBar.visible = true;
-        //     stackView.push(contactWindow);
-        // });
+        contact_list_model.main_user.login_status_changed.connect(() => {
+            if(contact_list_model.main_user.login_status === true)
+            {
+                notificationText.text = contact_list_model.main_user.login_message;
+                notificationBar.visible = true;
+                stackView.push(contactWindow)
+            }
+            else
+            {
+                loginPassword.borderColor = "red";
+                loginPhoneNumber.borderColor = "red";
+            }
+        });
     }
 }

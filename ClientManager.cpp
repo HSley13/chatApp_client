@@ -51,20 +51,14 @@ void ClientManager::on_text_message_received(const QString &message)
     {
     case SignUp:
     {
-        const QString &message = QString("%1: %2")
-                                     .arg(json_object["status"].toString())
-                                     .arg(json_object["message"].toString());
+        json_object["message"].toString();
 
-        _signup_message = message;
+        json_object["status"].toBool();
     }
     break;
     case LoginRequest:
     {
-        const QString &message = QString("%1: %2")
-                                     .arg(json_object["status"].toString())
-                                     .arg(json_object["message"].toString());
-
-        _login_message = message;
+        emit login_status_message(json_object["status"].toBool(), json_object["message"].toString());
 
         emit load_my_info(json_object["my_info"].toObject());
         emit load_contacts(json_object["contacts"].toArray());
@@ -255,6 +249,8 @@ void ClientManager::send_text(const int &receiver, const QString &message, const
 
 void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time)
 {
+    qDebug() << "group text";
+
     QJsonObject json_object{{"type", "group_text"},
                             {"groupID", groupID},
                             {"message", message},
