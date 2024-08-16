@@ -4,7 +4,7 @@ import QtQuick.Layouts;
 
 Item
 {
-    property bool fieldsVisible: false
+    property int clickCount: 0;
 
     IconText
     {
@@ -77,18 +77,31 @@ Item
 
         spacing: 10;
 
+        InputField
+        {
+            id: phoneNumber;
+            image1Source: "qrc:/QML/ClientApp/icons/answer_icon.png";
+            visible: clickCount === 0;
+
+            echoMode: TextInput.Normal;
+            placeHolder: "Phone Number";
+            width: parent.width;
+            height: 40;
+        }
+
         Text
         {
-            text: "What is Your name? ";
+            id: secretQuestion;
+            text: contact_list_model.main_user.secret_question;
             font.pixelSize: 14;
-            visible: !fieldsVisible;
+            visible: clickCount === 1;
         }
 
         InputField
         {
-            id: loginPassword;
+            id: answer;
             image1Source: "qrc:/QML/ClientApp/icons/answer_icon.png";
-            visible: !fieldsVisible;
+            visible: clickCount === 1;
 
             echoMode: TextInput.Normal;
             placeHolder: "Answer";
@@ -99,7 +112,7 @@ Item
         InputField
         {
             id: newPasswordField;
-            visible: fieldsVisible;
+            visible: clickCount === 2;
             image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
             image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
@@ -112,7 +125,7 @@ Item
         InputField
         {
             id: confirmPasswordField;
-            visible: fieldsVisible;
+            visible: clickCount === 2;
             image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
             image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
 
@@ -147,9 +160,41 @@ Item
 
             onClicked: 
             {
-                // FIXME: Check wherther the answer is correct or not, then for password
-                console.log("Login Button Click");
-                fieldsVisible = !fieldsVisible;
+                if (clickCount === 0)
+                {
+                    client_manager.retrieve_question(phoneNumber.inputField);
+                    clickCount = 1;
+                }
+                else if (clickCount === 1)
+                {
+                    if (answer.inputField === contact_list_model.main_user.secret_answer)
+                        clickCount = 2;
+                    else
+                        answer.borderColor =  "red";
+                }
+                else if (clickCount === 2)
+                {
+                    var valid = true;
+
+                    if (newPasswordField.inputField === "")
+                    {
+                        newPasswordField.borderColor = "red";
+                        valid = false;
+                    }
+                    else
+                        newPasswordField.borderColor = newPasswordField.inputField.focus ? "#a10e7a" : "black";
+
+                    if (confirmPasswordField.inputField === "" || newPasswordField.inputField !== confirmPasswordField.inputField)
+                    {
+                        confirmPasswordField.borderColor = "red";
+                        valid = false;
+                    }
+                    else
+                        confirmPasswordField.borderColor = confirmPasswordField.inputField.focus ? "#a10e7a" : "black";
+                     
+                    if(valid)
+                        client_manager.update_password(phoneNumber.inputField, password.inputField);
+                }
             }
         }
 

@@ -30,6 +30,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     connect(_client_manager, &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
 
+    connect(_client_manager, &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
+
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
@@ -94,6 +96,10 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return contact_info->first_name();
     case LastNameRole:
         return contact_info->last_name();
+    case SecretQuestionRole:
+        return contact_info->secret_question();
+    case secretAnswerRole:
+        return contact_info->secret_answer();
     case PhoneNumberRole:
         return contact_info->phone_number();
     case StatusRole:
@@ -120,6 +126,8 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     QHash<int, QByteArray> roles;
 
     roles[chat_IDRole] = "chat_ID";
+    roles[SecretQuestionRole] = "secret_question";
+    roles[secretAnswerRole] = "secret_answer";
     roles[FirstNameRole] = "first_name";
     roles[LastNameRole] = "last_name";
     roles[PhoneNumberRole] = "phone_number";
@@ -151,6 +159,12 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
         break;
     case LastNameRole:
         contact_info->set_last_name(value.toString());
+        break;
+    case SecretQuestionRole:
+        contact_info->set_secret_question(value.toString());
+        break;
+    case secretAnswerRole:
+        contact_info->set_secret_answer(value.toString());
         break;
     case PhoneNumberRole:
         contact_info->set_phone_number(value.toLongLong());
@@ -376,4 +390,10 @@ void ContactListModel::on_update_client_info(const int &phone_number, const QStr
             return;
         }
     }
+}
+
+void ContactListModel::on_question_answer(const QString &secret_question, const QString &secret_answer)
+{
+    _main_user->set_secret_question(QString("%1 ????").arg(secret_question));
+    _main_user->set_secret_answer(secret_answer);
 }

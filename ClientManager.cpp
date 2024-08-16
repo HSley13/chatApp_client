@@ -116,6 +116,9 @@ void ClientManager::on_text_message_received(const QString &message)
     case UpdateInfo:
         emit update_client_info(json_object["phone_number"].toInt(), json_object["first_name"].toString(), json_object["last_name"].toString());
         break;
+    case QuestionAnswer:
+        emit question_answer(json_object["secret_question"].toString(), json_object["secret_answer"].toString());
+        break;
     case AudioMessage:
         break;
     case ClientNewName:
@@ -153,25 +156,23 @@ void ClientManager::on_disconnected()
 
 void ClientManager::sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
 {
-    QJsonObject json_object{
-        {"type", "sign_up"},
-        {"phone_number", phone_number},
-        {"first_name", first_name},
-        {"last_name", last_name},
-        {"password", password},
-        {"secret_question", secret_question},
-        {"secret_answer", secret_answer}};
+    QJsonObject json_object{{"type", "sign_up"},
+                            {"phone_number", phone_number},
+                            {"first_name", first_name},
+                            {"last_name", last_name},
+                            {"password", password},
+                            {"secret_question", secret_question},
+                            {"secret_answer", secret_answer}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
 void ClientManager::login_request(const int &phone_number, const QString &password)
 {
-    QJsonObject json_object{
-        {"type", "login_request"},
-        {"phone_number", phone_number},
-        {"password", password},
-        {"time_zone", _time_zone}};
+    QJsonObject json_object{{"type", "login_request"},
+                            {"phone_number", phone_number},
+                            {"password", password},
+                            {"time_zone", _time_zone}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -186,11 +187,27 @@ void ClientManager::lookup_friend(const int &phone_number)
 
 void ClientManager::update_info(const QString &first_name, const QString &last_name, const QString &password)
 {
-    QJsonObject json_object{
-        {"type", "update_info"},
-        {"first_name", first_name},
-        {"last_name", last_name},
-        {"password", password}};
+    QJsonObject json_object{{"type", "update_info"},
+                            {"first_name", first_name},
+                            {"last_name", last_name},
+                            {"password", password}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::update_password(const int &phone_number, const QString &password)
+{
+    QJsonObject json_object{{"type", "update_password"},
+                            {"phone_number", phone_number},
+                            {"password", password}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::retrieve_question(const int &phone_number)
+{
+    QJsonObject json_object{{"type", "retrieve_question"},
+                            {"phone_number", phone_number}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -337,6 +354,7 @@ void ClientManager::map_initialization()
     _map["group_file"] = GroupFile;
     _map["group_is_typing"] = GroupIsTyping;
     _map["update_info"] = UpdateInfo;
+    _map["question_answer"] = QuestionAnswer;
     _map["audio"] = AudioMessage;
     _map["client_new_name"] = ClientNewName;
     _map["new_password_request"] = NewPasswordRequest;

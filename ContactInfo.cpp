@@ -44,6 +44,34 @@ void ContactInfo::set_last_name(const QString &new_last_name)
     emit last_name_changed();
 }
 
+const QString &ContactInfo::secret_question() const
+{
+    return _secret_question;
+}
+
+void ContactInfo::set_secret_question(const QString &question)
+{
+    if (_secret_question == question)
+        return;
+
+    _secret_question = question;
+    emit secret_question_changed();
+}
+
+const QString &ContactInfo::secret_answer() const
+{
+    return _secret_answer;
+}
+
+void ContactInfo::set_secret_answer(const QString &answer)
+{
+    if (_secret_answer == answer)
+        return;
+
+    _secret_answer = answer;
+    emit secret_answer_changed();
+}
+
 const int &ContactInfo::phone_number() const
 {
     return _phone_number;

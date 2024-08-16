@@ -58,6 +58,8 @@ private slots:
     void on_is_typing_received(const int &phone_number);
     void on_update_client_info(const int &phone_number, const QString &first_name, const QString &last_name);
 
+    void on_question_answer(const QString &secret_question, const QString &secret_answer);
+
 signals:
     void contacts_changed();
     void active_chat_changed();
@@ -79,7 +81,9 @@ public:
         MessagesRole,
         ContactObjectRole,
         LastMessageTimeRole,
-        IsTypingRole
+        IsTypingRole,
+        SecretQuestionRole,
+        secretAnswerRole
     };
 
 private:

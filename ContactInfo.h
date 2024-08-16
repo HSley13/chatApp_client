@@ -16,11 +16,20 @@ class ContactInfo : public QObject
     Q_PROPERTY(int unread_message READ unread_message WRITE set_unread_message NOTIFY unread_message_changed)
     Q_PROPERTY(QString is_typing READ is_typing WRITE set_is_typing NOTIFY is_typing_changed)
 
+    Q_PROPERTY(QString secret_question READ secret_question WRITE set_secret_question NOTIFY secret_question_changed)
+    Q_PROPERTY(QString secret_answer READ secret_answer WRITE set_secret_answer NOTIFY secret_answer_changed)
+
     Q_PROPERTY(ChatListModel *messages READ messages NOTIFY messages_changed)
 
 public:
     ContactInfo(QObject *parent = nullptr);
     ContactInfo(const int &chat_ID, const QString &first_name, const QString &last_name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent = nullptr);
+
+    const QString &secret_question() const;
+    void set_secret_question(const QString &question);
+
+    const QString &secret_answer() const;
+    void set_secret_answer(const QString &answer);
 
     const int &chat_ID() const;
     void set_chat_ID(const int &new_ID);
@@ -62,6 +71,9 @@ private:
     int _unread_message{};
     QString _is_typing{};
 
+    QString _secret_question{};
+    QString _secret_answer{};
+
     ChatListModel *_messages;
 
     QDateTime _last_message_time = QDateTime::currentDateTime();
@@ -78,4 +90,6 @@ signals:
     void messages_changed();
 
     void is_typing_changed();
+    void secret_question_changed();
+    void secret_answer_changed();
 };

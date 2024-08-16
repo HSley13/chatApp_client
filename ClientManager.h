@@ -30,6 +30,8 @@ public:
     Q_INVOKABLE void login_request(const int &phone_number, const QString &password);
     void lookup_friend(const int &phone_number);
     Q_INVOKABLE void update_info(const QString &first_name, const QString &last_name, const QString &password);
+    Q_INVOKABLE void update_password(const int &phone_number, const QString &password);
+    Q_INVOKABLE void retrieve_question(const int &phone_number);
 
     Q_INVOKABLE void profile_image_deleted();
     Q_INVOKABLE void disconnect() { _socket->close(); };
@@ -73,8 +75,9 @@ signals:
     void group_is_typing_received(const int &groupID, const int &sender_ID);
 
     void update_client_info(const int &phone_number, const QString &first_name, const QString &last_name);
-
     void disconnected();
+
+    void question_answer(const QString &secret_question, const QString &secret_answer);
 
 public:
     static ClientManager *instance();
@@ -105,6 +108,8 @@ private:
         LoginRequest,
         IsTyping,
         UpdateInfo,
+        RetrieveQuestion,
+        QuestionAnswer,
         AudioMessage,
         ClientNewName,
         NewPasswordRequest,
