@@ -141,3 +141,15 @@ void ContactInfo::set_last_message_time(const QDateTime &time)
     if (_last_message_time != time)
         _last_message_time = time;
 }
+
+const QString &ContactInfo::is_typing() const
+{
+    return _is_typing;
+}
+
+void ContactInfo::set_is_typing(const QString &new_is_typing)
+{
+    _is_typing = new_is_typing;
+
+    emit is_typing_changed();
+}

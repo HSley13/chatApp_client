@@ -35,11 +35,13 @@ public:
 
     void update_profile(const QString &file_name, const QByteArray &file_data);
     void update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data);
-    void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
+    Q_INVOKABLE void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
     void new_group(const QString &group_name, QJsonArray json_array);
-    void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
+    Q_INVOKABLE void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
     void send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data, const QString &time);
     void send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data, const QString &time);
+    Q_INVOKABLE void send_is_typing(const int &phone_number);
+    Q_INVOKABLE void send_group_is_typing(const int &groupID);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -53,7 +55,7 @@ signals:
     void profile_image(const QString &image_url);
     void group_profile_image(const int &group_ID, const QString &image_url);
 
-    void text_received(const int &chatID, const QString &message, const QString &time);
+    void text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time);
 
     void client_connected(const int &phone_number);
     void client_disconnected(const int &phone_number);
@@ -65,6 +67,9 @@ signals:
 
     void file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time);
     void group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
+
+    void is_typing_received(const int &sender_ID);
+    void group_is_typing_received(const int &groupID, const int &sender_ID);
 
     void disconnected();
 
@@ -93,23 +98,19 @@ private:
         LookupFriend,
         AddedToGroup,
         File,
-        IsTyping,
-        SetName,
-        AudioMessage,
-        SaveData,
-        ClientNewName,
-        SaveMessage,
+        GroupFile,
         LoginRequest,
+        IsTyping,
+        AudioMessage,
+        ClientNewName,
         NewPasswordRequest,
         UpdatePassword,
         DeleteMessage,
         DeleteGroupMessage,
         GroupIsTyping,
-        GroupFile,
         GroupAudio,
         NewGroupMember,
         RemoveGroupMember,
-        RequestData,
         DeleteAccount,
         LastMessageRead,
         GroupLastMessageRead,

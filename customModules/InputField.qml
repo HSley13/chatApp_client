@@ -48,6 +48,12 @@ Rectangle
                 contact_list_model.contact_proxy_list_chat.setFilterFixedString(text);
                 group_list_model.group_proxy_list.setFilterFixedString(text);
             }
+
+            if(contact_list_model.active_chat !== null)
+            client_manager.send_is_typing(contact_list_model.active_chat.phone_number);
+
+            if(group_list_model.active_group_chat !== null)
+            client_manager.send_group_is_typing(group_list_model.active_group_chat.group_ID);
         }
 
         onAccepted:
@@ -107,8 +113,11 @@ Rectangle
         if (textInput.text === "")
             return;
 
-        group_list_model.group_message_sent(textInput.text);
-        contact_list_model.message_sent(textInput.text);
+        let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+        client_manager.send_text(contact_list_model.active_chat.phone_number, textInput.text, time, contact_list_model.active_chat.chat_ID);
+
+        client_manager.send_group_text(group_list_model.active_group_chat.group_ID, contact_list_model.main_user.first_name, textInput.text, time);
 
         textInput.text = "";
     }

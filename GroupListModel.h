@@ -22,7 +22,8 @@ public:
         GroupImageUrlRole,
         GroupMessagesRole,
         GroupObjectRole,
-        LastMessageTimeRole
+        LastMessageTimeRole,
+        GroupIsTypingRole
     };
 
     GroupListModel(QAbstractListModel *parent = nullptr);
@@ -42,7 +43,6 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
-    Q_INVOKABLE void group_message_sent(const QString &group_message);
     Q_INVOKABLE void add_group(const QString &group_name, const QList<ContactInfo *> members);
 
 private slots:
@@ -50,6 +50,7 @@ private slots:
     void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
     void on_group_profile_image(const int &group_ID, const QString &group_image_url);
     void on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
+    void on_group_is_typing_received(const int &groupID, const int &sender_ID);
 
 private:
     QList<GroupInfo *> _groups;

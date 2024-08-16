@@ -8,11 +8,13 @@ class ContactInfo : public QObject
     QML_ELEMENT
 
     Q_PROPERTY(QString first_name READ first_name WRITE set_first_name NOTIFY first_name_changed)
+    Q_PROPERTY(int chat_ID READ chat_ID WRITE set_chat_ID NOTIFY chat_ID_changed)
     Q_PROPERTY(QString last_name READ last_name WRITE set_last_name NOTIFY last_name_changed)
     Q_PROPERTY(int phone_number READ phone_number WRITE set_phone_number NOTIFY phone_number_changed)
     Q_PROPERTY(bool status READ status WRITE set_status NOTIFY status_changed)
     Q_PROPERTY(QString image_url READ image_url WRITE set_image_url NOTIFY image_url_changed)
     Q_PROPERTY(int unread_message READ unread_message WRITE set_unread_message NOTIFY unread_message_changed)
+    Q_PROPERTY(QString is_typing READ is_typing WRITE set_is_typing NOTIFY is_typing_changed)
 
     Q_PROPERTY(ChatListModel *messages READ messages NOTIFY messages_changed)
 
@@ -25,6 +27,9 @@ public:
 
     const QString &first_name() const;
     void set_first_name(const QString &new_first_name);
+
+    const QString &is_typing() const;
+    void set_is_typing(const QString &new_is_typing);
 
     const QString &last_name() const;
     void set_last_name(const QString &new_first_name);
@@ -55,6 +60,7 @@ private:
     bool _status{false};
     QString _image_url{};
     int _unread_message{};
+    QString _is_typing{};
 
     ChatListModel *_messages;
 
@@ -70,4 +76,6 @@ signals:
     void chat_ID_changed();
 
     void messages_changed();
+
+    void is_typing_changed();
 };

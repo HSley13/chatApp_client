@@ -24,7 +24,11 @@ Item
             height: parent.height * 0.5;
             width: height;
 
-            onItemClicked: stackView.pop();
+            onItemClicked: 
+            {
+                group_list_model.active_group_chat = null;
+                stackView.pop();
+            }
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.left: parent.left;
@@ -53,13 +57,25 @@ Item
                 spacing: 5;
                 Text
                 {
-                    id: userName;
+                    id: groupName;
                     text: (group_list_model.active_group_chat === null) ? "" : group_list_model.active_group_chat.group_name;
                     color: "black";
                     font.pixelSize: 16;
                     font.bold: true;
                     verticalAlignment: Text.AlignVCenter;
                     elide: Text.ElideRight;
+                }
+
+                Text
+                {
+                    id: statusText;
+
+                    property string groupTypingStatus: group_list_model.active_group_chat.group_is_typing;
+
+                    text: (groupTypingStatus !== "") ? groupTypingStatus : "";
+                    color: "black";
+                    font.pixelSize: 12;
+                    verticalAlignment: Text.AlignVCenter;
                 }
             }
         }

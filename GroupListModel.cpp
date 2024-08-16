@@ -17,6 +17,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::group_text_received, this, &GroupListModel::on_group_text_received);
     connect(_client_manager, &ClientManager::group_profile_image, this, &GroupListModel::on_group_profile_image);
     connect(_client_manager, &ClientManager::group_file_received, this, &GroupListModel::on_group_file_received);
+    connect(_client_manager, &ClientManager::group_is_typing_received, this, &GroupListModel::on_group_is_typing_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -51,56 +52,6 @@ void GroupListModel::set_active_group_chat(GroupInfo *new_group)
     emit active_group_chat_changed();
 }
 
-void GroupListModel::group_message_sent(const QString &group_message)
-{
-    if (_active_group_chat == Q_NULLPTR)
-        return;
-
-    GroupMessageInfo *new_message = new GroupMessageInfo(group_message, QString(), QString(), ContactListModel::main_user()->phone_number(), QString(), QTime::currentTime().toString("HH:mm"), _active_group_chat);
-    _active_group_chat->add_group_message(new_message);
-
-    _active_group_chat->set_last_message_time(QDateTime::currentDateTime());
-    QModelIndex top_left = index(0, 0);
-    QModelIndex bottom_right = index(_groups.size() - 1, 0);
-    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
-
-    _client_manager->send_group_text(_active_group_chat->group_ID(), ContactListModel::main_user()->first_name(), group_message, new_message->time());
-}
-
-void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
-{
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
-            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
-            group->set_last_message_time(QDateTime::currentDateTime());
-            QModelIndex top_left = index(0, 0);
-            QModelIndex bottom_right = index(_groups.size() - 1, 0);
-            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
-
-            return;
-        }
-    }
-}
-
-void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time)
-{
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
-            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, time, this));
-            group->set_last_message_time(QDateTime::currentDateTime());
-            QModelIndex top_left = index(0, 0);
-            QModelIndex bottom_right = index(_groups.size() - 1, 0);
-            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
-
-            return;
-        }
-    }
-}
-
 int GroupListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
@@ -122,6 +73,8 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
         return group_info->group_admin();
     case GroupNameRole:
         return group_info->group_name();
+    case GroupIsTypingRole:
+        return group_info->group_is_typing();
     case GroupMembersRole:
         return QVariant::fromValue(group_info->group_members());
     case GroupUnreadMessageRole:
@@ -154,6 +107,9 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case GroupAdminRole:
         group_info->set_group_admin(value.toInt());
         break;
+    case GroupIsTypingRole:
+        group_info->set_group_is_typing(value.toString());
+        break;
     case GroupUnreadMessageRole:
         group_info->set_group_unread_message(value.toInt());
         break;
@@ -172,7 +128,8 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
 {
     QHash<int, QByteArray> roles{};
 
-    roles[GroupIDRole] = "groupID";
+    roles[GroupIDRole] = "group_ID";
+    roles[GroupIsTypingRole] = "group_is_typing";
     roles[GroupAdminRole] = "group_admin";
     roles[GroupNameRole] = "group_name";
     roles[GroupMembersRole] = "group_members";
@@ -262,6 +219,74 @@ void GroupListModel::on_group_profile_image(const int &group_ID, const QString &
             QModelIndex index = createIndex(i, 0);
             emit dataChanged(index, index, {GroupImageUrlRole});
 
+            return;
+        }
+    }
+}
+
+void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
+{
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
+            group->set_last_message_time(QDateTime::currentDateTime());
+            QModelIndex top_left = index(0, 0);
+            QModelIndex bottom_right = index(_groups.size() - 1, 0);
+            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+
+            return;
+        }
+    }
+}
+
+void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time)
+{
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, time, this));
+            group->set_last_message_time(QDateTime::currentDateTime());
+            QModelIndex top_left = index(0, 0);
+            QModelIndex bottom_right = index(_groups.size() - 1, 0);
+            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+
+            return;
+        }
+    }
+}
+
+void GroupListModel::on_group_is_typing_received(const int &groupID, const int &sender_ID)
+{
+    if (!groupID || !sender_ID)
+        return;
+
+    for (size_t i{0}; i < _groups.size(); i++)
+    {
+        GroupInfo *group = _groups[i];
+        if (group->group_ID() == groupID)
+        {
+            QString sender_name{QString::number(sender_ID)};
+
+            for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
+            {
+                if (contact->phone_number() == sender_ID)
+                {
+                    sender_name = contact->first_name();
+                    break;
+                }
+            }
+
+            group->set_group_is_typing(QString("%1 %2").arg(sender_name, "is typing..."));
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {GroupIsTypingRole});
+
+            QTimer::singleShot(2000, this, [=]()
+                               {    group->set_group_is_typing(QString());
+                                    QModelIndex index = createIndex(i, 0);
+                                    emit dataChanged(index, index, {GroupIsTypingRole}); });
             return;
         }
     }

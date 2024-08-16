@@ -23,8 +23,10 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
 
     connect(_client_manager, &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
+    connect(_client_manager, &ClientManager::client_disconnected, this, &ContactListModel::on_client_disconnected);
 
     connect(_client_manager, &ClientManager::file_received, this, &ContactListModel::on_file_received);
+    connect(_client_manager, &ClientManager::is_typing_received, this, &ContactListModel::on_is_typing_received);
 
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
@@ -69,43 +71,6 @@ ContactInfo *ContactListModel::main_user()
     return _main_user;
 }
 
-void ContactListModel::message_sent(const QString &message)
-{
-    if (_active_chat == Q_NULLPTR)
-        return;
-
-    MessageInfo *new_message = new MessageInfo(message, QString(), QString(), _main_user->phone_number(), QTime::currentTime().toString("HH:mm"), _active_chat);
-    _active_chat->add_message(new_message);
-
-    _active_chat->set_last_message_time(QDateTime::currentDateTime());
-    QModelIndex top_left = index(0, 0);
-    QModelIndex bottom_right = index(_contacts.size() - 1, 0);
-    emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
-
-    _client_manager->send_text(_active_chat->phone_number(), message, new_message->time(), _active_chat->chat_ID());
-}
-
-void ContactListModel::on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time)
-{
-    if (!chatID || !sender_ID || file_url.isEmpty())
-        return;
-
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
-            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, time, this));
-
-            contact->set_last_message_time(QDateTime::currentDateTime());
-            QModelIndex top_left = index(0, 0);
-            QModelIndex bottom_right = index(_contacts.size() - 1, 0);
-            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
-
-            return;
-        }
-    }
-}
-
 int ContactListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
@@ -131,6 +96,8 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return contact_info->phone_number();
     case StatusRole:
         return contact_info->status();
+    case IsTypingRole:
+        return contact_info->is_typing();
     case UnreadMessageRole:
         return contact_info->unread_message();
     case ImageUrlRole:
@@ -154,6 +121,7 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     roles[FirstNameRole] = "first_name";
     roles[LastNameRole] = "last_name";
     roles[PhoneNumberRole] = "phone_number";
+    roles[IsTypingRole] = "is_typing";
     roles[StatusRole] = "status";
     roles[UnreadMessageRole] = "unread_message";
     roles[ImageUrlRole] = "image_url";
@@ -187,6 +155,9 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
         break;
     case StatusRole:
         contact_info->set_status(value.toBool());
+        break;
+    case IsTypingRole:
+        contact_info->set_is_typing(value.toString());
         break;
     case UnreadMessageRole:
         contact_info->set_unread_message(value.toInt());
@@ -224,20 +195,6 @@ void ContactListModel::on_load_my_info(QJsonObject my_info)
     _main_user->set_last_name(my_info["last_name"].toString());
     _main_user->set_phone_number(my_info["_id"].toInt());
     _main_user->set_image_url(my_info["image_url"].toString());
-}
-
-void ContactListModel::on_text_received(const int &chatID, const QString &message, const QString &time)
-{
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
-            contact->add_message(new MessageInfo(message, QString(), QString(), contact->phone_number(), time, this));
-            contact->set_last_message_time(QDateTime::currentDateTime());
-        }
-
-        return;
-    }
 }
 
 void ContactListModel::on_load_contacts(QJsonArray json_array)
@@ -299,7 +256,7 @@ void ContactListModel::on_client_connected(const int &phone_number)
             QModelIndex index = createIndex(i, 0);
             emit dataChanged(index, index, {StatusRole});
 
-            break;
+            return;
         }
     }
 }
@@ -319,7 +276,7 @@ void ContactListModel::on_client_disconnected(const int &phone_number)
             QModelIndex index = createIndex(i, 0);
             emit dataChanged(index, index, {StatusRole});
 
-            break;
+            return;
         }
     }
 }
@@ -328,11 +285,71 @@ void ContactListModel::lookup_friend(const int &phone_number)
 {
     for (const ContactInfo *contact : _contacts)
     {
-        if (contact->phone_number() == phone_number)
+        if (contact->phone_number() == phone_number || contact->phone_number() == main_user()->phone_number())
             return;
     }
 
     _client_manager->lookup_friend(phone_number);
 
     // FIXME: send pop up notification
+}
+
+void ContactListModel::on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time)
+{
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->chat_ID() == chatID)
+        {
+            contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, time, this));
+            contact->set_last_message_time(QDateTime::currentDateTime());
+
+            return;
+        }
+    }
+}
+
+void ContactListModel::on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time)
+{
+    if (!chatID || !sender_ID || file_url.isEmpty())
+        return;
+
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->chat_ID() == chatID)
+        {
+            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, time, this));
+
+            contact->set_last_message_time(QDateTime::currentDateTime());
+            QModelIndex top_left = index(0, 0);
+            QModelIndex bottom_right = index(_contacts.size() - 1, 0);
+            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+
+            return;
+        }
+    }
+}
+
+void ContactListModel::on_is_typing_received(const int &phone_number)
+{
+    if (!phone_number)
+        return;
+
+    for (size_t i{0}; i < _contacts.size(); i++)
+    {
+        ContactInfo *contact = _contacts[i];
+        if (contact->phone_number() == phone_number)
+        {
+            contact->set_is_typing("is typing...");
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {IsTypingRole});
+
+            QTimer::singleShot(2000, this, [=]()
+                               {    contact->set_is_typing(QString());
+                                    QModelIndex index = createIndex(i, 0);
+                                    emit dataChanged(index, index, {IsTypingRole}); });
+
+            return;
+        }
+    }
 }

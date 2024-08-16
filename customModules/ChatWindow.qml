@@ -26,7 +26,11 @@ Item
             height: parent.height * 0.5;
             width: height;
 
-            onItemClicked: stackView.pop();
+            onItemClicked:
+            {
+                contact_list_model.active_chat = null;
+                stackView.pop();
+            } 
 
             anchors.verticalCenter: parent.verticalCenter;
             anchors.left: parent.left;
@@ -63,11 +67,16 @@ Item
                     verticalAlignment: Text.AlignVCenter;
                     elide: Text.ElideRight;
                 }
+
                 Text
                 {
                     id: statusText;
-                    text: root.onOffLine ? "Online" : "Offline";
-                    color: root.onOffLine ? "green" : "red";
+
+                    property string typingStatus: contact_list_model.active_chat.is_typing;
+                    property bool isOnline: root.onOffLine;
+
+                    text: (typingStatus !== "") ? typingStatus : isOnline ? "Online" : "Offline";
+                    color: (typingStatus !== "") ? "black" : isOnline ? "green" : "red";
                     font.pixelSize: 12;
                     verticalAlignment: Text.AlignVCenter;
                 }

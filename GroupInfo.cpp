@@ -127,3 +127,15 @@ void GroupInfo::set_last_message_time(const QDateTime &time)
     if (_last_message_time != time)
         _last_message_time = time;
 }
+
+const QString &GroupInfo::group_is_typing() const
+{
+    return _group_is_typing;
+}
+
+void GroupInfo::set_group_is_typing(const QString &new_group_is_typing)
+{
+    _group_is_typing = new_group_is_typing;
+
+    emit group_is_typing_changed();
+}

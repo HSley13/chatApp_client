@@ -79,7 +79,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list_chat.get(index).messages.count - 1).text;
+                text: (is_typing !== "") ? is_typing : (messages.count > 0 ? messages.at(messages.count - 1).text : "");
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
@@ -136,6 +136,7 @@ Rectangle
         onClicked:
         {
             contact_list_model.active_chat = contact_list_model.contact_proxy_list_chat.get(index);
+            group_list_model.active_group_chat = null;
             stackView.push(chatWindow);
         }
     }

@@ -142,10 +142,10 @@ void MediaController::send_file(const int &value)
                 _client_manager->update_group_profile(GroupListModel::active_group_chat()->group_ID(), QFileInfo(file_name).fileName(), file_data);
                 break;
             case 3:
-                _client_manager->send_file(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("HH:mm"));
+                _client_manager->send_file(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("hh:mm ap"));
                 break;
             case 4:
-                _client_manager->send_group_file(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("HH:mm"));
+                _client_manager->send_group_file(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("hh:mm ap"));
                 break;
             default:
                 break;

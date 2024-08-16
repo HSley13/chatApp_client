@@ -163,7 +163,8 @@ Rectangle
                 onClicked:
                 {
                     contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
-                    stackView.push(chatWindow);
+                    stackView.replace(chatWindow);
+                    group_list_model.active_group_chat = null;
                 }
             }
         }

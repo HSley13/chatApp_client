@@ -35,7 +35,6 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
-    Q_INVOKABLE void message_sent(const QString &message);
     Q_INVOKABLE void lookup_friend(const int &phone_number);
 
     ClientManager *_client_manager{nullptr};
@@ -47,7 +46,7 @@ public:
 private slots:
     void on_load_contacts(QJsonArray json_array);
     void on_load_my_info(QJsonObject my_info);
-    void on_text_received(const int &chatID, const QString &message, const QString &time);
+    void on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time);
 
     void on_client_connected(const int &phone_number);
     void on_client_disconnected(const int &phone_number);
@@ -55,6 +54,8 @@ private slots:
     void on_client_profile_image(const int &phone_number, const QString &image_url);
 
     void on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time);
+
+    void on_is_typing_received(const int &phone_number);
 
 signals:
     void contacts_changed();
@@ -76,7 +77,8 @@ public:
         ImageUrlRole,
         MessagesRole,
         ContactObjectRole,
-        LastMessageTimeRole
+        LastMessageTimeRole,
+        IsTypingRole
     };
 
 private:

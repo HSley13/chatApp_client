@@ -87,7 +87,7 @@ void ClientManager::on_text_message_received(const QString &message)
         emit client_profile_image(json_object["phone_number"].toInt(), json_object["image_url"].toString());
         break;
     case Text:
-        emit text_received(json_object["chatID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
+        emit text_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
         break;
     case ClientConnected:
         emit client_connected(json_object["phone_number"].toInt());
@@ -107,17 +107,15 @@ void ClientManager::on_text_message_received(const QString &message)
     case GroupFile:
         emit group_file_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["file_url"].toString(), json_object["time"].toString());
         break;
+    case IsTyping:
+        emit is_typing_received(json_object["sender_ID"].toInt());
+        break;
+    case GroupIsTyping:
+        emit group_is_typing_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt());
+        break;
     case AudioMessage:
         break;
-    case IsTyping:
-        break;
-    case SetName:
-        break;
-    case SaveData:
-        break;
     case ClientNewName:
-        break;
-    case SaveMessage:
         break;
     case NewPasswordRequest:
         break;
@@ -127,15 +125,11 @@ void ClientManager::on_text_message_received(const QString &message)
         break;
     case DeleteGroupMessage:
         break;
-    case GroupIsTyping:
-        break;
     case GroupAudio:
         break;
     case NewGroupMember:
         break;
     case RemoveGroupMember:
-        break;
-    case RequestData:
         break;
     case DeleteAccount:
         break;
@@ -278,6 +272,22 @@ void ClientManager::new_group(const QString &group_name, QJsonArray json_array)
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::send_is_typing(const int &phone_number)
+{
+    QJsonObject json_object{{"type", "is_typing"},
+                            {"receiver", phone_number}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::send_group_is_typing(const int &groupID)
+{
+    QJsonObject json_object{{"type", "group_is_typing"},
+                            {"groupID", groupID}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::get_user_time()
 {
 #ifdef __EMSCRIPTEN__
@@ -313,20 +323,16 @@ void ClientManager::map_initialization()
     _map["added_to_group"] = AddedToGroup;
     _map["file"] = File;
     _map["group_file"] = GroupFile;
-    _map["set_name"] = SetName;
+    _map["group_is_typing"] = GroupIsTyping;
     _map["audio"] = AudioMessage;
-    _map["save_data"] = SaveData;
     _map["client_new_name"] = ClientNewName;
-    _map["save_message"] = SaveMessage;
     _map["new_password_request"] = NewPasswordRequest;
     _map["update_password"] = UpdatePassword;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
-    _map["group_is_typing"] = GroupIsTyping;
     _map["group_audio"] = GroupAudio;
     _map["new_group_member"] = NewGroupMember;
     _map["remove_group_member"] = RemoveGroupMember;
-    _map["request_data"] = RequestData;
     _map["delete_account"] = DeleteAccount;
     _map["last_message_read"] = LastMessageRead;
     _map["group_last_message_read"] = GroupLastMessageRead;
