@@ -28,6 +28,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::file_received, this, &ContactListModel::on_file_received);
     connect(_client_manager, &ClientManager::is_typing_received, this, &ContactListModel::on_is_typing_received);
 
+    connect(_client_manager, &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
+
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
@@ -348,6 +350,28 @@ void ContactListModel::on_is_typing_received(const int &phone_number)
                                {    contact->set_is_typing(QString());
                                     QModelIndex index = createIndex(i, 0);
                                     emit dataChanged(index, index, {IsTypingRole}); });
+
+            return;
+        }
+    }
+}
+
+void ContactListModel::on_update_client_info(const int &phone_number, const QString &first_name, const QString &last_name)
+{
+    if (!phone_number || first_name.isEmpty() || last_name.isEmpty())
+        return;
+
+    for (size_t i{0}; i < _contacts.size(); i++)
+    {
+        ContactInfo *contact = _contacts[i];
+        if (contact->phone_number() == phone_number)
+        {
+            contact->set_first_name(first_name);
+            contact->set_last_name(last_name);
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {FirstNameRole});
+            emit dataChanged(index, index, {LastNameRole});
 
             return;
         }

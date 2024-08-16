@@ -56,6 +56,7 @@ private slots:
     void on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time);
 
     void on_is_typing_received(const int &phone_number);
+    void on_update_client_info(const int &phone_number, const QString &first_name, const QString &last_name);
 
 signals:
     void contacts_changed();

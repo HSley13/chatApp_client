@@ -187,6 +187,8 @@ Item
 
             InputField
             {
+                id: settingsFirstName;
+
                 image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
                 echoMode: TextInput.Normal;
                 placeHolder: contact_list_model.main_user.first_name;
@@ -196,6 +198,8 @@ Item
 
             InputField
             {
+                id: settingsLastName;
+
                 image1Source: "qrc:/QML/ClientApp/icons/name_icon.png";
                 echoMode: TextInput.Normal;
                 placeHolder: contact_list_model.main_user.last_name;
@@ -272,6 +276,8 @@ Item
 
             InputField
             {
+                id: settingsPassword;
+
                 image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
                 image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
                 echoMode: TextInput.Password;
@@ -282,6 +288,8 @@ Item
 
             InputField
             {
+                id: settingsPasswordConfirmation;
+
                 image1Source: "qrc:/QML/ClientApp/icons/hide_icon.png";
                 image2Source: "qrc:/QML/ClientApp/icons/see_icon.png";
                 echoMode: TextInput.Password;
@@ -342,8 +350,43 @@ Item
 
             onClicked:
             {
-                // FIXME: send message to the server
-                console.log("Save Info Button Clicked");
+                var valid = true;
+
+                if (settingsFirstName.inputField === "" || settingsLastName.inputField === "")
+                {
+                    settingsFirstName.borderColor = settingsFirstName.inputField === "" ? "red" : settingsFirstName.inputField.focus ? "#a10e7a" : "black";
+                    settingsLastName.borderColor = settingsLastName.inputField === "" ? "red" : settingsLastName.inputField.focus ? "#a10e7a" : "black";
+                    valid = false;
+                }
+                else
+                {
+                    settingsFirstName.borderColor = settingsFirstName.inputField.focus ? "#a10e7a" : "black";
+                    settingsLastName.borderColor = settingsLastName.inputField.focus ? "#a10e7a" : "black";
+                }
+    
+                if (settingsPassword.inputField === "")
+                {
+                    settingsPassword.borderColor = "red";
+                    valid = false;
+                }
+                else
+                    settingsPassword.borderColor = settingsPassword.inputField.focus ? "#a10e7a" : "black";
+    
+                if (settingsPasswordConfirmation.inputField === "" || settingsPassword.inputField !== settingsPasswordConfirmation.inputField)
+                {
+                    settingsPasswordConfirmation.borderColor = "red";
+                    valid = false;
+                }
+                else
+                    settingsPasswordConfirmation.borderColor = settingsPasswordConfirmation.inputField.focus ? "#a10e7a" : "black";
+
+                if(valid)
+                {
+                    client_manager.update_info(settingsFirstName.inputField, settingsLastName.inputField, settingsPassword.inputField);
+
+                    contact_list_model.main_user.first_name = settingsFirstName.inputField;
+                    contact_list_model.main_user.last_name = settingsLastName.inputField;
+                }
             }
         }
     }

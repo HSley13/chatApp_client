@@ -113,13 +113,14 @@ void ClientManager::on_text_message_received(const QString &message)
     case GroupIsTyping:
         emit group_is_typing_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt());
         break;
+    case UpdateInfo:
+        emit update_client_info(json_object["phone_number"].toInt(), json_object["first_name"].toString(), json_object["last_name"].toString());
+        break;
     case AudioMessage:
         break;
     case ClientNewName:
         break;
     case NewPasswordRequest:
-        break;
-    case UpdatePassword:
         break;
     case DeleteMessage:
         break;
@@ -179,6 +180,17 @@ void ClientManager::lookup_friend(const int &phone_number)
 {
     QJsonObject json_object{{"type", "lookup_friend"},
                             {"phone_number", phone_number}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::update_info(const QString &first_name, const QString &last_name, const QString &password)
+{
+    QJsonObject json_object{
+        {"type", "update_info"},
+        {"first_name", first_name},
+        {"last_name", last_name},
+        {"password", password}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -324,10 +336,10 @@ void ClientManager::map_initialization()
     _map["file"] = File;
     _map["group_file"] = GroupFile;
     _map["group_is_typing"] = GroupIsTyping;
+    _map["update_info"] = UpdateInfo;
     _map["audio"] = AudioMessage;
     _map["client_new_name"] = ClientNewName;
     _map["new_password_request"] = NewPasswordRequest;
-    _map["update_password"] = UpdatePassword;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
     _map["group_audio"] = GroupAudio;
