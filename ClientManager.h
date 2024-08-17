@@ -39,12 +39,14 @@ public:
     void update_profile(const QString &file_name, const QByteArray &file_data);
     void update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data);
     Q_INVOKABLE void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
-    void new_group(const QString &group_name, QJsonArray json_array);
+    void new_group(const QString &group_name, QJsonArray group_members);
     Q_INVOKABLE void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
     void send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data, const QString &time);
     void send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data, const QString &time);
     Q_INVOKABLE void send_is_typing(const int &phone_number);
     Q_INVOKABLE void send_group_is_typing(const int &groupID);
+
+    void remove_group_member(const int &groupID, QJsonArray group_members);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -78,7 +80,9 @@ signals:
     void disconnected();
 
     void question_answer(const QString &secret_question, const QString &secret_answer);
-    void login_status_message(const bool &true_or_false, const QString &message);
+    void status_message(const bool &true_or_false, const QString &message);
+
+    void remove_group_member_received(const int &groupID, QJsonArray group_members);
 
 public:
     static ClientManager *instance();
@@ -108,15 +112,13 @@ private:
         UpdateInfo,
         RetrieveQuestion,
         QuestionAnswer,
-        AudioMessage,
-        ClientNewName,
-        NewPasswordRequest,
+        GroupIsTyping,
+        RemoveGroupMember,
+        NewGroupMember,
+        Audio,
+        GroupAudio,
         DeleteMessage,
         DeleteGroupMessage,
-        GroupIsTyping,
-        GroupAudio,
-        NewGroupMember,
-        RemoveGroupMember,
         DeleteAccount,
         LastMessageRead,
         GroupLastMessageRead,

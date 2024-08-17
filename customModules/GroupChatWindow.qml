@@ -101,7 +101,7 @@ Item
         width: parent.width;
 
         GroupChatList { id: groupChatList; }
-
+        
         anchors.top: chatHeader.bottom;
         anchors.bottom: chatBottom.top;
     }

@@ -1,27 +1,29 @@
 import QtQuick;
+import QtQuick.Controls;
 import QtQuick.Layouts;
 
 Rectangle
 {
     id: root;
     property bool hidden: true;
+    property var selectedItems: [];
 
-    RowLayout
+    ColumnLayout
     {
         id: buttons;
         anchors.top: parent.top;
-        anchors.topMargin: 10;
+        anchors.topMargin: 1;
         anchors.horizontalCenter: parent.horizontalCenter;
         Layout.fillWidth: true;
         
-        spacing: 10;
+        spacing: 1;
 
         RoundedButton
         {
-            text: "+ Add";
+            text: "Add New Member";
             color: "white";
             Layout.fillWidth: true;
-            height: 10;
+            height: text.height;
 
             onClicked:
             {
@@ -32,16 +34,12 @@ Rectangle
 
         RoundedButton
         {
-            text: "- Remove";
+            text: "Remove Checked Members";
             color: "white";
             Layout.fillWidth: true;
-            height: 10;
+            height: text.height;
 
-            onClicked:
-            {
-                // FIXME: 
-                console.log("Remove Member Button clicked");
-            }
+            onClicked: group_list_model.remove_group_member(selectedItems);
         }
     }
 
@@ -98,73 +96,89 @@ Rectangle
                 height: parent.height;
                 spacing: 10;
 
-                Item
+                CheckBox
                 {
-                    width: 40;
-                    height: width;
+                    id: checkBox;
+                    visible: root.checkable;
+                    checked: false;
 
-                    RoundedImage
-                    {
-                        id: profileImage;
-                        imageSource: modelData.image_url;
-                        width: parent.width;
-                        height: parent.height;
-                    }
-
-                    Image
-                    {
-                        id: statusDot;
-                        source: statusIconSource;
-                        width: 10;
-                        height: 10;
-                        anchors.bottom: profileImage.bottom;
-                        anchors.right: profileImage.right;
-                        anchors.margins: 2;
-                    }
+                    onCheckedChanged: (checked) ? root.selectedItems.push(modelData) : root.selectedItems.splice(root.selectedItems.indexOf(modelData), 1);
                 }
 
-                ColumnLayout
+                RowLayout
                 {
-                    Layout.fillWidth: true;
-                    Layout.preferredHeight: parent.height;
-                    Layout.leftMargin: 4;
-                    spacing: 2;
-                    Layout.topMargin: 3;
+                    width: parent.width * 0.8;
+                    height: parent.height;
+                    spacing: 5;
 
-                    Text
+                    Item
                     {
-                        text: modelData.first_name;
-                        color: "black";
-                        font.pixelSize: 12;
-                        Layout.fillWidth: true;
-                        Layout.fillHeight: true;
-                        verticalAlignment: Text.AlignTop;
+                        width: 40;
+                        height: width;
+
+                        RoundedImage
+                        {
+                            id: profileImage;
+                            imageSource: modelData.image_url;
+                            width: parent.width;
+                            height: parent.height;
+                        }
+
+                        Image
+                        {
+                            id: statusDot;
+                            source: statusIconSource;
+                            width: 10;
+                            height: 10;
+                            anchors.bottom: profileImage.bottom;
+                            anchors.right: profileImage.right;
+                            anchors.margins: 2;
+                        }
                     }
 
-                    Text
+                    ColumnLayout
                     {
-                        text: modelData.phone_number;
-                        color: "black";
-                        font.pixelSize: 10;
                         Layout.fillWidth: true;
-                        Layout.fillHeight: true;
-                        verticalAlignment: Text.AlignTop;
-                        elide: Text.ElideRight;
+                        Layout.preferredHeight: parent.height;
+                        Layout.leftMargin: 4;
+                        spacing: 2;
+                        Layout.topMargin: 3;
+
+                        Text
+                        {
+                            text: modelData.first_name;
+                            color: "black";
+                            font.pixelSize: 12;
+                            Layout.fillWidth: true;
+                            Layout.fillHeight: true;
+                            verticalAlignment: Text.AlignTop;
+                        }
+
+                        Text
+                        {
+                            text: modelData.phone_number;
+                            color: "black";
+                            font.pixelSize: 10;
+                            Layout.fillWidth: true;
+                            Layout.fillHeight: true;
+                            verticalAlignment: Text.AlignTop;
+                            elide: Text.ElideRight;
+                        }
                     }
-                }
-            }
 
-            MouseArea
-            {
-                id: mouseArea;
-                anchors.fill: parent;
-                hoverEnabled: true;
+                    MouseArea
+                    {
+                        id: mouseArea;
+                        anchors.fill: parent;
+                        hoverEnabled: true;
 
-                onClicked:
-                {
-                    contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
-                    stackView.replace(chatWindow);
-                    group_list_model.active_group_chat = null;
+                        onClicked:
+                        {
+                            contact_list_model.active_chat = contact_list_model.contact_proxy_list.get(index);
+                            stackView.replace(chatWindow);
+                            group_list_model.active_group_chat = null;
+                        }
+                    }
                 }
             }
         }

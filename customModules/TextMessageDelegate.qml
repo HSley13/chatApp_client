@@ -59,5 +59,32 @@ Item
 
             width: bubble.width;
         }
+
+        MouseArea 
+        {
+            anchors.fill: parent;
+            acceptedButtons: Qt.LeftButton | Qt.RightButton;
+
+            // FIXME: 
+
+            onClicked: (mouse) => 
+            {
+                if (mouse.button === Qt.RightButton)
+                    contextMenu.popup()
+            }
+
+            onPressAndHold: (mouse) => 
+            {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                    contextMenu.popup()
+            }
+
+            Menu 
+            {
+                id: contextMenu;
+                Action { text: "Delete For Me" }
+                Action { text: "Delete For Both of us" }
+            }
+        }
     }
 }

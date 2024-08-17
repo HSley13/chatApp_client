@@ -182,18 +182,18 @@ void ContactInfo::set_is_typing(const QString &new_is_typing)
     emit is_typing_changed();
 }
 
-const QString &ContactInfo::login_message() const
+const QString &ContactInfo::popup_message() const
 {
-    return _login_message;
+    return _popup_message;
 }
 
-void ContactInfo::set_login_message(const QString &message)
+void ContactInfo::set_popup_message(const QString &message)
 {
-    if (!_login_message.compare(message))
+    if (!_popup_message.compare(message))
         return;
 
-    _login_message = message;
-    emit login_message_changed();
+    _popup_message = message;
+    emit popup_message_changed();
 }
 
 const bool &ContactInfo::login_status() const

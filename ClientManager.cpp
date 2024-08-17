@@ -50,15 +50,11 @@ void ClientManager::on_text_message_received(const QString &message)
     switch (type)
     {
     case SignUp:
-    {
-        json_object["message"].toString();
-
-        json_object["status"].toBool();
-    }
-    break;
+        emit status_message(json_object["status"].toBool(), json_object["message"].toString());
+        break;
     case LoginRequest:
     {
-        emit login_status_message(json_object["status"].toBool(), json_object["message"].toString());
+        emit status_message(json_object["status"].toBool(), json_object["message"].toString());
 
         emit load_my_info(json_object["my_info"].toObject());
         emit load_contacts(json_object["contacts"].toArray());
@@ -113,11 +109,8 @@ void ClientManager::on_text_message_received(const QString &message)
     case QuestionAnswer:
         emit question_answer(json_object["secret_question"].toString(), json_object["secret_answer"].toString());
         break;
-    case AudioMessage:
-        break;
-    case ClientNewName:
-        break;
-    case NewPasswordRequest:
+    case RemoveGroupMember:
+        emit remove_group_member_received(json_object["groupID"].toInt(), json_object["group_members"].toArray());
         break;
     case DeleteMessage:
         break;
@@ -126,8 +119,6 @@ void ClientManager::on_text_message_received(const QString &message)
     case GroupAudio:
         break;
     case NewGroupMember:
-        break;
-    case RemoveGroupMember:
         break;
     case DeleteAccount:
         break;
@@ -173,6 +164,10 @@ void ClientManager::login_request(const int &phone_number, const QString &passwo
 
 void ClientManager::lookup_friend(const int &phone_number)
 {
+    qDebug() << "Lookup Friend: " << phone_number;
+
+    return;
+
     QJsonObject json_object{{"type", "lookup_friend"},
                             {"phone_number", phone_number}};
 
@@ -288,11 +283,11 @@ void ClientManager::send_group_file(const int &groupID, const QString &sender_na
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::new_group(const QString &group_name, QJsonArray json_array)
+void ClientManager::new_group(const QString &group_name, QJsonArray group_members)
 {
     QJsonObject json_object{{"type", "new_group"},
                             {"group_name", group_name},
-                            {"group_members", json_array}};
+                            {"group_members", group_members}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -309,6 +304,15 @@ void ClientManager::send_group_is_typing(const int &groupID)
 {
     QJsonObject json_object{{"type", "group_is_typing"},
                             {"groupID", groupID}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::remove_group_member(const int &groupID, QJsonArray group_members)
+{
+    QJsonObject json_object{{"type", "remove_group_member"},
+                            {"groupID", groupID},
+                            {"group_members", group_members}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -351,14 +355,12 @@ void ClientManager::map_initialization()
     _map["group_is_typing"] = GroupIsTyping;
     _map["update_info"] = UpdateInfo;
     _map["question_answer"] = QuestionAnswer;
-    _map["audio"] = AudioMessage;
-    _map["client_new_name"] = ClientNewName;
-    _map["new_password_request"] = NewPasswordRequest;
+    _map["remove_group_member"] = RemoveGroupMember;
+    _map["new_group_member"] = NewGroupMember;
+    _map["audio"] = Audio;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
     _map["group_audio"] = GroupAudio;
-    _map["new_group_member"] = NewGroupMember;
-    _map["remove_group_member"] = RemoveGroupMember;
     _map["delete_account"] = DeleteAccount;
     _map["last_message_read"] = LastMessageRead;
     _map["group_last_message_read"] = GroupLastMessageRead;

@@ -35,7 +35,7 @@ public:
     const int &group_admin() const;
     void set_group_admin(const int &new_admin);
 
-    const QList<ContactInfo *> &group_members() const;
+    QList<ContactInfo *> &group_members();
     void add_group_members(ContactInfo *new_member);
 
     const QString &group_image_url() const;

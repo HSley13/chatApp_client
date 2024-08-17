@@ -31,7 +31,7 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
 
     connect(_client_manager, &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
-    connect(_client_manager, &ClientManager::login_status_message, this, &ContactListModel::on_login_status_message);
+    connect(_client_manager, &ClientManager::status_message, this, &ContactListModel::on_status_message);
 
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
@@ -111,8 +111,8 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return contact_info->unread_message();
     case ImageUrlRole:
         return contact_info->image_url();
-    case LoginMessageRole:
-        return contact_info->login_message();
+    case PopupMessageRole:
+        return contact_info->popup_message();
     case LoginStatusRole:
         return contact_info->login_status();
     case MessagesRole:
@@ -136,7 +136,7 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     roles[FirstNameRole] = "first_name";
     roles[LastNameRole] = "last_name";
     roles[PhoneNumberRole] = "phone_number";
-    roles[LoginMessageRole] = "login_message";
+    roles[PopupMessageRole] = "popup_message";
     roles[LoginStatusRole] = "login_status";
     roles[IsTypingRole] = "is_typing";
     roles[StatusRole] = "status";
@@ -170,8 +170,8 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     case SecretQuestionRole:
         contact_info->set_secret_question(value.toString());
         break;
-    case LoginMessageRole:
-        contact_info->set_login_message(value.toString());
+    case PopupMessageRole:
+        contact_info->set_popup_message(value.toString());
     case LoginStatusRole:
         contact_info->set_login_status(value.toBool());
         break;
@@ -311,15 +311,33 @@ void ContactListModel::on_client_disconnected(const int &phone_number)
 
 void ContactListModel::lookup_friend(const int &phone_number)
 {
+    qDebug() << "Lookup: Phone Number:" << phone_number;
+
+    if (!phone_number)
+        return;
+
+    if (phone_number == _main_user->phone_number())
+    {
+        _main_user->set_popup_message("Can't add Yourself as a Friend");
+
+        qDebug() << "Can't add Yourself as a Friend";
+
+        return;
+    }
+
     for (const ContactInfo *contact : _contacts)
     {
-        if (contact->phone_number() == phone_number || contact->phone_number() == main_user()->phone_number())
+        if (contact->phone_number() == phone_number)
+        {
+            _main_user->set_popup_message("Phone Number already in Your Contact");
+
+            qDebug() << "Phone Number already in Your Contact";
+
             return;
+        }
     }
 
     _client_manager->lookup_friend(phone_number);
-
-    // FIXME: send pop up notification
 }
 
 void ContactListModel::on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time)
@@ -410,8 +428,8 @@ void ContactListModel::on_question_answer(const QString &secret_question, const 
     _main_user->set_secret_answer(secret_answer);
 }
 
-void ContactListModel::on_login_status_message(const bool &true_or_false, const QString &message)
+void ContactListModel::on_status_message(const bool &true_or_false, const QString &message)
 {
     _main_user->set_login_status(true_or_false);
-    _main_user->set_login_message(message);
+    _main_user->set_popup_message(message);
 }

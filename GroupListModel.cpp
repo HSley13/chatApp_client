@@ -18,6 +18,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::group_profile_image, this, &GroupListModel::on_group_profile_image);
     connect(_client_manager, &ClientManager::group_file_received, this, &GroupListModel::on_group_file_received);
     connect(_client_manager, &ClientManager::group_is_typing_received, this, &GroupListModel::on_group_is_typing_received);
+    connect(_client_manager, &ClientManager::remove_group_member_received, this, &GroupListModel::on_remove_group_member_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -158,6 +159,15 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
     _client_manager->new_group(group_name, json_array);
 }
 
+void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
+{
+    QJsonArray json_array;
+    for (ContactInfo *contact : members)
+        json_array.append(contact->phone_number());
+
+    _client_manager->remove_group_member(_active_group_chat->group_ID(), json_array);
+}
+
 void GroupListModel::on_load_groups(QJsonArray json_array)
 {
     if (json_array.isEmpty())
@@ -288,6 +298,41 @@ void GroupListModel::on_group_is_typing_received(const int &groupID, const int &
                                     QModelIndex index = createIndex(i, 0);
                                     emit dataChanged(index, index, {GroupIsTypingRole}); });
             return;
+        }
+    }
+}
+
+void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonArray group_members)
+{
+    if (groupID <= 0 || group_members.isEmpty())
+        return;
+
+    QSet<int> members_to_remove;
+    for (const QJsonValue &value : group_members)
+    {
+        if (value.isDouble())
+            members_to_remove.insert(static_cast<int>(value.toDouble()));
+    }
+
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            for (int i{0}; i < group->group_members().size();)
+            {
+                ContactInfo *contact = group->group_members().at(i);
+                if (members_to_remove.contains(contact->phone_number()))
+                    group->group_members().removeAt(i);
+                else
+                    i++;
+            }
+
+            emit group->group_members_changed();
+            QModelIndex topLeft = createIndex(0, 0);
+            QModelIndex bottomRight = createIndex(group->group_members().size() - 1, 0);
+            emit dataChanged(topLeft, bottomRight, {GroupMembersRole});
+
+            break;
         }
     }
 }

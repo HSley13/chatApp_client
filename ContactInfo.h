@@ -19,7 +19,7 @@ class ContactInfo : public QObject
     Q_PROPERTY(QString secret_question READ secret_question WRITE set_secret_question NOTIFY secret_question_changed)
     Q_PROPERTY(QString secret_answer READ secret_answer WRITE set_secret_answer NOTIFY secret_answer_changed)
 
-    Q_PROPERTY(QString login_message READ login_message WRITE set_login_message NOTIFY login_message_changed)
+    Q_PROPERTY(QString popup_message READ popup_message WRITE set_popup_message NOTIFY popup_message_changed)
     Q_PROPERTY(bool login_status READ login_status WRITE set_login_status NOTIFY login_status_changed)
 
     Q_PROPERTY(ChatListModel *messages READ messages NOTIFY messages_changed)
@@ -28,8 +28,8 @@ public:
     ContactInfo(QObject *parent = nullptr);
     ContactInfo(const int &chat_ID, const QString &first_name, const QString &last_name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent = nullptr);
 
-    const QString &login_message() const;
-    void set_login_message(const QString &message);
+    const QString &popup_message() const;
+    void set_popup_message(const QString &message);
 
     const bool &login_status() const;
     void set_login_status(const bool &status);
@@ -79,7 +79,7 @@ private:
     QString _image_url{};
     int _unread_message{};
     QString _is_typing{};
-    QString _login_message{};
+    QString _popup_message{};
     bool _login_status{false};
 
     QString _secret_question{};
@@ -104,6 +104,6 @@ signals:
     void secret_question_changed();
     void secret_answer_changed();
 
-    void login_message_changed();
+    void popup_message_changed();
     void login_status_changed();
 };

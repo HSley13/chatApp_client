@@ -30,7 +30,7 @@ void GroupInfo::set_group_name(const QString &new_group_name)
     emit group_name_changed();
 }
 
-const QList<ContactInfo *> &GroupInfo::group_members() const
+QList<ContactInfo *> &GroupInfo::group_members()
 {
     return _group_members;
 }

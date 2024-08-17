@@ -60,7 +60,7 @@ private slots:
 
     void on_question_answer(const QString &secret_question, const QString &secret_answer);
 
-    void on_login_status_message(const bool &true_or_false, const QString &message);
+    void on_status_message(const bool &true_or_false, const QString &message);
 
 signals:
     void contacts_changed();
@@ -86,7 +86,7 @@ public:
         IsTypingRole,
         SecretQuestionRole,
         secretAnswerRole,
-        LoginMessageRole,
+        PopupMessageRole,
         LoginStatusRole
     };
 

@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick;
+import QtQuick.Controls;
+import QtQuick.Layouts;
 
 Dialog
 {
@@ -13,7 +13,7 @@ Dialog
     property var model;
     property bool checkable: false;
     property string placeHolder: "";
-
+    
     signal dialogAccepted();
     signal dialogRejected();
 
@@ -65,7 +65,7 @@ Dialog
                 property string statusIconSource: status ? "qrc:/QML/ClientApp/icons/online_icon.png" : "qrc:/QML/ClientApp/icons/offline_icon.png";
 
 
-                Rectangle
+                Rectangle 
                 {
                     id: hoverBackground;
                     width: mouseArea.containsMouse ? parent.width : 0;
@@ -189,25 +189,16 @@ Dialog
             Button
             {
                 text: "OK";
-                onClicked:
-                {
-                    textInput.inputField = "";
-                    root.accept();
-                } 
-                
+                onClicked: root.accept();
+                                
                 anchors.left: parent.left;
             }
 
             Button
             {
                 text: "Cancel";
-
-                onClicked: 
-                {
-                    textInput.inputField = "";
-                    root.reject();
-                }
-
+                onClicked: root.reject();
+                
                 anchors.right: parent.right;
             }
         }
