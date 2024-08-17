@@ -1,6 +1,4 @@
-# Chat App (Client) (GUI using QML In Process)
-
-# The App was done but I didn't like the GUI cause it was implemented using QtWidgets. Now I am doing it using QML to make it more appealing. (It You would like to see the QtWidgets implementation, lemme know)
+# Chat App (Client)
 
 + **Server app source code [click me](https://github.com/HSley13/chatApp_server)**
 
@@ -17,9 +15,9 @@
 ---
 
 ## Introduction
-> This project is a comprehensive demonstration of my understanding of Chat Applications. It is built using C++ along with Qt for the graphical user interface (GUI) implementation, ensuring cross-platform compatibility.
+> This project is a comprehensive demonstration of my understanding of Chat Applications. It is built using C++ for Backend Logic and intensive work along with QML for the graphical user interface (GUI) implementation, ensuring cross-platform compatibility.
 
->The application supports both desktop and web environments through WebAssembly. Both the server and client are built using WebAssembly, allowing them to run with all dependencies included using Wasmer or Wasmtime, ensuring seamless execution without additional setup.
+>The application supports Desktop, Mobile and Web environments through WebAssembly. Both the server and client are built using WebAssembly, allowing them to run with all dependencies included using Wasmer or Wasmtime, ensuring seamless execution without additional setup.
 
 
 ---
@@ -27,30 +25,57 @@
 ## Functionalities
 + **Utilizes Qt for GUI, enabling the app to be cross platform**.
     1. Network Communication through QWebSocket and QWebSocketServer.
-    2. Employs QtCore and QtWidgets for core functionalities.
-    3. Data Serialization (files, voice notes, and text messages) through QDataStream.
+    2. Employs QtCore for core functionalities.
+    3. Data Serialization (files, voice notes, and text messages) through QJsonDocument, QJsonArray and QJsonObject.
     4. Handles Audio Recording and Playback through QtMultimedia.
 + **Real-time File and Voice Note Transmission** : Send files and voice notes in real-time without degradation.
-+ **Real-time is Typing... Message** : Notifies When Someone is typing a message in the Status Bar.
++ **Real-time is Typing... Message** : Notifies When Someone is typing a message.
 + **Password Recovery** : Uses Self-asked Secret Question and Answer that were entered when signing up.
 + **Swipe Back (from left to right) Navigation** : Swipe on the edge of the window to go back to previous ones. This Implementation was possible By overriding both QT's mousePressEvent and mouseMoveEvent core function.
 + **Dynamic Client Names** : Allows clients to change their names dynamically, reflecting changes Friend list/Group list (Whole Interface).
 + **Online/Offline Status** : Indicates user status with green (online) and red (offline) dots.
-+ **Permanent Data Storage**: Uses emscripten's IDBFS for local data storage, ensuring consistency with IndexedDB.
++ **Permanent Data Storage**: (Audio) Uses emscripten's IDBFS for local data storage, ensuring consistency with IndexedDB along with AWS for Files.
 + **Add New Friend**: uses People's phone number to add them in Your Friend List.
 + **Group Chats**.
     1. Admin-only controls for adding/removing group members.
-    2. Upon clicked on Group Name, it Displays group members and enables direct messaging.
+    2. Upon clicked on Group Settings, it Displays group members and enables direct messaging.
     3. Notifies group members they were added to groups and by whom.
-    4. Alternates group messages' color to better identify senders.
 + **Read/Unread Message Notification** : Utilizes timestamps and database integration to notify users of read/unread messages.
-+ **Message Deletion** : Swipe (left to right) on one's message to delete it.
++ **Message Deletion** : Right Clicked or Press and Hold on one's message to delete it.
+
+---
+
+## ScreenShots (Previews)
+Login window (Default) ![](preview_images/1.png)
+Sign Up Widget ![](preview_images/5.png)
+Password Recovery Authentication ![](preview_images/3.png)
+Password Forgotten default ![](preview_images/2.png)
+Password Forgotten (secret question --> *Hello* in this case) ![](preview_images/3.png)
+Password Forgotten (New Password) ![](preview_images/4.png)
+Conversation Window (Red Buttons == offline)![](preview_images/6.png)
+Conversation Window (Green Buttons == online)![](preview_images/7.png)
+Conversation Window (Searching for Batman)![](preview_images/19.png)
+Is typing message outside of the chat ![](preview_images/9.png)
+Is typing message inside of the chat ![](preview_images/12.png)
+ChatWindow ![](preview_images/10.png)
+ChatWindow (Upon right clicked on a message) ![](preview_images/21.png)
+Menu Panel ![](preview_images/11.png)
+Menu Panel (Upon New Conversation Clicked) ![](preview_images/13.png)
+Menu Panel (Upon New Group Clicked) ![](preview_images/14.png)
+Menu Panel (Upon New Group Clicked) ![](preview_images/15.png)
+Group list  ![](preview_images/8.png)
+Group Chat Window  ![](preview_images/16.png)
+Group Settings  ![](preview_images/17.png)
+Group Settings (Upon clicked on +Members)  ![](preview_images/20.png)
+Main Account Settings  ![](preview_images/18.png)
+Server App Default Window![](preview_images/server.png)
 
 ---
 
 ## MYSQL Database Preparation (Server app)
 
-### Tables
+### Tables (OLD SERVER'S DATABASE SETUP WITH MYSQL)
+### The New Server is Using MongoDB for scalability
 
 -------accounts
 ```mysql
@@ -221,21 +246,3 @@ CREATE TRIGGER update_delete_account AFTER DELETE ON accounts
  ```
 
 ---
-
-## Old GUI (QtWidgets) ScreenShots (Previews)
-Login Widget (Default) ![](preview_images/1.png)
-Sign Up Widget ![](preview_images/2.png)
-Password Recovery Authentication ![](preview_images/3.png)
-New Password ![](preview_images/4.png)
-Log In Process (Status Bar <-- Loading Data Message) ![](preview_images/5.png)
-Conversation Widget with Preview Messages (Red Buttons == offline)![](preview_images/6.png)
-Status Bar online Notification (Green Button == online) ![](preview_images/7.png)
-Friend List (Background Blur Effect) ![](preview_images/8.png)
-Group List (Background Blur Effect) ![](preview_images/9.png)
-Side Bar Options & New Message Notification ![](preview_images/10.png)
-Name Modification (Background Blur Effect) ![](preview_images/11.png)
-Server's Conversation![](preview_images/12.png)
-Group Conversation, Alternated Colors![](preview_images/13.png)
-P2P Conversation ![](preview_images/14.png)
-Message Deletion window ![](preview_images/15.png)
-Server App Default Window![](preview_images/server.png)

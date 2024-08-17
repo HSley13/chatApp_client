@@ -58,6 +58,7 @@ void GroupListModel::set_active_group_chat(GroupInfo *new_group)
 int GroupListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
+
     return _groups.count();
 }
 
@@ -152,6 +153,9 @@ GroupProxyList *GroupListModel::group_proxy_list() const
 
 void GroupListModel::add_group(const QString &group_name, const QList<ContactInfo *> members)
 {
+    if (group_name.isEmpty() || members.isEmpty())
+        return;
+
     QJsonArray json_array;
     for (ContactInfo *contact : members)
         json_array.append(contact->phone_number());
@@ -163,6 +167,9 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
 
 void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
 {
+    if (members.isEmpty())
+        return;
+
     QJsonArray json_array;
     for (ContactInfo *contact : members)
         json_array.append(contact->phone_number());
@@ -172,6 +179,9 @@ void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
 
 void GroupListModel::add_group_member(const int &phone_number, const QList<ContactInfo *> members)
 {
+    if (!phone_number || members.isEmpty())
+        return;
+
     QJsonArray json_array;
     for (ContactInfo *contact : members)
         json_array.append(contact->phone_number());
@@ -250,6 +260,9 @@ void GroupListModel::on_group_profile_image(const int &group_ID, const QString &
 
 void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
 {
+    if (!groupID)
+        return;
+
     for (GroupInfo *group : _groups)
     {
         if (group->group_ID() == groupID)
@@ -267,6 +280,9 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
 
 void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time)
 {
+    if (!groupID)
+        return;
+
     for (GroupInfo *group : _groups)
     {
         if (group->group_ID() == groupID)

@@ -8,32 +8,36 @@ Rectangle
     property bool hidden: true;
     property var selectedItems: [];
 
-    ColumnLayout
+    color: "#dedede";
+    border.color: "white";
+    border.width: 2;
+
+    RowLayout
     {
         id: buttons;
         anchors.top: parent.top;
-        anchors.topMargin: 1;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
         Layout.fillWidth: true;
         
-        spacing: 1;
+        spacing: 10;
 
         RoundedButton
         {
-            text: "Add New Member";
+            text: "+ Members";
             color: "white";
             Layout.fillWidth: true;
-            height: text.height;
+            height: 22;
 
             onClicked: new_member_dialog.open();
         }
 
         RoundedButton
         {
-            text: "Remove Checked Members";
+            text: "- Members";
             color: "white";
             Layout.fillWidth: true;
-            height: text.height;
+            height: 30;
 
             onClicked: group_list_model.remove_group_member(selectedItems);
         }

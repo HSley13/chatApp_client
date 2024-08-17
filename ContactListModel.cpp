@@ -79,6 +79,7 @@ ContactInfo *ContactListModel::main_user()
 int ContactListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
+
     return _contacts.count();
 }
 
@@ -201,6 +202,7 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     }
 
     emit dataChanged(index, index, {role});
+
     return true;
 }
 
@@ -311,16 +313,12 @@ void ContactListModel::on_client_disconnected(const int &phone_number)
 
 void ContactListModel::lookup_friend(const int &phone_number)
 {
-    qDebug() << "Lookup: Phone Number:" << phone_number;
-
     if (!phone_number)
         return;
 
     if (phone_number == _main_user->phone_number())
     {
         _main_user->set_popup_message("Can't add Yourself as a Friend");
-
-        qDebug() << "Can't add Yourself as a Friend";
 
         return;
     }
@@ -330,8 +328,6 @@ void ContactListModel::lookup_friend(const int &phone_number)
         if (contact->phone_number() == phone_number)
         {
             _main_user->set_popup_message("Phone Number already in Your Contact");
-
-            qDebug() << "Phone Number already in Your Contact";
 
             return;
         }

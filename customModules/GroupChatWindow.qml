@@ -212,7 +212,7 @@ Item
         anchors.right: menu.left;
         anchors.top: menu.bottom;
 
-        width: parent.width * .4;
+        width: parent.width * .6;
         height: parent.height * .5;
 
         x: hidden ? parent.width : parent.width - width;

@@ -5,7 +5,7 @@ import QtQuick.Layouts;
 Item
 {
     id: root;
-    
+
     Image
     {
         id: welcomeImage;
@@ -198,37 +198,6 @@ Item
 
             onClicked: stackView.push(signUpWindow);
         }
-    }
-
-    Rectangle
-    {
-        id: contactWindowButton;
-        color: "transparent";
-
-        height: 20;
-        width: question.width * 0.5;
-
-        Text
-        {
-            id: chatWindowText;
-            text: "Contact Window";
-            color: "#DE02B5";
-            font.bold: true;
-            leftPadding: 5;
-
-            anchors.centerIn: parent;
-        }
-
-        MouseArea
-        {
-            anchors.fill: parent;
-            onClicked: stackView.push(contactWindow);
-        }
-
-        anchors.top: rowLayout.bottom;
-        anchors.topMargin: 10;
-        anchors.left: rowLayout.left;
-        anchors.right: rowLayout.right;
     }
 
     Component.onCompleted: 
