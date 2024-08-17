@@ -25,11 +25,7 @@ Rectangle
             Layout.fillWidth: true;
             height: text.height;
 
-            onClicked:
-            {
-                // FIXME: 
-                console.log("Add Member Button clicked");
-            }
+            onClicked: new_member_dialog.open();
         }
 
         RoundedButton

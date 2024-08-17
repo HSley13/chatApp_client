@@ -47,6 +47,7 @@ public:
     Q_INVOKABLE void send_group_is_typing(const int &groupID);
 
     void remove_group_member(const int &groupID, QJsonArray group_members);
+    void add_group_member(const int &groupID, QJsonArray group_members);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -83,6 +84,9 @@ signals:
     void status_message(const bool &true_or_false, const QString &message);
 
     void remove_group_member_received(const int &groupID, QJsonArray group_members);
+    void add_group_member_received(const int &groupID, const QJsonArray new_group_members);
+
+    void removed_from_group(const int &groupID);
 
 public:
     static ClientManager *instance();
@@ -114,7 +118,8 @@ private:
         QuestionAnswer,
         GroupIsTyping,
         RemoveGroupMember,
-        NewGroupMember,
+        AddGroupMember,
+        RemovedFromGroup,
         Audio,
         GroupAudio,
         DeleteMessage,

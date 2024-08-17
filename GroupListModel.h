@@ -45,6 +45,7 @@ public:
 
     Q_INVOKABLE void add_group(const QString &group_name, const QList<ContactInfo *> members);
     Q_INVOKABLE void remove_group_member(const QList<ContactInfo *> members);
+    Q_INVOKABLE void add_group_member(const int &phone_number, const QList<ContactInfo *> members);
 
 private slots:
     void on_load_groups(QJsonArray json_array);
@@ -53,6 +54,8 @@ private slots:
     void on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
     void on_group_is_typing_received(const int &groupID, const int &sender_ID);
     void on_remove_group_member_received(const int &groupID, QJsonArray group_members);
+    void on_add_group_member_received(const int &groupID, QJsonArray new_group_members);
+    void on_removed_from_group(const int &groupID);
 
 private:
     QList<GroupInfo *> _groups;

@@ -112,13 +112,17 @@ void ClientManager::on_text_message_received(const QString &message)
     case RemoveGroupMember:
         emit remove_group_member_received(json_object["groupID"].toInt(), json_object["group_members"].toArray());
         break;
+    case AddGroupMember:
+        emit add_group_member_received(json_object["groupID"].toInt(), json_object["group_members"].toArray());
+        break;
+    case RemovedFromGroup:
+        emit removed_from_group(json_object["groupID"].toInt());
+        break;
     case DeleteMessage:
         break;
     case DeleteGroupMessage:
         break;
     case GroupAudio:
-        break;
-    case NewGroupMember:
         break;
     case DeleteAccount:
         break;
@@ -244,8 +248,6 @@ void ClientManager::send_text(const int &receiver, const QString &message, const
 
 void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time)
 {
-    qDebug() << "group text";
-
     QJsonObject json_object{{"type", "group_text"},
                             {"groupID", groupID},
                             {"message", message},
@@ -317,6 +319,15 @@ void ClientManager::remove_group_member(const int &groupID, QJsonArray group_mem
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::add_group_member(const int &groupID, QJsonArray group_members)
+{
+    QJsonObject json_object{{"type", "add_group_member"},
+                            {"groupID", groupID},
+                            {"group_members", group_members}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::get_user_time()
 {
 #ifdef __EMSCRIPTEN__
@@ -356,7 +367,8 @@ void ClientManager::map_initialization()
     _map["update_info"] = UpdateInfo;
     _map["question_answer"] = QuestionAnswer;
     _map["remove_group_member"] = RemoveGroupMember;
-    _map["new_group_member"] = NewGroupMember;
+    _map["add_group_member"] = AddGroupMember;
+    _map["removed_from_group"] = RemovedFromGroup;
     _map["audio"] = Audio;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;

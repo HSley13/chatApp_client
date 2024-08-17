@@ -19,6 +19,8 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::group_file_received, this, &GroupListModel::on_group_file_received);
     connect(_client_manager, &ClientManager::group_is_typing_received, this, &GroupListModel::on_group_is_typing_received);
     connect(_client_manager, &ClientManager::remove_group_member_received, this, &GroupListModel::on_remove_group_member_received);
+    connect(_client_manager, &ClientManager::add_group_member_received, this, &GroupListModel::on_add_group_member_received);
+    connect(_client_manager, &ClientManager::removed_from_group, this, &GroupListModel::on_removed_from_group);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -168,6 +170,18 @@ void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
     _client_manager->remove_group_member(_active_group_chat->group_ID(), json_array);
 }
 
+void GroupListModel::add_group_member(const int &phone_number, const QList<ContactInfo *> members)
+{
+    QJsonArray json_array;
+    for (ContactInfo *contact : members)
+        json_array.append(contact->phone_number());
+
+    if (phone_number)
+        json_array.append(phone_number);
+
+    _client_manager->add_group_member(_active_group_chat->group_ID(), json_array);
+}
+
 void GroupListModel::on_load_groups(QJsonArray json_array)
 {
     if (json_array.isEmpty())
@@ -179,7 +193,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         QJsonArray messages = groups["group_messages"].toArray();
 
         QList<ContactInfo *> group_members;
-        for (QJsonValue ID : members_ID)
+        for (const QJsonValue &ID : members_ID)
         {
             if (ContactListModel::main_user()->phone_number() == ID.toInt())
                 continue;
@@ -304,7 +318,7 @@ void GroupListModel::on_group_is_typing_received(const int &groupID, const int &
 
 void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonArray group_members)
 {
-    if (groupID <= 0 || group_members.isEmpty())
+    if (!groupID || group_members.isEmpty())
         return;
 
     QSet<int> members_to_remove;
@@ -332,7 +346,59 @@ void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonAr
             QModelIndex bottomRight = createIndex(group->group_members().size() - 1, 0);
             emit dataChanged(topLeft, bottomRight, {GroupMembersRole});
 
-            break;
+            return;
+        }
+    }
+}
+
+void GroupListModel::on_add_group_member_received(const int &groupID, QJsonArray new_group_members)
+{
+    if (!groupID || new_group_members.isEmpty())
+        return;
+
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            for (const QJsonValue &ID : new_group_members)
+            {
+                for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
+                {
+                    if (contact->phone_number() == ID.toInt())
+                    {
+                        group->add_group_members(contact);
+                        break;
+                    }
+                }
+            }
+
+            emit group->group_members_changed();
+            QModelIndex topLeft = createIndex(0, 0);
+            QModelIndex bottomRight = createIndex(group->group_members().size() - 1, 0);
+            emit dataChanged(topLeft, bottomRight, {GroupMembersRole});
+
+            return;
+        }
+    }
+}
+
+void GroupListModel::on_removed_from_group(const int &groupID)
+{
+    if (!groupID)
+        return;
+
+    for (int i{0}; i < _groups.count(); i++)
+    {
+        GroupInfo *group = _groups.at(i);
+        if (group->group_ID() == groupID)
+        {
+            beginRemoveRows(QModelIndex(), i, i);
+            _groups.removeAt(i);
+            endRemoveRows();
+
+            emit groups_changed();
+
+            return;
         }
     }
 }

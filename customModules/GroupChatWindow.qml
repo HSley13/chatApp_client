@@ -101,6 +101,17 @@ Item
         width: parent.width;
 
         GroupChatList { id: groupChatList; }
+
+        ListDialog
+        {
+            id: new_member_dialog;
+            input: true;
+            title: "Add New Member";
+            checkable: true;
+            placeHolder: "Via Phone Number";
+            model: contact_list_model.contact_proxy_list;
+            onDialogAccepted: group_list_model.add_group_member(inputField, selectedItems);
+        }
         
         anchors.top: chatHeader.bottom;
         anchors.bottom: chatBottom.top;
