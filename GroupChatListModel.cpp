@@ -30,6 +30,8 @@ QVariant GroupChatListModel::data(const QModelIndex &index, int role) const
         return group_message->time();
     case SenderNameRole:
         return group_message->sender_name();
+    case FullTimeRole:
+        return group_message->full_time();
     default:
         return QVariant();
     }
@@ -46,6 +48,7 @@ QHash<int, QByteArray> GroupChatListModel::roleNames() const
     roles[FileSourceRole] = "file_source";
     roles[TimeRole] = "time";
     roles[SenderNameRole] = "sender_name";
+    roles[FullTimeRole] = "full_time";
 
     return roles;
 }
@@ -70,4 +73,14 @@ GroupMessageInfo *GroupChatListModel::at(const int &index) const
         return nullptr;
 
     return _group_messages.at(index);
+}
+
+void GroupChatListModel::removeAt(const int &index)
+{
+    if (index < 0 || index >= _group_messages.count())
+        return;
+
+    beginRemoveRows(QModelIndex(), index, index);
+    _group_messages.removeAt(index);
+    endRemoveRows();
 }

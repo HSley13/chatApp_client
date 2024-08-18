@@ -8,7 +8,8 @@ MessageInfo::MessageInfo(const QString &text, const QString &audio_source, const
       _text(text),
       _audio_source(audio_source),
       _file_source(file_source),
-      _time(time),
+      _time(time.split(" ").last()),
+      _full_time(time),
       _sender_ID(sender_ID) {}
 
 const QString &MessageInfo::text()
@@ -34,4 +35,9 @@ const QString &MessageInfo::time()
 const int &MessageInfo::sender_ID()
 {
     return _sender_ID;
+}
+
+const QString &MessageInfo::full_time() const
+{
+    return _full_time;
 }

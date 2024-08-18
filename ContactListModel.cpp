@@ -33,6 +33,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
     connect(_client_manager, &ClientManager::status_message, this, &ContactListModel::on_status_message);
 
+    connect(_client_manager, &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
+
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
 
@@ -240,7 +242,7 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
         ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
 
         for (const QJsonValue &message : chat_messages)
-            contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last(), this));
+            contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
 
         beginInsertRows(QModelIndex(), _contacts.count(), _contacts.count());
         _contacts.append(contact);
@@ -337,11 +339,14 @@ void ContactListModel::lookup_friend(const int &phone_number)
 
 void ContactListModel::on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time)
 {
+    if (!chatID || !sender_ID || message.isEmpty())
+        return;
+
     for (ContactInfo *contact : _contacts)
     {
         if (contact->chat_ID() == chatID)
         {
-            contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
+            contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, _client_manager->UTC_to_timeZone(time), this));
             contact->set_last_message_time(QDateTime::currentDateTime());
 
             return;
@@ -358,7 +363,7 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
     {
         if (contact->chat_ID() == chatID)
         {
-            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
+            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time), this));
 
             contact->set_last_message_time(QDateTime::currentDateTime());
             QModelIndex top_left = index(0, 0);
@@ -427,4 +432,36 @@ void ContactListModel::on_status_message(const bool &true_or_false, const QStrin
 {
     _main_user->set_login_status(true_or_false);
     _main_user->set_popup_message(message);
+}
+
+void ContactListModel::on_delete_message_received(const int &chatID, const QString &full_time)
+{
+    if (!chatID)
+        return;
+
+    for (ContactInfo *contact : _contacts)
+    {
+        if (contact->chat_ID() == chatID)
+        {
+            for (int i{0}; i < contact->messages()->count(); i++)
+            {
+                MessageInfo *message = contact->messages()->at(i);
+                if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))
+                {
+                    delete message;
+                    contact->messages()->removeAt(i);
+
+                FIXME:
+                    // if (i == contact->messages()->count())
+                    // {
+                    // emit group_changed cause the list view for the last message read should be updated
+                    //     MessageInfo *last_message = contact->messages()->last();
+                    //     contact->set_last_message_time();
+                    // }
+
+                    return;
+                }
+            }
+        }
+    }
 }

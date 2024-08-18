@@ -7,7 +7,8 @@ GroupMessageInfo::GroupMessageInfo(const QString &text, const QString &audio_sou
       _text(text),
       _audio_source(audio_source),
       _file_source(file_source),
-      _time(time),
+      _time(time.split(" ").last()),
+      _full_time(time),
       _sender_ID(sender_ID),
       _sender_name(sender_name) {}
 
@@ -39,4 +40,9 @@ const int &GroupMessageInfo::sender_ID()
 const QString &GroupMessageInfo::sender_name()
 {
     return _sender_name;
+}
+
+const QString &GroupMessageInfo::full_time() const
+{
+    return _full_time;
 }

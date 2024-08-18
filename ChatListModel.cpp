@@ -28,6 +28,8 @@ QVariant ChatListModel::data(const QModelIndex &index, int role) const
         return message->file_source();
     case TimeRole:
         return message->time();
+    case FullTimeRole:
+        return message->full_time();
     default:
         return QVariant();
     }
@@ -43,6 +45,7 @@ QHash<int, QByteArray> ChatListModel::roleNames() const
     roles[AudioSourceRole] = "audio_source";
     roles[FileSourceRole] = "file_source";
     roles[TimeRole] = "time";
+    roles[FullTimeRole] = "full_time";
 
     return roles;
 }
@@ -67,4 +70,14 @@ MessageInfo *ChatListModel::at(const int &index) const
         return nullptr;
 
     return _messages.at(index);
+}
+
+void ChatListModel::removeAt(const int &index)
+{
+    if (index < 0 || index >= _messages.count())
+        return;
+
+    beginRemoveRows(QModelIndex(), index, index);
+    _messages.removeAt(index);
+    endRemoveRows();
 }

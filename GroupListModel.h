@@ -56,6 +56,7 @@ private slots:
     void on_remove_group_member_received(const int &groupID, QJsonArray group_members);
     void on_add_group_member_received(const int &groupID, QJsonArray new_group_members);
     void on_removed_from_group(const int &groupID);
+    void on_delete_group_message_received(const int &groupID, const QString &full_time);
 
 private:
     QList<GroupInfo *> _groups;

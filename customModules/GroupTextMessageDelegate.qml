@@ -59,6 +59,34 @@ Item
 
             width: bubble.width;
         }
+
+        MouseArea 
+        {
+            anchors.fill: parent;
+            acceptedButtons: Qt.LeftButton | Qt.RightButton;
+
+            onClicked: (mouse) => 
+            {
+                if (mouse.button === Qt.RightButton && sender)
+                    contextMenu.popup()
+            }
+
+            onPressAndHold: (mouse) => 
+            {
+                if (mouse.source === Qt.MouseEventNotSynthesized && sender)
+                    contextMenu.popup()
+            }
+
+            Menu 
+            {
+                id: contextMenu;
+                Action 
+                { 
+                    text: "Delete For all of us"; 
+                    onTriggered: client_manager.delete_group_message(group_list_model.active_group_chat.group_ID, model.full_time);
+                }
+            }
+        }
     }
 
     Text

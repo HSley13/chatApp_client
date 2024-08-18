@@ -25,6 +25,8 @@ public:
     const int &sender_ID();
     const QString &sender_name();
 
+    const QString &full_time() const;
+
 private:
     QString _text{};
     QString _audio_source{};
@@ -32,4 +34,6 @@ private:
     const QString _time{};
     const int _sender_ID{0};
     const QString _sender_name{};
+
+    QString _full_time{};
 };

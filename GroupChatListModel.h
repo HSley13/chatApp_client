@@ -17,7 +17,8 @@ public:
         AudioSourceRole,
         FileSourceRole,
         TimeRole,
-        SenderNameRole
+        SenderNameRole,
+        FullTimeRole
     };
 
     GroupChatListModel(QObject *parent = nullptr);
@@ -30,6 +31,7 @@ public:
 
     void append(GroupMessageInfo *group_message);
     Q_INVOKABLE GroupMessageInfo *at(const int &index) const;
+    void removeAt(const int &index);
 
 signals:
     void count_changed();

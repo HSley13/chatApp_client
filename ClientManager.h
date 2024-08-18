@@ -46,6 +46,9 @@ public:
 
     QString UTC_to_timeZone(const QString &UTC_time);
 
+    Q_INVOKABLE void delete_message(const int &phone_number, const int &chat_ID, const QString &full_time);
+    Q_INVOKABLE void delete_group_message(const int &groupID, const QString &full_time);
+
 public slots:
     void on_text_message_received(const QString &data);
     void on_disconnected();
@@ -84,6 +87,8 @@ signals:
     void add_group_member_received(const int &groupID, const QJsonArray new_group_members);
 
     void removed_from_group(const int &groupID);
+    void delete_message_received(const int &chatID, const QString &full_time);
+    void delete_group_message_received(const int &groupID, const QString &full_time);
 
 public:
     static ClientManager *instance();
@@ -117,10 +122,10 @@ private:
         RemoveGroupMember,
         AddGroupMember,
         RemovedFromGroup,
-        Audio,
-        GroupAudio,
         DeleteMessage,
         DeleteGroupMessage,
+        Audio,
+        GroupAudio,
         DeleteAccount,
         LastMessageRead,
         GroupLastMessageRead,

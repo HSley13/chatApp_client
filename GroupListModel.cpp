@@ -21,6 +21,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     connect(_client_manager, &ClientManager::remove_group_member_received, this, &GroupListModel::on_remove_group_member_received);
     connect(_client_manager, &ClientManager::add_group_member_received, this, &GroupListModel::on_add_group_member_received);
     connect(_client_manager, &ClientManager::removed_from_group, this, &GroupListModel::on_removed_from_group);
+    connect(_client_manager, &ClientManager::delete_group_message_received, this, &GroupListModel::on_delete_group_message_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -223,7 +224,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         if (!messages.isEmpty())
         {
             for (const QJsonValue &message : messages)
-                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last(), this));
+                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
         }
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
@@ -265,7 +266,7 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
     {
         if (group->group_ID() == groupID)
         {
-            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
+            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_last_message_time(QDateTime::currentDateTime());
             QModelIndex top_left = index(0, 0);
             QModelIndex bottom_right = index(_groups.size() - 1, 0);
@@ -285,7 +286,7 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
     {
         if (group->group_ID() == groupID)
         {
-            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
+            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_last_message_time(QDateTime::currentDateTime());
             QModelIndex top_left = index(0, 0);
             QModelIndex bottom_right = index(_groups.size() - 1, 0);
@@ -350,7 +351,10 @@ void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonAr
             {
                 ContactInfo *contact = group->group_members().at(i);
                 if (members_to_remove.contains(contact->phone_number()))
+                {
+                    delete contact;
                     group->group_members().removeAt(i);
+                }
                 else
                     i++;
             }
@@ -413,6 +417,38 @@ void GroupListModel::on_removed_from_group(const int &groupID)
             emit groups_changed();
 
             return;
+        }
+    }
+}
+
+void GroupListModel::on_delete_group_message_received(const int &groupID, const QString &full_time)
+{
+    if (!groupID)
+        return;
+
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            for (int i{0}; i < group->group_messages()->count(); i++)
+            {
+                GroupMessageInfo *message = group->group_messages()->at(i);
+                if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))
+                {
+                    delete message;
+                    group->group_messages()->removeAt(i);
+
+                FIXME:
+                    // if (i == group->group_messages()->count())
+                    // {
+                    // emit group_changed cause the list view for the last message read should be updated
+                    //     GroupMessageInfo *last_message = group->group_messages()->last();
+                    //     group->set_last_message_time();
+                    // }
+
+                    return;
+                }
+            }
         }
     }
 }

@@ -119,8 +119,10 @@ void ClientManager::on_text_message_received(const QString &message)
         emit removed_from_group(json_object["groupID"].toInt());
         break;
     case DeleteMessage:
+        emit delete_message_received(json_object["chatID"].toInt(), json_object["full_time"].toString());
         break;
     case DeleteGroupMessage:
+        emit delete_group_message_received(json_object["groupID"].toInt(), json_object["full_time"].toString());
         break;
     case GroupAudio:
         break;
@@ -141,6 +143,7 @@ void ClientManager::on_disconnected()
     emit disconnected();
     qDebug() << "Disconnected Signal emitted";
 }
+
 /*-------------------------------------------------------------------- Functions --------------------------------------------------------------*/
 
 void ClientManager::sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
@@ -168,10 +171,6 @@ void ClientManager::login_request(const int &phone_number, const QString &passwo
 
 void ClientManager::lookup_friend(const int &phone_number)
 {
-    qDebug() << "Lookup Friend: " << phone_number;
-
-    return;
-
     QJsonObject json_object{{"type", "lookup_friend"},
                             {"phone_number", phone_number}};
 
@@ -328,6 +327,33 @@ void ClientManager::add_group_member(const int &groupID, QJsonArray group_member
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::delete_message(const int &phone_number, const int &chat_ID, const QString &full_time)
+{
+    const QString &UTC_time = QDateTime::fromString(full_time, "yyyy-MM-dd HH:mm:ss")
+                                  .toUTC()
+                                  .toString();
+
+    QJsonObject json_object{{"type", "delete_message"},
+                            {"receiver", phone_number},
+                            {"chatID", chat_ID},
+                            {"full_time", UTC_time}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::delete_group_message(const int &groupID, const QString &full_time)
+{
+    const QString &UTC_time = QDateTime::fromString(full_time, "yyyy-MM-dd HH:mm:ss")
+                                  .toUTC()
+                                  .toString();
+
+    QJsonObject json_object{{"type", "delete_group_message"},
+                            {"groupID", groupID},
+                            {"full_time", UTC_time}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::get_user_time()
 {
 #ifdef __EMSCRIPTEN__
@@ -369,9 +395,9 @@ void ClientManager::map_initialization()
     _map["remove_group_member"] = RemoveGroupMember;
     _map["add_group_member"] = AddGroupMember;
     _map["removed_from_group"] = RemovedFromGroup;
-    _map["audio"] = Audio;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
+    _map["audio"] = Audio;
     _map["group_audio"] = GroupAudio;
     _map["delete_account"] = DeleteAccount;
     _map["last_message_read"] = LastMessageRead;

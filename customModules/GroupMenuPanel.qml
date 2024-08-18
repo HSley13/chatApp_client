@@ -99,7 +99,6 @@ Rectangle
                 CheckBox
                 {
                     id: checkBox;
-                    visible: root.checkable;
                     checked: false;
 
                     onCheckedChanged: (checked) ? root.selectedItems.push(modelData) : root.selectedItems.splice(root.selectedItems.indexOf(modelData), 1);

@@ -22,6 +22,7 @@ public:
     const QString &file_source();
     const QString &time();
     const int &sender_ID();
+    const QString &full_time() const;
 
 private:
     QString _text{};
@@ -29,4 +30,6 @@ private:
     QString _file_source{};
     QString _time{};
     int _sender_ID{};
+
+    QString _full_time{};
 };

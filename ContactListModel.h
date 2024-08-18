@@ -62,6 +62,8 @@ private slots:
 
     void on_status_message(const bool &true_or_false, const QString &message);
 
+    void on_delete_message_received(const int &chatID, const QString &full_time);
+
 signals:
     void contacts_changed();
     void active_chat_changed();

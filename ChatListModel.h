@@ -19,6 +19,7 @@ public:
         PhoneNumberRole,
         ContentRole,
         TimeRole,
+        FullTimeRole,
     };
 
     ChatListModel(QObject *parent = nullptr);
@@ -31,6 +32,7 @@ public:
 
     void append(MessageInfo *message);
     Q_INVOKABLE MessageInfo *at(const int &index) const;
+    void removeAt(const int &index);
 
 signals:
     void count_changed();
