@@ -53,7 +53,7 @@ Rectangle
             client_manager.send_is_typing(contact_list_model.active_chat.phone_number);
 
             if(group_list_model.active_group_chat !== null)
-            client_manager.send_group_is_typing(group_list_model.active_group_chat.group_ID);
+            client_manager.send_group_is_typing(group_list_model.active_group_chat.group_ID, contact_list_model.main_user.first_name);
         }
 
         onAccepted:

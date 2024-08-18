@@ -39,7 +39,7 @@ public:
     void send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data);
     void send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data);
     Q_INVOKABLE void send_is_typing(const int &phone_number);
-    Q_INVOKABLE void send_group_is_typing(const int &groupID);
+    Q_INVOKABLE void send_group_is_typing(const int &groupID, const QString &sender_name);
 
     void remove_group_member(const int &groupID, QJsonArray group_members);
     void add_group_member(const int &groupID, QJsonArray group_members);
@@ -48,6 +48,8 @@ public:
 
     Q_INVOKABLE void delete_message(const int &phone_number, const int &chat_ID, const QString &full_time);
     Q_INVOKABLE void delete_group_message(const int &groupID, const QString &full_time);
+
+    void update_unread_message(const int &chatID);
 
 public slots:
     void on_text_message_received(const QString &data);
@@ -75,7 +77,7 @@ signals:
     void group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
 
     void is_typing_received(const int &sender_ID);
-    void group_is_typing_received(const int &groupID, const int &sender_ID);
+    void group_is_typing_received(const int &groupID, const QString &sender_name);
 
     void update_client_info(const int &phone_number, const QString &first_name, const QString &last_name);
     void disconnected();
@@ -124,11 +126,11 @@ private:
         RemovedFromGroup,
         DeleteMessage,
         DeleteGroupMessage,
+        UpdateUnreadMessage,
+        UpdateGroupUnreadMessage,
         Audio,
         GroupAudio,
         DeleteAccount,
-        LastMessageRead,
-        GroupLastMessageRead,
         InvalidType
     };
     static QHash<QString, MessageType> _map;

@@ -101,7 +101,7 @@ void ClientManager::on_text_message_received(const QString &message)
         emit is_typing_received(json_object["sender_ID"].toInt());
         break;
     case GroupIsTyping:
-        emit group_is_typing_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt());
+        emit group_is_typing_received(json_object["groupID"].toInt(), json_object["sender_name"].toString());
         break;
     case UpdateInfo:
         emit update_client_info(json_object["phone_number"].toInt(), json_object["first_name"].toString(), json_object["last_name"].toString());
@@ -124,13 +124,15 @@ void ClientManager::on_text_message_received(const QString &message)
     case DeleteGroupMessage:
         emit delete_group_message_received(json_object["groupID"].toInt(), json_object["full_time"].toString());
         break;
-    case GroupAudio:
+    case UpdateUnreadMessage:
+        break;
+    case UpdateGroupUnreadMessage:
         break;
     case DeleteAccount:
         break;
-    case LastMessageRead:
+    case Audio:
         break;
-    case GroupLastMessageRead:
+    case GroupAudio:
         break;
     default:
         qWarning() << "Unknown message type: " << json_object["type"].toString();
@@ -301,10 +303,11 @@ void ClientManager::send_is_typing(const int &phone_number)
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_is_typing(const int &groupID)
+void ClientManager::send_group_is_typing(const int &groupID, const QString &sender_name)
 {
     QJsonObject json_object{{"type", "group_is_typing"},
-                            {"groupID", groupID}};
+                            {"groupID", groupID},
+                            {"sender_name", sender_name}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -354,6 +357,14 @@ void ClientManager::delete_group_message(const int &groupID, const QString &full
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::update_unread_message(const int &chatID)
+{
+    QJsonObject json_object{{"type", "update_unread_message"},
+                            {"chatID", chatID}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::get_user_time()
 {
 #ifdef __EMSCRIPTEN__
@@ -397,11 +408,11 @@ void ClientManager::map_initialization()
     _map["removed_from_group"] = RemovedFromGroup;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
+    _map["update_unread_message"] = UpdateUnreadMessage;
+    _map["update_group_unread_message"] = UpdateGroupUnreadMessage;
+    _map["delete_account"] = DeleteAccount;
     _map["audio"] = Audio;
     _map["group_audio"] = GroupAudio;
-    _map["delete_account"] = DeleteAccount;
-    _map["last_message_read"] = LastMessageRead;
-    _map["group_last_message_read"] = GroupLastMessageRead;
     _map["invalid_type"] = InvalidType;
 }
 

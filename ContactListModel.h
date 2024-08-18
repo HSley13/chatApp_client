@@ -37,6 +37,8 @@ public:
 
     Q_INVOKABLE void lookup_friend(const int &phone_number);
 
+    Q_INVOKABLE void update_unread_message(int chatID);
+
     ClientManager *_client_manager{nullptr};
 
     static QList<ContactInfo *> *_contacts_ptr;

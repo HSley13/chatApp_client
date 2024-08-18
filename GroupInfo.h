@@ -2,7 +2,6 @@
 
 #include "GroupChatListModel.h"
 #include "ContactInfo.h"
-#include <QList>
 class GroupInfo : public QObject
 {
     Q_OBJECT

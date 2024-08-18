@@ -129,6 +129,8 @@ void ContactInfo::set_unread_message(const int &new_unread_message)
 
     _unread_message = new_unread_message;
 
+    qDebug() << "Setting Unread Message";
+
     emit unread_message_changed();
 }
 

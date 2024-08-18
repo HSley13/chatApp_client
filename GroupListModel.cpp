@@ -297,9 +297,9 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
     }
 }
 
-void GroupListModel::on_group_is_typing_received(const int &groupID, const int &sender_ID)
+void GroupListModel::on_group_is_typing_received(const int &groupID, const QString &sender_name)
 {
-    if (!groupID || !sender_ID)
+    if (!groupID || sender_name.isEmpty())
         return;
 
     for (size_t i{0}; i < _groups.size(); i++)
@@ -307,17 +307,6 @@ void GroupListModel::on_group_is_typing_received(const int &groupID, const int &
         GroupInfo *group = _groups[i];
         if (group->group_ID() == groupID)
         {
-            QString sender_name{QString::number(sender_ID)};
-
-            for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
-            {
-                if (contact->phone_number() == sender_ID)
-                {
-                    sender_name = contact->first_name();
-                    break;
-                }
-            }
-
             group->set_group_is_typing(QString("%1 %2").arg(sender_name, "is typing..."));
             QModelIndex index = createIndex(i, 0);
             emit dataChanged(index, index, {GroupIsTypingRole});
@@ -347,7 +336,7 @@ void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonAr
     {
         if (group->group_ID() == groupID)
         {
-            for (int i{0}; i < group->group_members().size();)
+            for (size_t i{0}; i < group->group_members().size();)
             {
                 ContactInfo *contact = group->group_members().at(i);
                 if (members_to_remove.contains(contact->phone_number()))
@@ -405,7 +394,7 @@ void GroupListModel::on_removed_from_group(const int &groupID)
     if (!groupID)
         return;
 
-    for (int i{0}; i < _groups.count(); i++)
+    for (size_t i{0}; i < _groups.count(); i++)
     {
         GroupInfo *group = _groups.at(i);
         if (group->group_ID() == groupID)
@@ -430,7 +419,7 @@ void GroupListModel::on_delete_group_message_received(const int &groupID, const 
     {
         if (group->group_ID() == groupID)
         {
-            for (int i{0}; i < group->group_messages()->count(); i++)
+            for (size_t i{0}; i < group->group_messages()->count(); i++)
             {
                 GroupMessageInfo *message = group->group_messages()->at(i);
                 if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))

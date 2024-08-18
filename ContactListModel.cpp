@@ -239,7 +239,7 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
         QJsonObject contact_info = obj["contactInfo"].toObject();
         QJsonArray chat_messages = obj["chatMessages"].toArray();
 
-        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
+        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), obj["unread_count"].toInt(), this);
 
         for (const QJsonValue &message : chat_messages)
             contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
@@ -342,12 +342,25 @@ void ContactListModel::on_text_received(const int &chatID, const int &sender_ID,
     if (!chatID || !sender_ID || message.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
+    for (size_t i{0}; i < _contacts.size(); i++)
     {
+        ContactInfo *contact = _contacts[i];
         if (contact->chat_ID() == chatID)
         {
             contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, _client_manager->UTC_to_timeZone(time), this));
             contact->set_last_message_time(QDateTime::currentDateTime());
+
+            if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
+                contact->set_unread_message(contact->unread_message() + 1);
+            else
+            {
+                contact->set_unread_message(0);
+                _client_manager->update_unread_message(chatID);
+            }
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {LastMessageTimeRole});
+            emit dataChanged(index, index, {UnreadMessageRole});
 
             return;
         }
@@ -359,16 +372,25 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
     if (!chatID || !sender_ID || file_url.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
+    for (size_t i{0}; i < _contacts.size(); i++)
     {
+        ContactInfo *contact = _contacts[i];
         if (contact->chat_ID() == chatID)
         {
             contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time), this));
-
             contact->set_last_message_time(QDateTime::currentDateTime());
-            QModelIndex top_left = index(0, 0);
-            QModelIndex bottom_right = index(_contacts.size() - 1, 0);
-            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
+
+            if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
+                contact->set_unread_message(contact->unread_message() + 1);
+            else
+            {
+                contact->set_unread_message(0);
+                _client_manager->update_unread_message(chatID);
+            }
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {LastMessageTimeRole});
+            emit dataChanged(index, index, {UnreadMessageRole});
 
             return;
         }
@@ -443,7 +465,7 @@ void ContactListModel::on_delete_message_received(const int &chatID, const QStri
     {
         if (contact->chat_ID() == chatID)
         {
-            for (int i{0}; i < contact->messages()->count(); i++)
+            for (size_t i{0}; i < contact->messages()->count(); i++)
             {
                 MessageInfo *message = contact->messages()->at(i);
                 if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))
@@ -462,6 +484,25 @@ void ContactListModel::on_delete_message_received(const int &chatID, const QStri
                     return;
                 }
             }
+        }
+    }
+}
+
+void ContactListModel::update_unread_message(int chatID)
+{
+    _client_manager->update_unread_message(chatID);
+
+    for (size_t i{0}; i < _contacts.size(); i++)
+    {
+        if (_contacts[i]->chat_ID() == chatID)
+        {
+            _contacts[i]->set_unread_message(0);
+
+            QModelIndex top_left = index(i, 0);
+            QModelIndex bottom_right = index(i, 0);
+            emit dataChanged(top_left, bottom_right, {UnreadMessageRole});
+
+            return;
         }
     }
 }

@@ -52,7 +52,7 @@ private slots:
     void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
     void on_group_profile_image(const int &group_ID, const QString &group_image_url);
     void on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time);
-    void on_group_is_typing_received(const int &groupID, const int &sender_ID);
+    void on_group_is_typing_received(const int &groupID, const QString &sender_name);
     void on_remove_group_member_received(const int &groupID, QJsonArray group_members);
     void on_add_group_member_received(const int &groupID, QJsonArray new_group_members);
     void on_removed_from_group(const int &groupID);
