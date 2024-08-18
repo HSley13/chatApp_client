@@ -3,9 +3,10 @@
 #include <QMediaRecorder>
 #include <QAudioInput>
 #include <QMediaCaptureSession>
+#include <QFileDialog>
+
 #include "ClientManager.h"
-#include "GroupListModel.h"
-#include "ContactListModel.h"
+
 class MediaController : public QObject
 {
     Q_OBJECT
@@ -36,15 +37,6 @@ public slots:
 
 private slots:
     void on_duration_changed(qint64 duration);
-
-public:
-    static QString _file_path;
-    static QString _file_name;
-    static QByteArray _file_data;
-
-    static QString _audio_path;
-    static QString _audio_name;
-    static QByteArray _audio_data;
 
 private:
     QString _time_display{"00:00"};

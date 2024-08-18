@@ -1,18 +1,6 @@
 #include "MediaController.h"
-#include <QDebug>
-#include <QDateTime>
-#include <QTime>
-#include <QFileDialog>
-#include "ClientManager.h"
-
-QString MediaController::_file_path;
-QString MediaController::_audio_path;
-
-QString MediaController::_file_name;
-QString MediaController::_audio_name;
-
-QByteArray MediaController::_audio_data;
-QByteArray MediaController::_file_data;
+#include "GroupListModel.h"
+#include "ContactListModel.h"
 
 MediaController::MediaController(QObject *parent)
     : QObject(parent),
@@ -126,13 +114,6 @@ void MediaController::send_file(const int &value)
     {
         if (!file_name.isEmpty())
         {
-            QString current_time = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-
-            // FIXME:
-            // const QString &UTC_time = QDateTime::fromString(current_time, "yyyy-MM-dd HH:mm:ss")
-            //                               .toUTC()
-            //                               .toString();
-
             switch (value)
             {
             case 1:
@@ -142,10 +123,10 @@ void MediaController::send_file(const int &value)
                 _client_manager->update_group_profile(GroupListModel::active_group_chat()->group_ID(), QFileInfo(file_name).fileName(), file_data);
                 break;
             case 3:
-                _client_manager->send_file(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("hh:mm ap"));
+                _client_manager->send_file(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QFileInfo(file_name).fileName(), file_data);
                 break;
             case 4:
-                _client_manager->send_group_file(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), QFileInfo(file_name).fileName(), file_data, QTime::currentTime().toString("hh:mm ap"));
+                _client_manager->send_group_file(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), QFileInfo(file_name).fileName(), file_data);
                 break;
             default:
                 break;

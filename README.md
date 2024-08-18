@@ -48,7 +48,6 @@
 ## ScreenShots (Previews)
 Login window (Default) ![](preview_images/1.png)
 Sign Up Widget ![](preview_images/5.png)
-Password Recovery Authentication ![](preview_images/3.png)
 Password Forgotten default ![](preview_images/2.png)
 Password Forgotten (secret question --> *Hello* in this case) ![](preview_images/3.png)
 Password Forgotten (New Password) ![](preview_images/4.png)

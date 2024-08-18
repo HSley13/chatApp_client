@@ -35,8 +35,3 @@ const int &MessageInfo::sender_ID()
 {
     return _sender_ID;
 }
-
-const QDateTime MessageInfo::date_time() const
-{
-    return QDateTime::fromString(_time, Qt::ISODate);
-}

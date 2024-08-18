@@ -235,29 +235,29 @@ void ClientManager::update_group_profile(const int &group_ID, const QString &fil
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID)
+void ClientManager::send_text(const int &receiver, const QString &message, const int &chat_ID)
 {
     QJsonObject json_object{{"type", "text"},
                             {"receiver", receiver},
                             {"message", message},
-                            {"time", time},
+                            {"time", QDateTime::currentDateTimeUtc().toString()},
                             {"chatID", chat_ID}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time)
+void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message)
 {
     QJsonObject json_object{{"type", "group_text"},
                             {"groupID", groupID},
                             {"message", message},
                             {"sender_name", sender_name},
-                            {"time", time}};
+                            {"time", QDateTime::currentDateTimeUtc().toString()}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data, const QString &time)
+void ClientManager::send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data)
 {
     QString data = QString::fromUtf8(file_data.toBase64());
 
@@ -266,12 +266,12 @@ void ClientManager::send_file(const int &chatID, const int &receiver, const QStr
                             {"receiver", receiver},
                             {"file_name", file_name},
                             {"file_data", data},
-                            {"time", time}};
+                            {"time", QDateTime::currentDateTimeUtc().toString()}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data, const QString &time)
+void ClientManager::send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data)
 {
     QString data = QString::fromUtf8(file_data.toBase64());
 
@@ -280,7 +280,7 @@ void ClientManager::send_group_file(const int &groupID, const QString &sender_na
                             {"sender_name", sender_name},
                             {"file_name", file_name},
                             {"file_data", data},
-                            {"time", time}};
+                            {"time", QDateTime::currentDateTimeUtc().toString()}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
@@ -377,4 +377,53 @@ void ClientManager::map_initialization()
     _map["last_message_read"] = LastMessageRead;
     _map["group_last_message_read"] = GroupLastMessageRead;
     _map["invalid_type"] = InvalidType;
+}
+
+QString ClientManager::UTC_to_timeZone(const QString &UTC_time)
+{
+    QDateTime UTC_dateTime = QDateTime::fromString(UTC_time);
+    if (!UTC_dateTime.isValid())
+    {
+        qDebug() << "Invalid UTC time format:" << UTC_time;
+        return QString();
+    }
+
+#ifdef __EMSCRIPTEN__
+    QString utcDateString = UTC_dateTime.toUTC().toString(Qt::ISODate);
+
+    const char *localTime = (char *)EM_ASM_PTR(
+        {
+            var date = new Date(UTF8ToString($0));
+
+            var localDateStr = date.toLocaleString('en-GB', {
+                                       year : 'numeric',
+                                       month : '2-digit',
+                                       day : '2-digit',
+                                       hour : '2-digit',
+                                       minute : '2-digit',
+                                       second : '2-digit',
+                                       hour12 : false
+                                   })
+                                   .replace(',', "");
+
+            var ptr = stackAlloc(lengthBytesUTF8(localDateStr) + 1);
+            stringToUTF8(localDateStr, ptr, lengthBytesUTF8(localDateStr) + 1);
+
+            return ptr;
+        },
+        utcDateString.toStdString().c_str());
+
+    return QString::fromUtf8(localTime);
+#else
+    QTimeZone targetTimeZone(_time_zone.toUtf8());
+    if (!targetTimeZone.isValid())
+    {
+        qDebug() << "Invalid time zone ID:" << _time_zone;
+        return QString();
+    }
+
+    QDateTime localDateTime = UTC_dateTime.toTimeZone(targetTimeZone);
+
+    return localDateTime.toString("yyyy-MM-dd HH:mm:ss");
+#endif
 }

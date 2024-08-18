@@ -220,12 +220,10 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
 
         GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_admin"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["unread_messages"].toInt(), this);
 
-        // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
-
         if (!messages.isEmpty())
         {
             for (const QJsonValue &message : messages)
-                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), message["time"].toString(), this));
+                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last(), this));
         }
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
@@ -267,7 +265,7 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
     {
         if (group->group_ID() == groupID)
         {
-            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, time, this));
+            group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
             group->set_last_message_time(QDateTime::currentDateTime());
             QModelIndex top_left = index(0, 0);
             QModelIndex bottom_right = index(_groups.size() - 1, 0);
@@ -287,7 +285,7 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
     {
         if (group->group_ID() == groupID)
         {
-            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, time, this));
+            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
             group->set_last_message_time(QDateTime::currentDateTime());
             QModelIndex top_left = index(0, 0);
             QModelIndex bottom_right = index(_groups.size() - 1, 0);

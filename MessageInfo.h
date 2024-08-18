@@ -23,10 +23,6 @@ public:
     const QString &time();
     const int &sender_ID();
 
-    const QDateTime date_time() const;
-
-    void hello();
-
 private:
     QString _text{};
     QString _audio_source{};

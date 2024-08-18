@@ -239,9 +239,8 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
 
         ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), 1, this);
 
-        // FIXME: messageObj["timestamp"].toString()  --> add the real timestamp
         for (const QJsonValue &message : chat_messages)
-            contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), QTime::currentTime().toString("HH:mm"), this));
+            contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last(), this));
 
         beginInsertRows(QModelIndex(), _contacts.count(), _contacts.count());
         _contacts.append(contact);
@@ -342,7 +341,7 @@ void ContactListModel::on_text_received(const int &chatID, const int &sender_ID,
     {
         if (contact->chat_ID() == chatID)
         {
-            contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, time, this));
+            contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
             contact->set_last_message_time(QDateTime::currentDateTime());
 
             return;
@@ -359,7 +358,7 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
     {
         if (contact->chat_ID() == chatID)
         {
-            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, time, this));
+            contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time).split(" ").last(), this));
 
             contact->set_last_message_time(QDateTime::currentDateTime());
             QModelIndex top_left = index(0, 0);

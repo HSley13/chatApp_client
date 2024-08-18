@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ChatListModel.h"
-
 class ContactInfo : public QObject
 {
     Q_OBJECT

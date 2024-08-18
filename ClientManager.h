@@ -1,12 +1,7 @@
 #pragma once
 
 #include <QtQuick>
-#include <QTimeZone>
 #include <QWebSocket>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QFile>
-#include <QDebug>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -38,16 +33,18 @@ public:
 
     void update_profile(const QString &file_name, const QByteArray &file_data);
     void update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data);
-    Q_INVOKABLE void send_text(const int &receiver, const QString &message, const QString &time, const int &chat_ID);
+    Q_INVOKABLE void send_text(const int &receiver, const QString &message, const int &chat_ID);
     void new_group(const QString &group_name, QJsonArray group_members);
-    Q_INVOKABLE void send_group_text(const int &groupID, QString sender_name, const QString &message, const QString &time);
-    void send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data, const QString &time);
-    void send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data, const QString &time);
+    Q_INVOKABLE void send_group_text(const int &groupID, QString sender_name, const QString &message);
+    void send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data);
+    void send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data);
     Q_INVOKABLE void send_is_typing(const int &phone_number);
     Q_INVOKABLE void send_group_is_typing(const int &groupID);
 
     void remove_group_member(const int &groupID, QJsonArray group_members);
     void add_group_member(const int &groupID, QJsonArray group_members);
+
+    QString UTC_to_timeZone(const QString &UTC_time);
 
 public slots:
     void on_text_message_received(const QString &data);
