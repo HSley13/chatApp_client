@@ -45,6 +45,7 @@ void ClientManager::on_text_message_received(const QString &message)
     {
     case SignUp:
         emit status_message(json_object["status"].toBool(), json_object["message"].toString());
+        _socket->close();
         break;
     case LoginRequest:
     {
@@ -363,6 +364,13 @@ void ClientManager::update_group_unread_message(const int &groupID)
 {
     QJsonObject json_object{{"type", "update_group_unread_message"},
                             {"groupID", groupID}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::delete_account()
+{
+    QJsonObject json_object{{"type", "delete_account"}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }

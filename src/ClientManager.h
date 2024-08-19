@@ -50,6 +50,8 @@ public:
     void update_unread_message(const int &chatID);
     void update_group_unread_message(const int &groupID);
 
+    Q_INVOKABLE void delete_account();
+
 public slots:
     void on_text_message_received(const QString &data);
     void on_disconnected();

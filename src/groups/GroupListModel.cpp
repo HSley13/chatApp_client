@@ -342,10 +342,7 @@ void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonAr
             {
                 ContactInfo *contact = group->group_members().at(i);
                 if (members_to_remove.contains(contact->phone_number()))
-                {
-                    delete contact;
                     group->group_members().removeAt(i);
-                }
                 else
                     i++;
             }

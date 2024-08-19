@@ -6,6 +6,7 @@ import Qt5Compat.GraphicalEffects;
 Item
 {
     anchors.fill: parent;
+    property int clickCount: 0;
 
     RowLayout
     {
@@ -167,6 +168,7 @@ Item
                     {
                         text: "Delete";
                         color: "white";
+                        borderColor: "red";
                         Layout.fillWidth: true;
 
                         onClicked:
@@ -414,9 +416,123 @@ Item
 
     RowLayout
     {
-        id: logoutRow;
+        id: deleteAccountRow;
         spacing: 10;
         anchors.top: savingRow.bottom;
+        anchors.left: parent.left;
+        anchors.leftMargin: 20;
+        anchors.topMargin: 20;
+        anchors.bottomMargin: 100;
+        Layout.fillWidth: true;
+        height: 100;
+
+        RoundedImage
+        {
+            id: deleteAccountImage;
+            imageSource: "qrc:/QML/ClientApp/icons/delete_account.png";
+            width: 40;
+            height: 40;
+            visible: clickCount === 0;
+        }
+
+        RoundedButton
+        {
+            id: deleteAccount;
+            text: "Delete Account";
+            color: "white";
+            borderColor: "red";
+            Layout.fillWidth: true;
+            height: 40;
+            visible: clickCount === 0;
+
+            onClicked:
+            {
+                if (clickCount === 0)
+                {
+                    client_manager.retrieve_question(contact_list_model.main_user.phone_number);
+                    clickCount = 1;
+                }
+            }
+        }
+
+        ColumnLayout
+        {
+            visible: clickCount === 1;
+            spacing: 5;
+            width: 200;
+            
+            Text
+            {
+                id: secretQuestion;
+                text: contact_list_model.main_user.secret_question;
+                font.pixelSize: 14;
+            }
+
+            InputField
+            {
+                id: answer;
+                image1Source: "qrc:/QML/ClientApp/icons/answer_icon.png";
+
+                echoMode: TextInput.Normal;
+                placeHolder: "Answer";
+                width: parent.width;
+                height: 40;
+            }
+
+            RoundedButton
+            {
+                id: confirmDeletion;
+                text: "Confirm";
+                color: "white";
+                borderColor: "red";
+                height: 40;
+                width: 40;
+                Layout.alignment: Qt.AlignRight;
+
+                onClicked:
+                {
+                    if (clickCount === 1)
+                    {
+                        if (answer.inputField === contact_list_model.main_user.secret_answer)
+                        {
+                            client_manager.delete_account();
+                            stackView.replace(loginWindow, StackView.PopTransition);
+                            client_manager.disconnect();
+                        }
+                        else
+                            answer.borderColor =  "red";
+                    }
+                }
+            }
+        }
+    }
+
+    Rectangle
+    {
+        width: parent.width;
+        height: 1;
+        color: "lightgray";
+        anchors.top: deleteAccountRow.bottom;
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.margins: 10;
+
+        DropShadow
+        {
+            anchors.fill: parent;
+            color: "gray";
+            radius: 2;
+            samples: 16;
+            horizontalOffset: 0;
+            verticalOffset: 1;
+        }
+    }
+
+    RowLayout
+    {
+        id: logoutRow;
+        spacing: 10;
+        anchors.top: deleteAccountRow.bottom;
         anchors.topMargin: 50;
         anchors.horizontalCenter: parent.horizontalCenter;
         Layout.fillWidth: true;
