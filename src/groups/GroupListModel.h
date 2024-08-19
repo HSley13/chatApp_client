@@ -30,7 +30,6 @@ public:
     ~GroupListModel();
 
     const QList<GroupInfo *> &groups() const;
-    void set_groups(const QList<GroupInfo *> &new_groups);
 
     ContactInfo *main_user() const;
     GroupProxyList *group_proxy_list() const;
@@ -65,7 +64,7 @@ private:
     static GroupInfo *_active_group_chat;
 
     GroupProxyList *_group_proxy_list{nullptr};
-    ClientManager *_client_manager{nullptr};
+    std::shared_ptr<ClientManager> _client_manager{nullptr};
 
 signals:
     void groups_changed();

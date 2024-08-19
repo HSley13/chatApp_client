@@ -12,14 +12,13 @@ class ContactListModel : public QAbstractListModel
     Q_PROPERTY(ContactInfo *main_user READ main_user NOTIFY main_user_changed)
     Q_PROPERTY(ContactProxyList *contact_proxy_list_chat READ contact_proxy_list_chat NOTIFY contact_proxy_list_chat_changed)
     Q_PROPERTY(ContactProxyList *contact_proxy_list READ contact_proxy_list NOTIFY contact_proxy_list_changed)
-    Q_PROPERTY(QList<ContactInfo *> contacts READ contacts WRITE set_contacts NOTIFY contacts_changed)
+    Q_PROPERTY(QList<ContactInfo *> contacts READ contacts NOTIFY contacts_changed)
 
 public:
     ContactListModel(QAbstractListModel *parent = nullptr);
     ~ContactListModel();
 
     const QList<ContactInfo *> &contacts() const;
-    void set_contacts(const QList<ContactInfo *> &new_contacts);
 
     static ContactInfo *active_chat();
     void set_active_chat(ContactInfo *new_chat);
@@ -39,7 +38,7 @@ public:
 
     Q_INVOKABLE void update_unread_message(int chatID);
 
-    ClientManager *_client_manager{nullptr};
+    std::shared_ptr<ClientManager> _client_manager{nullptr};
 
     static QList<ContactInfo *> *_contacts_ptr;
 

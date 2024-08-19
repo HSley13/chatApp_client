@@ -13,15 +13,15 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
 
-    connect(_client_manager, &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
-    connect(_client_manager, &ClientManager::group_text_received, this, &GroupListModel::on_group_text_received);
-    connect(_client_manager, &ClientManager::group_profile_image, this, &GroupListModel::on_group_profile_image);
-    connect(_client_manager, &ClientManager::group_file_received, this, &GroupListModel::on_group_file_received);
-    connect(_client_manager, &ClientManager::group_is_typing_received, this, &GroupListModel::on_group_is_typing_received);
-    connect(_client_manager, &ClientManager::remove_group_member_received, this, &GroupListModel::on_remove_group_member_received);
-    connect(_client_manager, &ClientManager::add_group_member_received, this, &GroupListModel::on_add_group_member_received);
-    connect(_client_manager, &ClientManager::removed_from_group, this, &GroupListModel::on_removed_from_group);
-    connect(_client_manager, &ClientManager::delete_group_message_received, this, &GroupListModel::on_delete_group_message_received);
+    connect(_client_manager.get(), &ClientManager::load_groups, this, &GroupListModel::on_load_groups);
+    connect(_client_manager.get(), &ClientManager::group_text_received, this, &GroupListModel::on_group_text_received);
+    connect(_client_manager.get(), &ClientManager::group_profile_image, this, &GroupListModel::on_group_profile_image);
+    connect(_client_manager.get(), &ClientManager::group_file_received, this, &GroupListModel::on_group_file_received);
+    connect(_client_manager.get(), &ClientManager::group_is_typing_received, this, &GroupListModel::on_group_is_typing_received);
+    connect(_client_manager.get(), &ClientManager::remove_group_member_received, this, &GroupListModel::on_remove_group_member_received);
+    connect(_client_manager.get(), &ClientManager::add_group_member_received, this, &GroupListModel::on_add_group_member_received);
+    connect(_client_manager.get(), &ClientManager::removed_from_group, this, &GroupListModel::on_removed_from_group);
+    connect(_client_manager.get(), &ClientManager::delete_group_message_received, this, &GroupListModel::on_delete_group_message_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -29,16 +29,6 @@ GroupListModel::~GroupListModel() { _groups.clear(); }
 const QList<GroupInfo *> &GroupListModel::groups() const
 {
     return _groups;
-}
-
-void GroupListModel::set_groups(const QList<GroupInfo *> &new_groups)
-{
-    if (_groups == new_groups)
-        return;
-
-    _groups = new_groups;
-
-    emit groups_changed();
 }
 
 GroupInfo *GroupListModel::active_group_chat()
@@ -242,14 +232,13 @@ void GroupListModel::on_group_profile_image(const int &group_ID, const QString &
     if (!group_ID || group_image_url.isEmpty())
         return;
 
-    for (size_t i{0}; i < _groups.size(); i++)
+    for (GroupInfo *group : _groups)
     {
-        GroupInfo *group = _groups[i];
         if (group->group_ID() == group_ID)
         {
             group->set_group_image_url(group_image_url);
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {GroupImageUrlRole});
 
             return;
@@ -262,9 +251,8 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
     if (!groupID)
         return;
 
-    for (size_t i{0}; i < _groups.size(); i++)
+    for (GroupInfo *group : _groups)
     {
-        GroupInfo *group = _groups[i];
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
@@ -278,7 +266,7 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
                 _client_manager->update_group_unread_message(groupID);
             }
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
@@ -290,9 +278,8 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
     if (!groupID)
         return;
 
-    for (size_t i{0}; i < _groups.size(); i++)
+    for (GroupInfo *group : _groups)
     {
-        GroupInfo *group = _groups[i];
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
@@ -306,7 +293,7 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
                 _client_manager->update_group_unread_message(groupID);
             }
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
@@ -318,18 +305,17 @@ void GroupListModel::on_group_is_typing_received(const int &groupID, const QStri
     if (!groupID || sender_name.isEmpty())
         return;
 
-    for (size_t i{0}; i < _groups.size(); i++)
+    for (GroupInfo *group : _groups)
     {
-        GroupInfo *group = _groups[i];
         if (group->group_ID() == groupID)
         {
             group->set_group_is_typing(QString("%1 %2").arg(sender_name, "is typing..."));
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {GroupIsTypingRole});
 
             QTimer::singleShot(2000, this, [=]()
                                {    group->set_group_is_typing(QString());
-                                    QModelIndex index = createIndex(i, 0);
+                                    QModelIndex index = createIndex(_groups.indexOf(group), 0);
                                     emit dataChanged(index, index, {GroupIsTypingRole}); });
             return;
         }
@@ -410,13 +396,13 @@ void GroupListModel::on_removed_from_group(const int &groupID)
     if (!groupID)
         return;
 
-    for (size_t i{0}; i < _groups.count(); i++)
+    for (GroupInfo *group : _groups)
     {
-        GroupInfo *group = _groups.at(i);
         if (group->group_ID() == groupID)
         {
-            beginRemoveRows(QModelIndex(), i, i);
-            _groups.removeAt(i);
+            int index = _groups.indexOf(group);
+            beginRemoveRows(QModelIndex(), index, index);
+            _groups.removeAt(index);
             endRemoveRows();
 
             emit groups_changed();
@@ -462,13 +448,13 @@ void GroupListModel::update_group_unread_message(const int &groupID)
 {
     _client_manager->update_group_unread_message(groupID);
 
-    for (size_t i{0}; i < _groups.size(); i++)
+    for (GroupInfo *group : _groups)
     {
-        if (_groups[i]->group_ID() == groupID)
+        if (group->group_ID() == groupID)
         {
-            _groups[i]->set_group_unread_message(0);
+            group->set_group_unread_message(0);
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {GroupUnreadMessageRole});
 
             return;

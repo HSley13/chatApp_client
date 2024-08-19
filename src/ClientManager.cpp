@@ -1,7 +1,7 @@
 #include "ClientManager.h"
 
 QHash<QString, ClientManager::MessageType> ClientManager::_map;
-ClientManager *ClientManager::_instance{nullptr};
+std::shared_ptr<ClientManager> ClientManager::_instance{nullptr};
 QWebSocket *ClientManager::_socket{nullptr};
 
 ClientManager::ClientManager(QObject *parent)
@@ -21,18 +21,12 @@ ClientManager::ClientManager(QObject *parent)
     }
 }
 
-ClientManager *ClientManager::instance()
+std::shared_ptr<ClientManager> ClientManager::instance()
 {
     if (!_instance)
-        _instance = new ClientManager();
+        _instance = std::make_shared<ClientManager>();
 
     return _instance;
-}
-
-void ClientManager::cleanup()
-{
-    delete _instance;
-    _instance = nullptr;
 }
 
 void ClientManager::on_text_message_received(const QString &message)

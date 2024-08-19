@@ -13,27 +13,27 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
 
-    connect(_client_manager, &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
-    connect(_client_manager, &ClientManager::load_my_info, this, &ContactListModel::on_load_my_info);
+    connect(_client_manager.get(), &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
+    connect(_client_manager.get(), &ClientManager::load_my_info, this, &ContactListModel::on_load_my_info);
 
-    connect(_client_manager, &ClientManager::text_received, this, &ContactListModel::on_text_received);
+    connect(_client_manager.get(), &ClientManager::text_received, this, &ContactListModel::on_text_received);
 
-    connect(_client_manager, &ClientManager::profile_image, this, [=](const QString &image_url)
+    connect(_client_manager.get(), &ClientManager::profile_image, this, [=](const QString &image_url)
             { _main_user->set_image_url(image_url); });
-    connect(_client_manager, &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
+    connect(_client_manager.get(), &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
 
-    connect(_client_manager, &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
-    connect(_client_manager, &ClientManager::client_disconnected, this, &ContactListModel::on_client_disconnected);
+    connect(_client_manager.get(), &ClientManager::client_connected, this, &ContactListModel::on_client_connected);
+    connect(_client_manager.get(), &ClientManager::client_disconnected, this, &ContactListModel::on_client_disconnected);
 
-    connect(_client_manager, &ClientManager::file_received, this, &ContactListModel::on_file_received);
-    connect(_client_manager, &ClientManager::is_typing_received, this, &ContactListModel::on_is_typing_received);
+    connect(_client_manager.get(), &ClientManager::file_received, this, &ContactListModel::on_file_received);
+    connect(_client_manager.get(), &ClientManager::is_typing_received, this, &ContactListModel::on_is_typing_received);
 
-    connect(_client_manager, &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
+    connect(_client_manager.get(), &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
 
-    connect(_client_manager, &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
-    connect(_client_manager, &ClientManager::status_message, this, &ContactListModel::on_status_message);
+    connect(_client_manager.get(), &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
+    connect(_client_manager.get(), &ClientManager::status_message, this, &ContactListModel::on_status_message);
 
-    connect(_client_manager, &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
+    connect(_client_manager.get(), &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
 
     _contact_proxy_list_chat->setSourceModel(this);
     _contact_proxy_list_chat->set_custom_sort_role(ContactListModel::ContactRoles::LastMessageTimeRole);
@@ -48,15 +48,6 @@ ContactListModel::~ContactListModel() { _contacts.clear(); }
 const QList<ContactInfo *> &ContactListModel::contacts() const
 {
     return _contacts;
-}
-
-void ContactListModel::set_contacts(const QList<ContactInfo *> &new_contacts)
-{
-    if (_contacts == new_contacts)
-        return;
-
-    _contacts = new_contacts;
-    emit contacts_changed();
 }
 
 ContactInfo *ContactListModel::active_chat()
@@ -372,9 +363,8 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
     if (!chatID || !sender_ID || file_url.isEmpty())
         return;
 
-    for (size_t i{0}; i < _contacts.size(); i++)
+    for (ContactInfo *contact : _contacts)
     {
-        ContactInfo *contact = _contacts[i];
         if (contact->chat_ID() == chatID)
         {
             contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time), this));
@@ -388,7 +378,7 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
                 _client_manager->update_unread_message(chatID);
             }
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {UnreadMessageRole});
 
@@ -402,19 +392,18 @@ void ContactListModel::on_is_typing_received(const int &phone_number)
     if (!phone_number)
         return;
 
-    for (size_t i{0}; i < _contacts.size(); i++)
+    for (ContactInfo *contact : _contacts)
     {
-        ContactInfo *contact = _contacts[i];
         if (contact->phone_number() == phone_number)
         {
             contact->set_is_typing("is typing...");
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {IsTypingRole});
 
             QTimer::singleShot(2000, this, [=]()
                                {    contact->set_is_typing(QString());
-                                    QModelIndex index = createIndex(i, 0);
+                                    QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
                                     emit dataChanged(index, index, {IsTypingRole}); });
 
             return;
@@ -427,15 +416,14 @@ void ContactListModel::on_update_client_info(const int &phone_number, const QStr
     if (!phone_number || first_name.isEmpty() || last_name.isEmpty())
         return;
 
-    for (size_t i{0}; i < _contacts.size(); i++)
+    for (ContactInfo *contact : _contacts)
     {
-        ContactInfo *contact = _contacts[i];
         if (contact->phone_number() == phone_number)
         {
             contact->set_first_name(first_name);
             contact->set_last_name(last_name);
 
-            QModelIndex index = createIndex(i, 0);
+            QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {FirstNameRole});
             emit dataChanged(index, index, {LastNameRole});
 
@@ -492,13 +480,12 @@ void ContactListModel::update_unread_message(int chatID)
 {
     _client_manager->update_unread_message(chatID);
 
-    for (size_t i{0}; i < _contacts.size(); i++)
+    for (ContactInfo *contact : _contacts)
     {
-        if (_contacts[i]->chat_ID() == chatID)
+        if (contact->chat_ID() == chatID)
         {
-            _contacts[i]->set_unread_message(0);
-
-            QModelIndex index = createIndex(i, 0);
+            contact->set_unread_message(0);
+            QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {UnreadMessageRole});
 
             return;

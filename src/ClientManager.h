@@ -19,8 +19,6 @@ public:
     void get_user_time();
     void map_initialization();
 
-    static void cleanup();
-
     Q_INVOKABLE void sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer);
     Q_INVOKABLE void login_request(const int &phone_number, const QString &password);
     void lookup_friend(const int &phone_number);
@@ -94,12 +92,12 @@ signals:
     void delete_group_message_received(const int &groupID, const QString &full_time);
 
 public:
-    static ClientManager *instance();
+    static std::shared_ptr<ClientManager> instance();
 
 private:
     static QWebSocket *_socket;
     QString _time_zone;
-    static ClientManager *_instance;
+    static std::shared_ptr<ClientManager> _instance;
 
     enum MessageType
     {

@@ -28,8 +28,5 @@ int main(int argc, char *argv[])
 
   watcher.set_directory(DIRECTORY.absolutePath());
 
-  QObject::connect(&app, &QCoreApplication::aboutToQuit, []()
-                   { ClientManager::cleanup(); });
-
   return app.exec();
 }
