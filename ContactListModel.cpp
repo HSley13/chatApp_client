@@ -239,7 +239,7 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
         QJsonObject contact_info = obj["contactInfo"].toObject();
         QJsonArray chat_messages = obj["chatMessages"].toArray();
 
-        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), obj["unread_count"].toInt(), this);
+        ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), obj["unread_messages"].toInt(), this);
 
         for (const QJsonValue &message : chat_messages)
             contact->add_message(new MessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
@@ -498,9 +498,8 @@ void ContactListModel::update_unread_message(int chatID)
         {
             _contacts[i]->set_unread_message(0);
 
-            QModelIndex top_left = index(i, 0);
-            QModelIndex bottom_right = index(i, 0);
-            emit dataChanged(top_left, bottom_right, {UnreadMessageRole});
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {UnreadMessageRole});
 
             return;
         }

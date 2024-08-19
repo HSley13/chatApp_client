@@ -365,6 +365,14 @@ void ClientManager::update_unread_message(const int &chatID)
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::update_group_unread_message(const int &groupID)
+{
+    QJsonObject json_object{{"type", "update_group_unread_message"},
+                            {"groupID", groupID}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::get_user_time()
 {
 #ifdef __EMSCRIPTEN__

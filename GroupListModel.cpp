@@ -180,7 +180,7 @@ void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
 
 void GroupListModel::add_group_member(const int &phone_number, const QList<ContactInfo *> members)
 {
-    if (!phone_number || members.isEmpty())
+    if (!phone_number && members.isEmpty())
         return;
 
     QJsonArray json_array;
@@ -219,7 +219,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
             }
         }
 
-        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_admin"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["unread_messages"].toInt(), this);
+        GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_admin"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["group_unread_messages"].toInt(), this);
 
         if (!messages.isEmpty())
         {
@@ -262,17 +262,25 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
     if (!groupID)
         return;
 
-    for (GroupInfo *group : _groups)
+    for (size_t i{0}; i < _groups.size(); i++)
     {
+        GroupInfo *group = _groups[i];
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_last_message_time(QDateTime::currentDateTime());
-            QModelIndex top_left = index(0, 0);
-            QModelIndex bottom_right = index(_groups.size() - 1, 0);
-            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
-            return;
+            if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
+                group->set_group_unread_message(group->group_unread_message() + 1);
+            else
+            {
+                group->set_group_unread_message(0);
+                _client_manager->update_group_unread_message(groupID);
+            }
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {LastMessageTimeRole});
+            emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
     }
 }
@@ -282,17 +290,25 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
     if (!groupID)
         return;
 
-    for (GroupInfo *group : _groups)
+    for (size_t i{0}; i < _groups.size(); i++)
     {
+        GroupInfo *group = _groups[i];
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_last_message_time(QDateTime::currentDateTime());
-            QModelIndex top_left = index(0, 0);
-            QModelIndex bottom_right = index(_groups.size() - 1, 0);
-            emit dataChanged(top_left, bottom_right, {LastMessageTimeRole});
 
-            return;
+            if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
+                group->set_group_unread_message(group->group_unread_message() + 1);
+            else
+            {
+                group->set_group_unread_message(0);
+                _client_manager->update_group_unread_message(groupID);
+            }
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {LastMessageTimeRole});
+            emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
     }
 }
@@ -438,6 +454,24 @@ void GroupListModel::on_delete_group_message_received(const int &groupID, const 
                     return;
                 }
             }
+        }
+    }
+}
+
+void GroupListModel::update_group_unread_message(const int &groupID)
+{
+    _client_manager->update_group_unread_message(groupID);
+
+    for (size_t i{0}; i < _groups.size(); i++)
+    {
+        if (_groups[i]->group_ID() == groupID)
+        {
+            _groups[i]->set_group_unread_message(0);
+
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {GroupUnreadMessageRole});
+
+            return;
         }
     }
 }

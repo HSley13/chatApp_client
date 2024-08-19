@@ -85,6 +85,7 @@ Rectangle
                 height: 30;
                 radius: 15;
                 color: "#e6e8e8";
+                visible: group_unread_message > 0;
 
                 Text
                 {
@@ -119,6 +120,9 @@ Rectangle
         onClicked:
         {
             group_list_model.active_group_chat = group_list_model.group_proxy_list.get(index);
+            if(group_list_model.active_group_chat)
+                group_list_model.update_group_unread_message(group_list_model.active_group_chat.group_ID);
+
             contact_list_model.active_chat = null;
             stackView.push(groupChatWindow);
         }

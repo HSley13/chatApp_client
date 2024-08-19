@@ -50,6 +50,7 @@ public:
     Q_INVOKABLE void delete_group_message(const int &groupID, const QString &full_time);
 
     void update_unread_message(const int &chatID);
+    void update_group_unread_message(const int &groupID);
 
 public slots:
     void on_text_message_received(const QString &data);

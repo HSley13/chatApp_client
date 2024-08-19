@@ -47,6 +47,8 @@ public:
     Q_INVOKABLE void remove_group_member(const QList<ContactInfo *> members);
     Q_INVOKABLE void add_group_member(const int &phone_number, const QList<ContactInfo *> members);
 
+    Q_INVOKABLE void update_group_unread_message(const int &groupID);
+
 private slots:
     void on_load_groups(QJsonArray json_array);
     void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
