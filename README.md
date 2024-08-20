@@ -19,7 +19,6 @@
 
 >The application supports Desktop, Mobile and Web environments through WebAssembly. Both the server and client are built using WebAssembly, allowing them to run with all dependencies included using Wasmer or Wasmtime, ensuring seamless execution without additional setup.
 
-
 ---
 
 ## Functionalities
@@ -47,26 +46,28 @@
 
 ## ScreenShots (Previews)
 Login window (Default) ![](preview_images/1.png)
-Sign Up Widget ![](preview_images/5.png)
 Password Forgotten default ![](preview_images/2.png)
-Password Forgotten (secret question --> *Hello* in this case) ![](preview_images/3.png)
+Password Forgotten (secret question --> *Who am I* in this case) ![](preview_images/3.png)
 Password Forgotten (New Password) ![](preview_images/4.png)
+Sign Up Widget ![](preview_images/5.png)
 Conversation Window (Red Buttons == offline)![](preview_images/6.png)
 Conversation Window (Green Buttons == online)![](preview_images/7.png)
-Conversation Window (Searching for Batman)![](preview_images/19.png)
-Is typing message outside of the chat ![](preview_images/9.png)
-Is typing message inside of the chat ![](preview_images/12.png)
-ChatWindow ![](preview_images/10.png)
-ChatWindow (Upon right clicked on a message) ![](preview_images/21.png)
-Menu Panel ![](preview_images/11.png)
-Menu Panel (Upon New Conversation Clicked) ![](preview_images/13.png)
-Menu Panel (Upon New Group Clicked) ![](preview_images/14.png)
-Menu Panel (Upon New Group Clicked) ![](preview_images/15.png)
-Group list  ![](preview_images/8.png)
+Is Typing... outside of the chat ![](preview_images/8.png)
+Menu Panel Options  ![](preview_images/9.png)
+Menu Panel (New Conversation Clicked) ![](preview_images/10.png)
+Menu Panel (New Group Clicked) ![](preview_images/11.png)
+Menu Panel (Add Friend Clicked) ![](preview_images/12.png)
+Search Contact (Tony in this case) ![](preview_images/13.png)
+Chat Window (Red Offline status) ![](preview_images/14.png)
+Chat Window (is typing...) ![](preview_images/15.png)
+ChatWindow (Upon right clicked on a message) ![](preview_images/23.png)
 Group Chat Window  ![](preview_images/16.png)
-Group Settings  ![](preview_images/17.png)
+Group Chat Conversation (Sender Name of top of each Message) ![](preview_images/17.png)
+Group Chat Window (Bruce is typing...)  ![](preview_images/18.png)
+Group Setting Panel ![](preview_images/19.png)
 Group Settings (Upon clicked on +Members)  ![](preview_images/20.png)
-Main Account Settings  ![](preview_images/18.png)
+Account Settings  ![](preview_images/21.png)
+Account Settings (Upon clicked on Delete Account) ![](preview_images/21.png)
 Server App Default Window![](preview_images/server.png)
 
 ---

@@ -101,7 +101,6 @@ void MediaController::on_duration_changed(qint64 duration)
 
 void MediaController::view_file(const QString &file_path)
 {
-    qDebug() << "Trying to view the file: " << file_path;
     QDesktopServices::openUrl(file_path);
 }
 

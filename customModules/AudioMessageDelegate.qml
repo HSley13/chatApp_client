@@ -70,8 +70,6 @@ Item
                     imageSource1: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? "qrc:/QML/ClientApp/icons/pause_icon.png" : "qrc:/QML/ClientApp/icons/play_icon.png";
                     height: 30;
                     width: 30;
-
-                    onItemClicked:(mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
                 }
 
                 Slider
@@ -106,7 +104,6 @@ Item
         {
             id: timeText;
             text: model.time;
-
             anchors.top: controlsColumn.bottom;
             anchors.topMargin: 10;
             anchors.right: sender ? parent.right : undefined;
@@ -117,32 +114,35 @@ Item
             width: controlsColumn.width;
         }
 
-        // MouseArea 
-        // {
-        //     anchors.fill: parent;
-        //     acceptedButtons: Qt.LeftButton | Qt.RightButton;
-    
-        //     onClicked: (mouse) => 
-        //     {
-        //         if (mouse.button === Qt.RightButton && sender)
-        //             contextMenu.popup()
-        //     }
-    
-        //     onPressAndHold: (mouse) => 
-        //     {
-        //         if (mouse.source === Qt.MouseEventNotSynthesized && sender)
-        //             contextMenu.popup()
-        //     }
+        MouseArea 
+        {
+            id: messageMouseArea;
+            anchors.fill: parent;
+            acceptedButtons: Qt.LeftButton | Qt.RightButton;
+
+            onClicked: (mouse) => 
+            {
+                if (mouse.button === Qt.RightButton && sender)
+                    contextMenu.popup();
+                else if (mouse.button === Qt.LeftButton)
+                    (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
+            }
+
+            onPressAndHold: (mouse) => 
+            {
+                if (mouse.source === Qt.MouseEventNotSynthesized && sender)
+                    contextMenu.popup();
+            }
             
-        //     Menu 
-        //     {
-        //         id: contextMenu;
-        //         Action 
-        //         { 
-        //             text: "Delete For Both of us"; 
-        //             onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
-        //         }
-        //     }
-        // }
+            Menu 
+            {
+                id: contextMenu;
+                Action 
+                { 
+                    text: "Delete For Both of us"; 
+                    onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+                }
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 REQUIRED COMPONENTS Quick Widgets Multimedia Core5Compat WebSockets)
 qt_standard_project_setup()
 
-qt_add_executable(app WIN32 MACOSX_BUNDLE src/main.cpp src/FileWatcher.cpp)
+qt_add_executable(app WIN32 MACOSX_BUNDLE src/main.cpp)
 
 target_include_directories(app PRIVATE src/ 
                                         src/contacts

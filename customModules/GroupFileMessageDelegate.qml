@@ -35,13 +35,6 @@ Item
             anchors.centerIn: parent;
             width: 50; 
             height: 50;
-
-            MouseArea
-            {
-                id: imageMouseArea;
-                anchors.fill: parent;
-                onClicked: media_controller.view_file(model.file_source);
-            }
         }
 
         Text
@@ -60,20 +53,6 @@ Item
             width: file_bubble.width;
         }
 
-        // FIXME: add the file size later 
-        // Text
-        // {
-        //     id: fileSizeText;
-        //     text: `${(model.file_size / 1024 / 1024).toFixed(2)} MB`;
-
-        //     anchors.right: parent.right;
-        //     anchors.rightMargin: 10;
-        //     anchors.verticalCenter: parent.verticalCenter;
-
-        //     color: "black";
-        //     font.pixelSize: 12;
-        // }
-
         MouseArea 
         {
             anchors.fill: parent;
@@ -82,13 +61,15 @@ Item
             onClicked: (mouse) => 
             {
                 if (mouse.button === Qt.RightButton && sender)
-                    contextMenu.popup()
+                    contextMenu.popup();
+                else if (mouse.button === Qt.LeftButton)
+                    media_controller.view_file(model.file_source);
             }
     
             onPressAndHold: (mouse) => 
             {
                 if (mouse.source === Qt.MouseEventNotSynthesized && sender)
-                    contextMenu.popup()
+                    contextMenu.popup();
             }
     
             Menu 

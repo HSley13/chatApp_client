@@ -70,8 +70,6 @@ Item
                     imageSource1: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? "qrc:/QML/ClientApp/icons/pause_icon.png" : "qrc:/QML/ClientApp/icons/play_icon.png";
                     height: 30;
                     width: 30;
-
-                    onItemClicked: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
                 }
 
                 Slider
@@ -125,9 +123,11 @@ Item
             onClicked: (mouse) => 
             {
                 if (mouse.button === Qt.RightButton && sender)
-                    contextMenu.popup()
+                    contextMenu.popup();
+                else if (mouse.button === Qt.LeftButton)
+                    (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
             }
-    
+
             onPressAndHold: (mouse) => 
             {
                 if (mouse.source === Qt.MouseEventNotSynthesized && sender)
