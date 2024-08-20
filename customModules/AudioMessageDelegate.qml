@@ -72,6 +72,7 @@ Item
                     width: 30;
 
                     onItemClicked: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
+                    
                 }
 
                 Slider

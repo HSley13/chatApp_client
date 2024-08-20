@@ -121,6 +121,7 @@ void ClientManager::on_text_message_received(const QString &message)
         emit delete_group_message_received(json_object["groupID"].toInt(), json_object["full_time"].toString());
         break;
     case Audio:
+        emit audio_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["audio_url"].toString(), json_object["time"].toString());
         break;
     case GroupAudio:
         break;
@@ -366,6 +367,20 @@ void ClientManager::update_group_unread_message(const int &groupID)
 void ClientManager::delete_account()
 {
     QJsonObject json_object{{"type", "delete_account"}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
+void ClientManager::send_audio(const int &chatID, const int &receiver, const QString &audio_name, const QByteArray &audio_data)
+{
+    QString data = QString::fromUtf8(audio_data.toBase64());
+
+    QJsonObject json_object{{"type", "audio"},
+                            {"chatID", chatID},
+                            {"receiver", receiver},
+                            {"audio_name", audio_name},
+                            {"audio_data", data},
+                            {"time", QDateTime::currentDateTimeUtc().toString()}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }

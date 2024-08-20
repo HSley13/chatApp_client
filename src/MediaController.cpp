@@ -33,20 +33,6 @@ void MediaController::set_time_display(QString new_time)
     }
 }
 
-const QString &MediaController::audio_source() const
-{
-    return _audio_source;
-}
-
-void MediaController::set_audio_source(QString new_source)
-{
-    if (_audio_source != new_source)
-    {
-        _audio_source = new_source;
-        emit audio_source_changed();
-    }
-}
-
 void MediaController::start_recording()
 {
     QMicrophonePermission microphonePermission;
@@ -80,15 +66,13 @@ void MediaController::setup_recording()
 
 void MediaController::stop_recording()
 {
-    if (_recorder)
-    {
-        _recorder->stop();
+    _recorder->stop();
 
-        QString audio_path = _recorder->outputLocation().toLocalFile();
+    QString audio_path = _recorder->outputLocation().toLocalFile();
 
-        set_audio_source(audio_path);
-        set_time_display("00:00");
-    }
+    set_time_display("00:00");
+
+    _client_manager->send_audio(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QString(), QByteArray());
 }
 
 void MediaController::on_duration_changed(qint64 duration)
@@ -157,7 +141,7 @@ void MediaController::send_file(const int &value)
 //     if (!_is_playing)
 //     {
 //         _player->setSource(source);
-//         _audio_output->setVolume(0.5); // Volume can be adjusted as needed
+//         _audio_output->setVolume(0.5);
 //         _player->play();
 
 //         _is_playing = true;

@@ -21,9 +21,97 @@ target_link_libraries(app PRIVATE
 
 qt6_policy(SET QTP0001 NEW)
 
-file(GLOB_RECURSE CPP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/*.cpp src/*.hpp)
-file(GLOB QML_CUSTOMED_TYPES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} customModules/)
-file(GLOB ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} icons/*.png)
+set(QML_CUSTOMED_TYPES
+                customModules/Main.qml
+                customModules/LoginWindow.qml 
+                customModules/SignUpWindow.qml 
+                customModules/ForgottenPassword.qml
+
+                customModules/ContactWindow.qml
+                customModules/ContactList.qml
+                customModules/ContactListDelegate.qml
+
+                customModules/ChatWindow.qml
+                customModules/ChatList.qml
+                customModules/TextMessageDelegate.qml
+                customModules/AudioMessageDelegate.qml
+                customModules/FileMessageDelegate.qml
+
+                customModules/GroupList.qml
+                customModules/GroupListDelegate.qml
+                    
+                customModules/GroupChatWindow.qml
+                customModules/GroupChatList.qml
+                customModules/GroupTextMessageDelegate.qml
+                customModules/GroupAudioMessageDelegate.qml
+                customModules/GroupFileMessageDelegate.qml
+                customModules/GroupMenuPanel.qml
+
+                customModules/InputField.qml
+                customModules/IconText.qml
+                customModules/MenuPanel.qml
+                customModules/ListDialog.qml
+                customModules/SettingWindow.qml
+                customModules/RoundedImage.qml
+                customModules/RoundedButton.qml
+    )
+
+set(CPP_FILES 
+            src/ClientManager.cpp src/ClientManager.hpp
+            src/MediaController.cpp src/MediaController.hpp
+
+            src/contacts/MessageInfo.cpp src/contacts/MessageInfo.hpp
+            src/contacts/ChatListModel.cpp src/contacts/ChatListModel.hpp
+            src/contacts/ContactInfo.cpp src/contacts/ContactInfo.hpp
+            src/contacts/ContactListModel.cpp src/contacts/ContactListModel.hpp
+            src/contacts/ContactProxyList.cpp src/contacts/ContactProxyList.hpp
+
+            src/groups/GroupMessageInfo.cpp src/groups/GroupMessageInfo.hpp
+            src/groups/GroupChatListModel.cpp src/groups/GroupChatListModel.hpp
+            src/groups/GroupInfo.cpp src/groups/GroupInfo.hpp
+            src/groups/GroupListModel.cpp src/groups/GroupListModel.hpp
+            src/groups/GroupProxyList.cpp src/groups/GroupProxyList.hpp
+    )
+
+set(ICONS 
+        icons/pause_icon.png
+        icons/play_icon.png
+        icons/chat_icon.png
+        icons/file_icon.png
+        icons/group_icon.png 
+        icons/voice_icon.png 
+        icons/send_file_icon.png
+        icons/hide_icon.png
+        icons/see_icon.png
+        icons/hi_icon.png
+        icons/phone_icon.png
+        icons/name_icon.png
+        icons/password_icon.png
+        icons/search_icon.png
+        icons/back_icon.png
+        icons/plus_icon.png
+        icons/cancel_icon.png
+        icons/menu_icon.png
+        icons/cancel_menu.png
+        icons/online_icon.png
+        icons/offline_icon.png
+        icons/send_icon.png
+        icons/batman_icon.png
+        icons/batman_icon1.png
+        icons/ironman_icon.png
+        icons/superman_icon.png
+        icons/captain_icon.png
+        icons/settings_icon.png
+        icons/save_icon.png
+        icons/delete_icon.png
+        icons/logout_icon.png
+        icons/upload_icon.png
+        icons/avengers_icon.png
+        icons/justice_league_icon.png
+        icons/question_icon.png
+        icons/answer_icon.png
+        icons/forgotten_icon.png        
+    )
 
 qt_add_qml_module(app 
                     URI ClientApp

@@ -52,6 +52,8 @@ public:
 
     Q_INVOKABLE void delete_account();
 
+    void send_audio(const int &chatID, const int &receiver, const QString &audio_name, const QByteArray &audio_data);
+
 public slots:
     void on_text_message_received(const QString &data);
     void on_disconnected();
@@ -93,6 +95,8 @@ signals:
     void removed_from_group(const int &groupID);
     void delete_message_received(const int &chatID, const QString &full_time);
     void delete_group_message_received(const int &groupID, const QString &full_time);
+
+    void audio_received(const int &chatID, const int &sender_ID, const QString &audio_url, const QString &time);
 
 public:
     static std::shared_ptr<ClientManager> instance();

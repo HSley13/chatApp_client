@@ -67,6 +67,8 @@ private slots:
 
     void on_delete_message_received(const int &chatID, const QString &full_time);
 
+    void on_audio_received(const int &chatID, const int &sender_ID, const QString &audio_url, const QString &time);
+
 signals:
     void contacts_changed();
     void active_chat_changed();

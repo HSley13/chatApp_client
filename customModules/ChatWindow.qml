@@ -157,8 +157,6 @@ Item
                 {
                     media_controller.stop_recording();
 
-                    contact_list_model.audio_sent();
-
                     sendVoice.anchors.rightMargin = 5;
                 }
             }
