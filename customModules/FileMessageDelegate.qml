@@ -60,46 +60,32 @@ Item
             width: file_bubble.width;
         }
 
-        // FIXME: add the file size later 
-        // Text
+        // MouseArea 
         // {
-        //     id: fileSizeText;
-        //     text: `${(model.file_size / 1024 / 1024).toFixed(2)} MB`;
-
-        //     anchors.right: parent.right;
-        //     anchors.rightMargin: 10;
-        //     anchors.verticalCenter: parent.verticalCenter;
-
-        //     color: "black";
-        //     font.pixelSize: 12;
-        // }
-
-        MouseArea 
-        {
-            anchors.fill: parent;
-            acceptedButtons: Qt.LeftButton | Qt.RightButton;
+        //     anchors.fill: parent;
+        //     acceptedButtons: Qt.LeftButton | Qt.RightButton;
     
-            onClicked: (mouse) => 
-            {
-                if (mouse.button === Qt.RightButton && sender)
-                    contextMenu.popup()
-            }
+        //     onClicked: (mouse) => 
+        //     {
+        //         if (mouse.button === Qt.RightButton && sender)
+        //             contextMenu.popup()
+        //     }
     
-            onPressAndHold: (mouse) => 
-            {
-                if (mouse.source === Qt.MouseEventNotSynthesized && sender)
-                    contextMenu.popup()
-            }
+        //     onPressAndHold: (mouse) => 
+        //     {
+        //         if (mouse.source === Qt.MouseEventNotSynthesized && sender)
+        //             contextMenu.popup()
+        //     }
             
-            Menu 
-            {
-                id: contextMenu;
-                Action 
-                { 
-                    text: "Delete For Both of us"; 
-                    onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
-                }
-            }
-        }
+        //     Menu 
+        //     {
+        //         id: contextMenu;
+        //         Action 
+        //         { 
+        //             text: "Delete For Both of us"; 
+        //             onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+        //         }
+        //     }
+        // }
     }
 }

@@ -2,8 +2,10 @@
 
 #include <QMediaRecorder>
 #include <QAudioInput>
+#include <QAudioOutput>
 #include <QMediaCaptureSession>
 #include <QFileDialog>
+#include <QMediaPlayer>
 
 #include "ClientManager.hpp"
 class MediaController : public QObject
@@ -27,7 +29,6 @@ public:
     Q_INVOKABLE void view_file(const QString &file_path);
 
     void ask_microphone_permission();
-
 public slots:
     void set_time_display(QString new_time);
 
@@ -44,7 +45,13 @@ private:
     qint64 _record_start_time{0};
     std::shared_ptr<ClientManager> _client_manager{nullptr};
 
+    QMediaPlayer *_player{nullptr};
+    QAudioOutput *_audio_output{nullptr};
+
+    bool _is_playing{false};
+
 signals:
-    void time_display_changed();
+    void
+    time_display_changed();
     void is_recording_changed();
 };

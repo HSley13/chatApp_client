@@ -22,6 +22,7 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
     connect(_client_manager.get(), &ClientManager::add_group_member_received, this, &GroupListModel::on_add_group_member_received);
     connect(_client_manager.get(), &ClientManager::removed_from_group, this, &GroupListModel::on_removed_from_group);
     connect(_client_manager.get(), &ClientManager::delete_group_message_received, this, &GroupListModel::on_delete_group_message_received);
+    connect(_client_manager.get(), &ClientManager::group_audio_received, this, &GroupListModel::on_group_audio_received);
 }
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
@@ -273,16 +274,16 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
     }
 }
 
-void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &file_url, const QString &time)
+void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time)
 {
-    if (!groupID)
+    if (!groupID || audio_url.isEmpty())
         return;
 
     for (GroupInfo *group : _groups)
     {
         if (group->group_ID() == groupID)
         {
-            group->add_group_message(new GroupMessageInfo(QString(), QString(), file_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
+            group->add_group_message(new GroupMessageInfo(QString(), QString(), audio_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_last_message_time(QDateTime::currentDateTime());
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
@@ -437,6 +438,33 @@ void GroupListModel::on_delete_group_message_received(const int &groupID, const 
                     return;
                 }
             }
+        }
+    }
+}
+
+void GroupListModel::on_group_audio_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time)
+{
+    if (!groupID || audio_url.isEmpty())
+        return;
+
+    for (GroupInfo *group : _groups)
+    {
+        if (group->group_ID() == groupID)
+        {
+            group->add_group_message(new GroupMessageInfo(QString(), audio_url, QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
+            group->set_last_message_time(QDateTime::currentDateTime());
+
+            if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
+                group->set_group_unread_message(group->group_unread_message() + 1);
+            else
+            {
+                group->set_group_unread_message(0);
+                _client_manager->update_group_unread_message(groupID);
+            }
+
+            QModelIndex index = createIndex(_groups.indexOf(group), 0);
+            emit dataChanged(index, index, {LastMessageTimeRole});
+            emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
     }
 }

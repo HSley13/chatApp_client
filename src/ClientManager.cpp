@@ -124,6 +124,7 @@ void ClientManager::on_text_message_received(const QString &message)
         emit audio_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["audio_url"].toString(), json_object["time"].toString());
         break;
     case GroupAudio:
+        emit group_audio_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["audio_url"].toString(), json_object["time"].toString());
         break;
     default:
         qWarning() << "Unknown message type: " << json_object["type"].toString();
@@ -385,6 +386,20 @@ void ClientManager::send_audio(const int &chatID, const int &receiver, const QSt
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
+void ClientManager::send_group_audio(const int &groupID, const QString &sender_name, const QString &audio_name, const QByteArray &audio_data)
+{
+    QString data = QString::fromUtf8(audio_data.toBase64());
+
+    QJsonObject json_object{{"type", "group_audio"},
+                            {"groupID", groupID},
+                            {"sender_name", sender_name},
+                            {"audio_name", audio_name},
+                            {"audio_data", data},
+                            {"time", QDateTime::currentDateTimeUtc().toString()}};
+
+    _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
+}
+
 void ClientManager::get_user_time()
 {
 #ifdef __EMSCRIPTEN__
@@ -430,7 +445,6 @@ void ClientManager::map_initialization()
     _map["delete_group_message"] = DeleteGroupMessage;
     _map["audio"] = Audio;
     _map["group_audio"] = GroupAudio;
-    _map["invalid_type"] = InvalidType;
 }
 
 QString ClientManager::UTC_to_timeZone(const QString &UTC_time)

@@ -68,11 +68,23 @@ void MediaController::stop_recording()
 {
     _recorder->stop();
 
-    QString audio_path = _recorder->outputLocation().toLocalFile();
-
     set_time_display("00:00");
 
-    _client_manager->send_audio(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), QString(), QByteArray());
+    QByteArray audio_data;
+
+    QFile audio(_recorder->outputLocation().toLocalFile());
+    if (audio.open(QIODevice::ReadOnly))
+    {
+        audio_data = audio.readAll();
+        audio.close();
+    }
+
+    QString audio_name = QString("%1_%2_%3")
+                             .arg(ContactListModel::main_user()->phone_number())
+                             .arg(QDateTime::currentDateTime().toString())
+                             .arg("audio.mp3");
+
+    (ContactListModel::active_chat()) ? _client_manager->send_audio(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), audio_name, audio_data) : _client_manager->send_group_audio(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), audio_name, audio_data);
 }
 
 void MediaController::on_duration_changed(qint64 duration)
@@ -89,6 +101,7 @@ void MediaController::on_duration_changed(qint64 duration)
 
 void MediaController::view_file(const QString &file_path)
 {
+    qDebug() << "Trying to view the file: " << file_path;
     QDesktopServices::openUrl(file_path);
 }
 
@@ -120,35 +133,3 @@ void MediaController::send_file(const int &value)
 
     QFileDialog::getOpenFileContent("All Files (*)", file_content_ready);
 }
-
-// void MediaController::play_audio(const QUrl &source)
-// {
-//     if (!_player)
-//     {
-//         _player = new QMediaPlayer(this);
-//         _audio_output = new QAudioOutput(this);
-//         _player->setAudioOutput(_audio_output);
-
-//         connect(_player, &QMediaPlayer::playbackStateChanged, this, [=](QMediaPlayer::PlaybackState state)
-//                 {
-//                     if (state == QMediaPlayer::StoppedState)
-//                     {
-//                         _paused_position = 0;
-//                         _is_playing = false;
-//                     } });
-//     }
-
-//     if (!_is_playing)
-//     {
-//         _player->setSource(source);
-//         _audio_output->setVolume(0.5);
-//         _player->play();
-
-//         _is_playing = true;
-//     }
-//     else
-//     {
-//         _player->pause();
-//         _is_playing = false;
-//     }
-// }
