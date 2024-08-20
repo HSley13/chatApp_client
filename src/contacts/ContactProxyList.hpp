@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ContactInfo.h"
+#include "ContactInfo.hpp"
+
 class ContactProxyList : public QSortFilterProxyModel
 {
     Q_OBJECT

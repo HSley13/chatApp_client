@@ -1,4 +1,4 @@
-#include "ContactListModel.h"
+#include "ContactListModel.hpp"
 
 ContactInfo *ContactListModel::_main_user{nullptr};
 ContactInfo *ContactListModel::_active_chat{Q_NULLPTR};
@@ -32,6 +32,7 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     connect(_client_manager.get(), &ClientManager::question_answer, this, &ContactListModel::on_question_answer);
     connect(_client_manager.get(), &ClientManager::status_message, this, &ContactListModel::on_status_message);
+    connect(_client_manager.get(), &ClientManager::message_received, this, &ContactListModel::on_message_received);
 
     connect(_client_manager.get(), &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
 
@@ -401,7 +402,7 @@ void ContactListModel::on_is_typing_received(const int &phone_number)
             QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {IsTypingRole});
 
-            QTimer::singleShot(2000, this, [=]()
+            QTimer::singleShot(2000, this, [=, this]()
                                {    contact->set_is_typing(QString());
                                     QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
                                     emit dataChanged(index, index, {IsTypingRole}); });
@@ -438,9 +439,20 @@ void ContactListModel::on_question_answer(const QString &secret_question, const 
     _main_user->set_secret_answer(secret_answer);
 }
 
-void ContactListModel::on_status_message(const bool &true_or_false, const QString &message)
+void ContactListModel::on_status_message(const QString &message, const bool &true_or_false)
 {
+    if (message.isEmpty())
+        return;
+
     _main_user->set_login_status(true_or_false);
+    _main_user->set_popup_message(message);
+}
+
+void ContactListModel::on_message_received(const QString &message)
+{
+    if (message.isEmpty())
+        return;
+
     _main_user->set_popup_message(message);
 }
 

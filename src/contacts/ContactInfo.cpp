@@ -1,4 +1,4 @@
-#include "ContactInfo.h"
+#include "ContactInfo.hpp"
 
 ContactInfo::ContactInfo(QObject *parent)
     : QObject(parent), _messages(new ChatListModel(this)) {}

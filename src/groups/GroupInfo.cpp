@@ -1,4 +1,4 @@
-#include "GroupInfo.h"
+#include "GroupInfo.hpp"
 
 GroupInfo::GroupInfo(QObject *parent)
     : QObject(parent), _group_messages(new GroupChatListModel(this)) {}

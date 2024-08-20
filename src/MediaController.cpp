@@ -1,6 +1,6 @@
-#include "MediaController.h"
-#include "GroupListModel.h"
-#include "ContactListModel.h"
+#include "MediaController.hpp"
+#include "GroupListModel.hpp"
+#include "ContactListModel.hpp"
 
 MediaController::MediaController(QObject *parent)
     : QObject(parent),
@@ -54,7 +54,7 @@ void MediaController::start_recording()
     switch (qApp->checkPermission(microphonePermission))
     {
     case Qt::PermissionStatus::Undetermined:
-        qApp->requestPermission(microphonePermission, this, [=]()
+        qApp->requestPermission(microphonePermission, this, [=, this]()
                                 {
     qDebug() << "Microphone permission granted!";
                 setup_recording(); });
@@ -110,7 +110,7 @@ void MediaController::view_file(const QString &file_path)
 
 void MediaController::send_file(const int &value)
 {
-    std::function<void(const QString &, const QByteArray &)> file_content_ready = [=](const QString &file_name, const QByteArray &file_data)
+    std::function<void(const QString &, const QByteArray &)> file_content_ready = [=, this](const QString &file_name, const QByteArray &file_data)
     {
         if (!file_name.isEmpty())
         {

@@ -8,7 +8,7 @@ Rectangle
 
     property alias inputField: textInput.text;
     property string image1Source;
-    property string image2Source;
+    property string image2Source: "";
     property string placeHolder;
     property alias echoMode: textInput.echoMode;
     property bool isMessage: false;
@@ -87,8 +87,8 @@ Rectangle
                 anchors.fill: parent;
                 onClicked:
                 {
-                    textInput.echoMode = textInput.echoMode === TextInput.Normal ? TextInput.Password : TextInput.Normal;
-                    toggleImage.source = textInput.echoMode === TextInput.Normal ? root.image2Source : root.image1Source;
+                    textInput.echoMode = (root.image2Source !== "") ? (textInput.echoMode === TextInput.Normal ? TextInput.Password : TextInput.Normal) : TextInput.Normal;
+                    toggleImage.source = ( root.image2Source !== "") ?  (textInput.echoMode === TextInput.Normal ? root.image2Source : root.image1Source) : TextInput.Normal;
                 }
             }
         }

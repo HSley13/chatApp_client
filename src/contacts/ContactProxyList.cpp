@@ -1,5 +1,5 @@
-#include "ContactProxyList.h"
-#include "ContactListModel.h"
+#include "ContactProxyList.hpp"
+#include "ContactListModel.hpp"
 
 ContactProxyList::ContactProxyList(QObject *parent)
     : QSortFilterProxyModel(parent),

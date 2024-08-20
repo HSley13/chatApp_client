@@ -1,4 +1,4 @@
-#include "GroupChatListModel.h"
+#include "GroupChatListModel.hpp"
 
 GroupChatListModel::GroupChatListModel(QObject *parent)
     : QAbstractListModel(parent) {}

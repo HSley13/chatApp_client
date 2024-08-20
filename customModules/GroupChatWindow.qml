@@ -87,6 +87,7 @@ Item
             imageSource2: "qrc:/QML/ClientApp/icons/cancel_menu.png";
             height: parent.height * 0.5;
             width: height;
+            visible: contact_list_model.main_user.phone_number === group_list_model.active_group_chat.group_admin;
 
             onItemClicked: menuPanel.hidden = !menuPanel.hidden;
 

@@ -1,4 +1,4 @@
-#include "MessageInfo.h"
+#include "MessageInfo.hpp"
 
 MessageInfo::MessageInfo(QObject *parent)
     : QObject(parent) {}

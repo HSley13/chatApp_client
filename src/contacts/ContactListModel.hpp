@@ -1,8 +1,9 @@
 #pragma once
 
-#include "ContactInfo.h"
-#include "ContactProxyList.h"
-#include "ClientManager.h"
+#include "ContactInfo.hpp"
+#include "ContactProxyList.hpp"
+#include "ClientManager.hpp"
+
 class ContactListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -61,7 +62,8 @@ private slots:
 
     void on_question_answer(const QString &secret_question, const QString &secret_answer);
 
-    void on_status_message(const bool &true_or_false, const QString &message);
+    void on_status_message(const QString &message, const bool &true_or_false);
+    void on_message_received(const QString &message);
 
     void on_delete_message_received(const int &chatID, const QString &full_time);
 

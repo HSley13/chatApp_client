@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30.0)
 project(ClientApp LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Widgets Multimedia Core5Compat WebSockets)
@@ -21,7 +21,7 @@ target_link_libraries(app PRIVATE
 
 qt6_policy(SET QTP0001 NEW)
 
-file(GLOB_RECURSE CPP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/*.cpp src/*.h)
+file(GLOB_RECURSE CPP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/*.cpp src/*.hpp)
 file(GLOB QML_CUSTOMED_TYPES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} customModules/)
 file(GLOB ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} icons/*.png)
 

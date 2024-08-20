@@ -1,4 +1,4 @@
-#include "ClientManager.h"
+#include "ClientManager.hpp"
 
 QHash<QString, ClientManager::MessageType> ClientManager::_map;
 std::shared_ptr<ClientManager> ClientManager::_instance{nullptr};
@@ -44,23 +44,23 @@ void ClientManager::on_text_message_received(const QString &message)
     switch (type)
     {
     case SignUp:
-        emit status_message(json_object["status"].toBool(), json_object["message"].toString());
+        emit status_message(json_object["message"].toString(), json_object["status"].toBool());
         _socket->close();
         break;
     case LoginRequest:
-    {
-        emit status_message(json_object["status"].toBool(), json_object["message"].toString());
+        emit status_message(json_object["message"].toString(), json_object["status"].toBool());
 
         emit load_my_info(json_object["my_info"].toObject());
         emit load_contacts(json_object["contacts"].toArray());
         emit load_groups(json_object["groups"].toArray());
-    }
-    break;
+        break;
     case LookupFriend:
         emit load_contacts(json_object["json_array"].toArray());
+        emit message_received(json_object["message"].toString());
         break;
     case AddedYou:
         emit load_contacts(json_object["json_array"].toArray());
+        emit message_received(json_object["message"].toString());
         break;
     case ProfileImage:
         emit profile_image(json_object["image_url"].toString());
@@ -82,6 +82,7 @@ void ClientManager::on_text_message_received(const QString &message)
         break;
     case AddedToGroup:
         emit load_groups(json_object["groups"].toArray());
+        emit message_received(json_object["message"].toString());
         break;
     case GroupText:
         emit group_text_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["message"].toString(), json_object["time"].toString());
@@ -118,12 +119,6 @@ void ClientManager::on_text_message_received(const QString &message)
         break;
     case DeleteGroupMessage:
         emit delete_group_message_received(json_object["groupID"].toInt(), json_object["full_time"].toString());
-        break;
-    case UpdateUnreadMessage:
-        break;
-    case UpdateGroupUnreadMessage:
-        break;
-    case DeleteAccount:
         break;
     case Audio:
         break;
@@ -418,9 +413,6 @@ void ClientManager::map_initialization()
     _map["removed_from_group"] = RemovedFromGroup;
     _map["delete_message"] = DeleteMessage;
     _map["delete_group_message"] = DeleteGroupMessage;
-    _map["update_unread_message"] = UpdateUnreadMessage;
-    _map["update_group_unread_message"] = UpdateGroupUnreadMessage;
-    _map["delete_account"] = DeleteAccount;
     _map["audio"] = Audio;
     _map["group_audio"] = GroupAudio;
     _map["invalid_type"] = InvalidType;

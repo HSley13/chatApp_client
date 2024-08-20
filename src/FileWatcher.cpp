@@ -1,4 +1,4 @@
-#include "FileWatcher.h"
+#include "FileWatcher.hpp"
 
 FileWatcher::FileWatcher(std::function<void()> callback)
     : _callback(callback)

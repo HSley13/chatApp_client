@@ -1,5 +1,5 @@
-#include "GroupProxyList.h"
-#include "GroupListModel.h"
+#include "GroupProxyList.hpp"
+#include "GroupListModel.hpp"
 
 GroupProxyList::GroupProxyList(QObject *parent)
     : QSortFilterProxyModel(parent)

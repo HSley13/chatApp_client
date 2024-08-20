@@ -2,10 +2,8 @@
 #include <QQuickView>
 #include <QUrl>
 #include <QQmlEngine>
-#include <QApplication>
 
-#include "FileWatcher.h"
-#include "ClientManager.h"
+#include "FileWatcher.hpp"
 
 int main(int argc, char *argv[])
 {

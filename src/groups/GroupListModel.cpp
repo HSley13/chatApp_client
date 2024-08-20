@@ -1,7 +1,7 @@
-#include "GroupListModel.h"
-#include "MediaController.h"
-#include "ContactListModel.h"
-#include "GroupMessageInfo.h"
+#include "GroupListModel.hpp"
+#include "MediaController.hpp"
+#include "ContactListModel.hpp"
+#include "GroupMessageInfo.hpp"
 
 GroupInfo *GroupListModel::_active_group_chat{Q_NULLPTR};
 
@@ -313,7 +313,7 @@ void GroupListModel::on_group_is_typing_received(const int &groupID, const QStri
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {GroupIsTypingRole});
 
-            QTimer::singleShot(2000, this, [=]()
+            QTimer::singleShot(2000, this, [=, this]()
                                {    group->set_group_is_typing(QString());
                                     QModelIndex index = createIndex(_groups.indexOf(group), 0);
                                     emit dataChanged(index, index, {GroupIsTypingRole}); });

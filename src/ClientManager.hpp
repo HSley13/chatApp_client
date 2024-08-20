@@ -84,7 +84,8 @@ signals:
     void disconnected();
 
     void question_answer(const QString &secret_question, const QString &secret_answer);
-    void status_message(const bool &true_or_false, const QString &message);
+    void status_message(const QString &message, const bool &true_or_false);
+    void message_received(const QString &message);
 
     void remove_group_member_received(const int &groupID, QJsonArray group_members);
     void add_group_member_received(const int &groupID, const QJsonArray new_group_members);
@@ -127,11 +128,8 @@ private:
         RemovedFromGroup,
         DeleteMessage,
         DeleteGroupMessage,
-        UpdateUnreadMessage,
-        UpdateGroupUnreadMessage,
         Audio,
         GroupAudio,
-        DeleteAccount,
         InvalidType
     };
     static QHash<QString, MessageType> _map;

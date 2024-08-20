@@ -1,4 +1,4 @@
-#include "GroupMessageInfo.h"
+#include "GroupMessageInfo.hpp"
 
 GroupMessageInfo::GroupMessageInfo(QObject *parent) {}
 

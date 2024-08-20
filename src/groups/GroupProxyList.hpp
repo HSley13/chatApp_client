@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GroupInfo.h"
+#include "GroupInfo.hpp"
+
 class GroupProxyList : public QSortFilterProxyModel
 {
     Q_OBJECT

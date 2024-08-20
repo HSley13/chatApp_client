@@ -1,8 +1,9 @@
 #pragma once
 
-#include "GroupInfo.h"
-#include "GroupProxyList.h"
-#include "ClientManager.h"
+#include "GroupInfo.hpp"
+#include "GroupProxyList.hpp"
+#include "ClientManager.hpp"
+
 class GroupListModel : public QAbstractListModel
 {
     Q_OBJECT
