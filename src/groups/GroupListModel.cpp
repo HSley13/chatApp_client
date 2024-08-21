@@ -3,8 +3,6 @@
 #include "ContactListModel.hpp"
 #include "GroupMessageInfo.hpp"
 
-GroupInfo *GroupListModel::_active_group_chat{Q_NULLPTR};
-
 GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _group_proxy_list(new GroupProxyList(this))
@@ -71,18 +69,20 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
         return group_info->group_name();
     case GroupIsTypingRole:
         return group_info->group_is_typing();
-    case GroupMembersRole:
-        return QVariant::fromValue(group_info->group_members());
     case GroupUnreadMessageRole:
         return group_info->group_unread_message();
-    case GroupMessagesRole:
-        return QVariant::fromValue(group_info->group_messages());
     case GroupImageUrlRole:
         return group_info->group_image_url();
+    case MessageTimeRole:
+        return group_info->message_time();
+    case LastMessageTimeRole:
+        return group_info->last_message_time();
+    case GroupMessagesRole:
+        return QVariant::fromValue(group_info->group_messages());
     case GroupObjectRole:
         return QVariant::fromValue(group_info);
-    case LastMessageTimeRole:
-        return QVariant::fromValue(group_info->last_message_time());
+    case GroupMembersRole:
+        return QVariant::fromValue(group_info->group_members());
     default:
         return QVariant();
     }
@@ -109,8 +109,11 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     case GroupUnreadMessageRole:
         group_info->set_group_unread_message(value.toInt());
         break;
+    case MessageTimeRole:
+        group_info->set_message_time(value.toString());
+        break;
     case LastMessageTimeRole:
-        group_info->set_last_message_time(value.value<QDateTime>());
+        group_info->set_last_message_time(value.toString());
         break;
     default:
         return false;
@@ -134,6 +137,7 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
     roles[GroupImageUrlRole] = "group_image_url";
     roles[GroupObjectRole] = "group_contact_object";
     roles[LastMessageTimeRole] = "last_message_time";
+    roles[MessageTimeRole] = "message_time";
 
     return roles;
 }
@@ -215,7 +219,11 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         if (!messages.isEmpty())
         {
             for (const QJsonValue &message : messages)
+            {
                 group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
+                group->set_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last());
+                group->set_last_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()));
+            }
         }
 
         beginInsertRows(QModelIndex(), _groups.count(), _groups.count());
@@ -257,7 +265,8 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
-            group->set_last_message_time(QDateTime::currentDateTime());
+            group->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
+            group->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
                 group->set_group_unread_message(group->group_unread_message() + 1);
@@ -268,6 +277,7 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
             }
 
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
+            emit dataChanged(index, index, {MessageTimeRole});
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
@@ -284,7 +294,8 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(QString(), QString(), audio_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
-            group->set_last_message_time(QDateTime::currentDateTime());
+            group->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
+            group->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
                 group->set_group_unread_message(group->group_unread_message() + 1);
@@ -295,6 +306,7 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
             }
 
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
+            emit dataChanged(index, index, {MessageTimeRole});
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {GroupUnreadMessageRole});
         }
@@ -427,13 +439,15 @@ void GroupListModel::on_delete_group_message_received(const int &groupID, const 
                     delete message;
                     group->group_messages()->removeAt(i);
 
-                FIXME:
-                    // if (i == group->group_messages()->count())
-                    // {
-                    // emit group_changed cause the list view for the last message read should be updated
-                    //     GroupMessageInfo *last_message = group->group_messages()->last();
-                    //     group->set_last_message_time();
-                    // }
+                    if (i == group->group_messages()->count())
+                    {
+                        group->set_message_time(group->group_messages()->at(i - 1)->time());
+                        group->set_last_message_time(group->group_messages()->at(i - 1)->full_time());
+
+                        QModelIndex index = createIndex(i - 1, 0);
+                        emit dataChanged(index, index, {MessageTimeRole});
+                        emit dataChanged(index, index, {LastMessageTimeRole});
+                    }
 
                     return;
                 }
@@ -452,7 +466,8 @@ void GroupListModel::on_group_audio_received(const int &groupID, const int &send
         if (group->group_ID() == groupID)
         {
             group->add_group_message(new GroupMessageInfo(QString(), audio_url, QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
-            group->set_last_message_time(QDateTime::currentDateTime());
+            group->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
+            group->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
                 group->set_group_unread_message(group->group_unread_message() + 1);
@@ -463,6 +478,7 @@ void GroupListModel::on_group_audio_received(const int &groupID, const int &send
             }
 
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
+            emit dataChanged(index, index, {MessageTimeRole});
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {GroupUnreadMessageRole});
         }

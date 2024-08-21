@@ -2,6 +2,7 @@
 
 #include <QtQuick>
 #include <QWebSocket>
+#include <QtCompilerDetection>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -42,7 +43,7 @@ public:
     void remove_group_member(const int &groupID, QJsonArray group_members);
     void add_group_member(const int &groupID, QJsonArray group_members);
 
-    QString UTC_to_timeZone(const QString &UTC_time);
+    static QString UTC_to_timeZone(const QString &UTC_time);
 
     Q_INVOKABLE void delete_message(const int &phone_number, const int &chat_ID, const QString &full_time);
     Q_INVOKABLE void delete_group_message(const int &groupID, const QString &full_time);
@@ -104,9 +105,9 @@ public:
     static std::shared_ptr<ClientManager> instance();
 
 private:
-    static QWebSocket *_socket;
-    QString _time_zone;
-    static std::shared_ptr<ClientManager> _instance;
+    static inline QWebSocket *_socket{nullptr};
+    static inline QString _time_zone{};
+    static inline std::shared_ptr<ClientManager> _instance{nullptr};
 
     enum MessageType
     {
@@ -137,5 +138,5 @@ private:
         Audio,
         GroupAudio
     };
-    static QHash<QString, MessageType> _map;
+    static inline QHash<QString, MessageType> _map{};
 };

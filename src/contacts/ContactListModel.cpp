@@ -1,9 +1,5 @@
 #include "ContactListModel.hpp"
 
-ContactInfo *ContactListModel::_main_user{nullptr};
-ContactInfo *ContactListModel::_active_chat{Q_NULLPTR};
-QList<ContactInfo *> *ContactListModel::_contacts_ptr{nullptr};
-
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _contact_proxy_list_chat(new ContactProxyList(this)),
@@ -112,38 +108,17 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
         return contact_info->popup_message();
     case LoginStatusRole:
         return contact_info->login_status();
+    case MessageTimeRole:
+        return contact_info->message_time();
+    case LastMessageTimeRole:
+        return contact_info->last_message_time();
     case MessagesRole:
         return QVariant::fromValue(contact_info->messages());
     case ContactObjectRole:
         return QVariant::fromValue(contact_info);
-    case LastMessageTimeRole:
-        return QVariant::fromValue(contact_info->last_message_time());
     default:
         return QVariant();
     }
-}
-
-QHash<int, QByteArray> ContactListModel::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-
-    roles[chat_IDRole] = "chat_ID";
-    roles[SecretQuestionRole] = "secret_question";
-    roles[secretAnswerRole] = "secret_answer";
-    roles[FirstNameRole] = "first_name";
-    roles[LastNameRole] = "last_name";
-    roles[PhoneNumberRole] = "phone_number";
-    roles[PopupMessageRole] = "popup_message";
-    roles[LoginStatusRole] = "login_status";
-    roles[IsTypingRole] = "is_typing";
-    roles[StatusRole] = "status";
-    roles[UnreadMessageRole] = "unread_message";
-    roles[ImageUrlRole] = "image_url";
-    roles[MessagesRole] = "messages";
-    roles[ContactObjectRole] = "contact_info";
-    roles[LastMessageTimeRole] = "last_message_time";
-
-    return roles;
 }
 
 bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -190,8 +165,11 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     case ImageUrlRole:
         contact_info->set_image_url(value.toString());
         break;
+    case MessageTimeRole:
+        contact_info->set_message_time(value.toString());
+        break;
     case LastMessageTimeRole:
-        contact_info->set_last_message_time(value.value<QDateTime>());
+        contact_info->set_last_message_time(value.toString());
         break;
     default:
         return false;
@@ -200,6 +178,30 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     emit dataChanged(index, index, {role});
 
     return true;
+}
+
+QHash<int, QByteArray> ContactListModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles[chat_IDRole] = "chat_ID";
+    roles[SecretQuestionRole] = "secret_question";
+    roles[secretAnswerRole] = "secret_answer";
+    roles[FirstNameRole] = "first_name";
+    roles[LastNameRole] = "last_name";
+    roles[PhoneNumberRole] = "phone_number";
+    roles[PopupMessageRole] = "popup_message";
+    roles[LoginStatusRole] = "login_status";
+    roles[IsTypingRole] = "is_typing";
+    roles[StatusRole] = "status";
+    roles[UnreadMessageRole] = "unread_message";
+    roles[ImageUrlRole] = "image_url";
+    roles[MessagesRole] = "messages";
+    roles[ContactObjectRole] = "contact_info";
+    roles[LastMessageTimeRole] = "last_message_time";
+    roles[MessageTimeRole] = "message_time";
+
+    return roles;
 }
 
 ContactProxyList *ContactListModel::contact_proxy_list_chat() const
@@ -236,7 +238,11 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
         ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), obj["unread_messages"].toInt(), this);
 
         for (const QJsonValue &message : chat_messages)
+        {
             contact->add_message(new MessageInfo(message["message"].toString(), message["audio_url"].toString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
+            contact->set_last_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()));
+            contact->set_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last());
+        }
 
         beginInsertRows(QModelIndex(), _contacts.count(), _contacts.count());
         _contacts.append(contact);
@@ -342,7 +348,8 @@ void ContactListModel::on_text_received(const int &chatID, const int &sender_ID,
         if (contact->chat_ID() == chatID)
         {
             contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, _client_manager->UTC_to_timeZone(time), this));
-            contact->set_last_message_time(QDateTime::currentDateTime());
+            contact->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
+            contact->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
                 contact->set_unread_message(contact->unread_message() + 1);
@@ -353,6 +360,7 @@ void ContactListModel::on_text_received(const int &chatID, const int &sender_ID,
             }
 
             QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index, {MessageTimeRole});
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {UnreadMessageRole});
 
@@ -371,7 +379,8 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
         if (contact->chat_ID() == chatID)
         {
             contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time), this));
-            contact->set_last_message_time(QDateTime::currentDateTime());
+            contact->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
+            contact->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
                 contact->set_unread_message(contact->unread_message() + 1);
@@ -382,6 +391,7 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
             }
 
             QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
+            emit dataChanged(index, index, {MessageTimeRole});
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {UnreadMessageRole});
 
@@ -475,13 +485,15 @@ void ContactListModel::on_delete_message_received(const int &chatID, const QStri
                     delete message;
                     contact->messages()->removeAt(i);
 
-                FIXME:
-                    // if (i == contact->messages()->count())
-                    // {
-                    // emit group_changed cause the list view for the last message read should be updated
-                    //     MessageInfo *last_message = contact->messages()->last();
-                    //     contact->set_last_message_time();
-                    // }
+                    if (i == contact->messages()->count())
+                    {
+                        contact->set_message_time(contact->messages()->at(i - 1)->time());
+                        contact->set_last_message_time(contact->messages()->at(i - 1)->full_time());
+
+                        QModelIndex index = createIndex(i - 1, 0);
+                        emit dataChanged(index, index, {MessageTimeRole});
+                        emit dataChanged(index, index, {LastMessageTimeRole});
+                    }
 
                     return;
                 }
@@ -500,7 +512,8 @@ void ContactListModel::on_audio_received(const int &chatID, const int &sender_ID
         if (contact->chat_ID() == chatID)
         {
             contact->add_message(new MessageInfo(QString(), audio_url, QString(), sender_ID, _client_manager->UTC_to_timeZone(time), this));
-            contact->set_last_message_time(QDateTime::currentDateTime());
+            contact->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
+            contact->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
                 contact->set_unread_message(contact->unread_message() + 1);
@@ -511,6 +524,7 @@ void ContactListModel::on_audio_received(const int &chatID, const int &sender_ID
             }
 
             QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
+            emit dataChanged(index, index, {MessageTimeRole});
             emit dataChanged(index, index, {LastMessageTimeRole});
             emit dataChanged(index, index, {UnreadMessageRole});
 

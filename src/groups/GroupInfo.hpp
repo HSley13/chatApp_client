@@ -14,6 +14,8 @@ class GroupInfo : public QObject
     Q_PROPERTY(QString group_image_url READ group_image_url WRITE set_group_image_url NOTIFY group_image_url_changed)
     Q_PROPERTY(int group_unread_message READ group_unread_message WRITE set_group_unread_message NOTIFY group_unread_message_changed)
     Q_PROPERTY(QString group_is_typing READ group_is_typing WRITE set_group_is_typing NOTIFY group_is_typing_changed)
+    Q_PROPERTY(QString message_time READ message_time WRITE set_message_time NOTIFY message_time_changed)
+    Q_PROPERTY(QString last_message_time READ last_message_time WRITE set_last_message_time NOTIFY last_message_time_changed)
 
     Q_PROPERTY(QList<ContactInfo *> group_members READ group_members NOTIFY group_members_changed)
     Q_PROPERTY(GroupChatListModel *group_messages READ group_messages NOTIFY group_messages_changed)
@@ -47,8 +49,11 @@ public:
     void add_group_message(GroupMessageInfo *group_message);
     GroupChatListModel *group_messages() const;
 
-    QDateTime last_message_time() const;
-    void set_last_message_time(const QDateTime &time);
+    QString last_message_time() const;
+    void set_last_message_time(const QString &time);
+
+    QString message_time() const;
+    void set_message_time(const QString &time);
 
 private:
     int _group_ID{0};
@@ -61,7 +66,8 @@ private:
 
     GroupChatListModel *_group_messages;
 
-    QDateTime _last_message_time = QDateTime::currentDateTime();
+    QString _last_message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString());
+    QString _message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString()).split(" ").last();
 
 signals:
     void group_name_changed();
@@ -70,8 +76,9 @@ signals:
     void group_unread_message_changed();
     void group_ID_changed();
     void group_admin_changed();
+    void last_message_time_changed();
+    void message_time_changed();
 
     void group_messages_changed();
-
     void group_is_typing_changed();
 };

@@ -67,7 +67,7 @@ Group Chat Window (Bruce is typing...)  ![](preview_images/18.png)
 Group Setting Panel ![](preview_images/19.png)
 Group Settings (Upon clicked on +Members)  ![](preview_images/20.png)
 Account Settings  ![](preview_images/21.png)
-Account Settings (Upon clicked on Delete Account) ![](preview_images/21.png)
+Account Settings (Upon clicked on Delete Account) ![](preview_images/22.png)
 Server App Default Window![](preview_images/server.png)
 
 ---

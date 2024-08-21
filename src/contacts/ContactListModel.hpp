@@ -41,9 +41,9 @@ public:
 
     std::shared_ptr<ClientManager> _client_manager{nullptr};
 
-    static QList<ContactInfo *> *_contacts_ptr;
+    static inline QList<ContactInfo *> *_contacts_ptr{nullptr};
 
-    static ContactInfo *_main_user;
+    static inline ContactInfo *_main_user{nullptr};
 
 private slots:
     void on_load_contacts(QJsonArray json_array);
@@ -94,11 +94,12 @@ public:
         SecretQuestionRole,
         secretAnswerRole,
         PopupMessageRole,
-        LoginStatusRole
+        LoginStatusRole,
+        MessageTimeRole
     };
 
 private:
-    static ContactInfo *_active_chat;
+    static inline ContactInfo *_active_chat{nullptr};
     QList<ContactInfo *> _contacts;
     ContactProxyList *_contact_proxy_list_chat{nullptr};
     ContactProxyList *_contact_proxy_list{nullptr};

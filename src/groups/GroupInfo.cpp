@@ -117,15 +117,34 @@ void GroupInfo::add_group_message(GroupMessageInfo *message)
     emit group_messages_changed();
 }
 
-QDateTime GroupInfo::last_message_time() const
+QString GroupInfo::last_message_time() const
 {
     return _last_message_time;
 }
 
-void GroupInfo::set_last_message_time(const QDateTime &time)
+void GroupInfo::set_last_message_time(const QString &time)
 {
-    if (_last_message_time != time)
-        _last_message_time = time;
+    if (!_last_message_time.compare(time))
+        return;
+
+    _last_message_time = time;
+
+    emit last_message_time_changed();
+}
+
+QString GroupInfo::message_time() const
+{
+    return _message_time;
+}
+
+void GroupInfo::set_message_time(const QString &time)
+{
+    if (!_message_time.compare(time))
+        return;
+
+    _message_time = time;
+
+    emit message_time_changed();
 }
 
 const QString &GroupInfo::group_is_typing() const

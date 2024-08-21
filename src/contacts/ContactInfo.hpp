@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ChatListModel.hpp"
+#include "ClientManager.hpp"
 
 class ContactInfo : public QObject
 {
@@ -15,6 +16,8 @@ class ContactInfo : public QObject
     Q_PROPERTY(QString image_url READ image_url WRITE set_image_url NOTIFY image_url_changed)
     Q_PROPERTY(int unread_message READ unread_message WRITE set_unread_message NOTIFY unread_message_changed)
     Q_PROPERTY(QString is_typing READ is_typing WRITE set_is_typing NOTIFY is_typing_changed)
+    Q_PROPERTY(QString message_time READ message_time WRITE set_message_time NOTIFY message_time_changed)
+    Q_PROPERTY(QString last_message_time READ last_message_time WRITE set_last_message_time NOTIFY last_message_time_changed)
 
     Q_PROPERTY(QString secret_question READ secret_question WRITE set_secret_question NOTIFY secret_question_changed)
     Q_PROPERTY(QString secret_answer READ secret_answer WRITE set_secret_answer NOTIFY secret_answer_changed)
@@ -67,8 +70,11 @@ public:
     void add_message(MessageInfo *message);
     ChatListModel *messages() const;
 
-    QDateTime last_message_time() const;
-    void set_last_message_time(const QDateTime &time);
+    QString last_message_time() const;
+    void set_last_message_time(const QString &time);
+
+    QString message_time() const;
+    void set_message_time(const QString &time);
 
 private:
     int _chat_ID{0};
@@ -87,7 +93,8 @@ private:
 
     ChatListModel *_messages;
 
-    QDateTime _last_message_time = QDateTime::currentDateTime();
+    QString _last_message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString());
+    QString _message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString()).split(" ").last();
 
 signals:
     void first_name_changed();
@@ -97,6 +104,8 @@ signals:
     void image_url_changed();
     void unread_message_changed();
     void chat_ID_changed();
+    void last_message_time_changed();
+    void message_time_changed();
 
     void messages_changed();
 

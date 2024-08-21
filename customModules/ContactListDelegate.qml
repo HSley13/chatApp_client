@@ -79,7 +79,7 @@ Rectangle
 
             Text
             {
-                text: (is_typing !== "") ? is_typing : (messages.count > 0 ? messages.at(messages.count - 1).text : "");
+                text: (is_typing !== "") ? is_typing : (messages.count > 0 ? messages.at(messages.count - 1).text : "file/audio");
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
@@ -119,7 +119,7 @@ Rectangle
 
             Text
             {
-                text: (messages.count === 0) ? " " : messages.at(contact_list_model.contact_proxy_list_chat.get(index).messages.count - 1).time;
+                text: (messages.count === 0) ? " " : message_time;
                 color: "gray";
                 font.bold: true;
                 font.pixelSize: 12;

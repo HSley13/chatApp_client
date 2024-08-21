@@ -24,7 +24,8 @@ public:
         GroupMessagesRole,
         GroupObjectRole,
         LastMessageTimeRole,
-        GroupIsTypingRole
+        GroupIsTypingRole,
+        MessageTimeRole
     };
 
     GroupListModel(QAbstractListModel *parent = nullptr);
@@ -63,7 +64,7 @@ private slots:
 
 private:
     QList<GroupInfo *> _groups;
-    static GroupInfo *_active_group_chat;
+    static inline GroupInfo *_active_group_chat{nullptr};
 
     GroupProxyList *_group_proxy_list{nullptr};
     std::shared_ptr<ClientManager> _client_manager{nullptr};

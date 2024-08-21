@@ -129,8 +129,6 @@ void ContactInfo::set_unread_message(const int &new_unread_message)
 
     _unread_message = new_unread_message;
 
-    qDebug() << "Setting Unread Message";
-
     emit unread_message_changed();
 }
 
@@ -161,15 +159,34 @@ void ContactInfo::add_message(MessageInfo *message)
     emit messages_changed();
 }
 
-QDateTime ContactInfo::last_message_time() const
+QString ContactInfo::last_message_time() const
 {
     return _last_message_time;
 }
 
-void ContactInfo::set_last_message_time(const QDateTime &time)
+void ContactInfo::set_last_message_time(const QString &time)
 {
-    if (_last_message_time != time)
-        _last_message_time = time;
+    if (!_last_message_time.compare(time))
+        return;
+
+    _last_message_time = time;
+
+    emit last_message_time_changed();
+}
+
+QString ContactInfo::message_time() const
+{
+    return _message_time;
+}
+
+void ContactInfo::set_message_time(const QString &time)
+{
+    if (!_message_time.compare(time))
+        return;
+
+    _message_time = time;
+
+    emit message_time_changed();
 }
 
 const QString &ContactInfo::is_typing() const

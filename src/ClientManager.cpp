@@ -1,9 +1,5 @@
 #include "ClientManager.hpp"
 
-QHash<QString, ClientManager::MessageType> ClientManager::_map;
-std::shared_ptr<ClientManager> ClientManager::_instance{nullptr};
-QWebSocket *ClientManager::_socket{nullptr};
-
 ClientManager::ClientManager(QObject *parent)
     : QObject(parent)
 {

@@ -62,7 +62,7 @@ Rectangle
 
             Text
             {
-                text: (group_is_typing !== "") ? group_is_typing : (group_messages.count > 0 ? group_messages.at(group_messages.count - 1).text : "");
+                text: (group_is_typing !== "") ? group_is_typing : (group_messages.count > 0 ? group_messages.at(group_messages.count - 1).text : "file/audio");
                 color: "black";
                 font.pixelSize: 12;
                 Layout.fillWidth: true;
@@ -102,7 +102,7 @@ Rectangle
 
             Text
             {
-                text: (group_messages.count === 0) ? " " : group_messages.at(group_list_model.group_proxy_list.get(index).group_messages.count - 1).time;
+                text: (group_messages.count === 0) ? " " : message_time;
                 color: "gray";
                 font.bold: true;
                 font.pixelSize: 12;

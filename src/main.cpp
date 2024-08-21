@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QQuickView>
 #include <QUrl>
-#include <QQmlEngine>
 
 int main(int argc, char *argv[])
 {
