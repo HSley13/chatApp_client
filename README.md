@@ -6,11 +6,10 @@
 
 ## Prerequisites
 + C++ 17 or later
-+ MYSQL server & mysql-connector-c++ [click me](https://dev.mysql.com/downloads/)
++ mongoDB
 + QWebAssembly [Installation tutorial](https://doc.qt.io/qt-6/wasm.html)
   + Qt@6.7 or later [Installation tutorial](https://doc.qt.io/qt-6/build-sources.html) 
   + emscripten 3.1.50 [Installation tutorial](https://emscripten.org/docs/getting_started/downloads.html)
-+ argon2 (use your package manager)
 
 ---
 
@@ -30,7 +29,6 @@
 + **Real-time File and Voice Note Transmission** : Send files and voice notes in real-time without degradation.
 + **Real-time is Typing... Message** : Notifies When Someone is typing a message.
 + **Password Recovery** : Uses Self-asked Secret Question and Answer that were entered when signing up.
-+ **Swipe Back (from left to right) Navigation** : Swipe on the edge of the window to go back to previous ones. This Implementation was possible By overriding both QT's mousePressEvent and mouseMoveEvent core function.
 + **Dynamic Client Names** : Allows clients to change their names dynamically, reflecting changes Friend list/Group list (Whole Interface).
 + **Online/Offline Status** : Indicates user status with green (online) and red (offline) dots.
 + **Permanent Data Storage**: (Audio) Uses emscripten's IDBFS for local data storage, ensuring consistency with IndexedDB along with AWS for Files.
@@ -75,7 +73,7 @@ Server App Default Window![](preview_images/server.png)
 ## MYSQL Database Preparation (Server app)
 
 ### Tables (OLD SERVER'S DATABASE SETUP WITH MYSQL)
-### The New Server is Using MongoDB for scalability
+### The New Server is Using MongoDB for scalability and it's easier to query chat and group conversations
 
 -------accounts
 ```mysql

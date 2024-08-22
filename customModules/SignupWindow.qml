@@ -73,6 +73,11 @@ Item
             placeHolder: "First Name";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
 
         InputField
@@ -84,6 +89,11 @@ Item
             placeHolder: "Last Name";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
 
         InputField
@@ -95,6 +105,11 @@ Item
             placeHolder: "Phone Number";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
 
         InputField
@@ -107,6 +122,11 @@ Item
             placeHolder: "Password";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
 
         InputField
@@ -119,6 +139,11 @@ Item
             placeHolder: "Password Confirmation";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
 
         InputField
@@ -130,6 +155,11 @@ Item
             placeHolder: "Secret Question";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
 
         InputField
@@ -141,6 +171,11 @@ Item
             placeHolder: "Secret Answer";
             width: parent.width;
             height: 40;
+
+            onFocusChanged: 
+            {
+                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+            }
         }
     }
 

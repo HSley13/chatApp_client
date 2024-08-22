@@ -120,6 +120,7 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     }
 
     emit dataChanged(index, index, {role});
+
     return true;
 }
 
