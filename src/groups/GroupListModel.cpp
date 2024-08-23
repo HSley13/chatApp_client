@@ -1,7 +1,5 @@
 #include "GroupListModel.hpp"
-#include "MediaController.hpp"
 #include "ContactListModel.hpp"
-#include "GroupMessageInfo.hpp"
 
 GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),

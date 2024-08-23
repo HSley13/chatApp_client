@@ -52,11 +52,11 @@ void ClientManager::on_text_message_received(const QString &message)
         break;
     case LookupFriend:
         emit load_contacts(json_object["json_array"].toArray());
-        emit message_received(json_object["message"].toString());
+        emit pop_message_received(json_object["message"].toString());
         break;
     case AddedYou:
         emit load_contacts(json_object["json_array"].toArray());
-        emit message_received(json_object["message"].toString());
+        emit pop_message_received(json_object["message"].toString());
         break;
     case ProfileImage:
         emit profile_image(json_object["image_url"].toString());
@@ -71,14 +71,14 @@ void ClientManager::on_text_message_received(const QString &message)
         emit text_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
         break;
     case ClientConnected:
-        emit client_connected(json_object["phone_number"].toInt());
+        emit client_connected_disconnected(json_object["phone_number"].toInt(), true);
         break;
     case ClientDisconnected:
-        emit client_disconnected(json_object["phone_number"].toInt());
+        emit client_connected_disconnected(json_object["phone_number"].toInt(), false);
         break;
     case AddedToGroup:
         emit load_groups(json_object["groups"].toArray());
-        emit message_received(json_object["message"].toString());
+        emit pop_message_received(json_object["message"].toString());
         break;
     case GroupText:
         emit group_text_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["message"].toString(), json_object["time"].toString());

@@ -50,24 +50,17 @@ private slots:
     void on_load_my_info(QJsonObject my_info);
     void on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time);
 
-    void on_client_connected(const int &phone_number);
-    void on_client_disconnected(const int &phone_number);
+    void on_client_connected_disconnected(const int &phone_number, const bool &true_or_false);
 
     void on_client_profile_image(const int &phone_number, const QString &image_url);
 
     void on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time);
+    void on_audio_received(const int &chatID, const int &sender_ID, const QString &audio_url, const QString &time);
 
     void on_is_typing_received(const int &phone_number);
     void on_update_client_info(const int &phone_number, const QString &first_name, const QString &last_name);
 
-    void on_question_answer(const QString &secret_question, const QString &secret_answer);
-
-    void on_status_message(const QString &message, const bool &true_or_false);
-    void on_message_received(const QString &message);
-
     void on_delete_message_received(const int &chatID, const QString &full_time);
-
-    void on_audio_received(const int &chatID, const int &sender_ID, const QString &audio_url, const QString &time);
 
 signals:
     void contacts_changed();

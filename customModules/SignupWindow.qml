@@ -60,7 +60,7 @@ Item
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
-        width: parent.width * 0.6;
+        width: 300;
 
         spacing: 10;
 
@@ -184,9 +184,13 @@ Item
         id: signUpButton;
         color: mouseArea.pressed ? "#ed7bb4" : "black";
     
-        width: parent.width * 0.6;
-        height: 50;
+        height: 40;
         radius: 15;
+        width: 300;
+
+        anchors.top: signupInfo.bottom;
+        anchors.topMargin: 20;
+        anchors.horizontalCenter: parent.horizontalCenter;
     
         Text
         {
@@ -266,12 +270,7 @@ Item
                 }
             }
         }
-    
-        anchors.top: signupInfo.bottom;
-        anchors.topMargin: 20;
-        anchors.horizontalCenter: parent.horizontalCenter;
     }
-
 
     RowLayout
     {

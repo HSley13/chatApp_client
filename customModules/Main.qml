@@ -3,7 +3,7 @@ import QtQuick.Controls;
 import QtQuick.Window;
 import ClientApp;
 
-Rectangle
+ScrollView
 {
     id: mainWindow;
     anchors.fill: parent;

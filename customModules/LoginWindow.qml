@@ -60,7 +60,7 @@ Item
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
-        width: parent.width * 0.6;
+        width: 300;
 
         spacing: 10;
 
@@ -94,7 +94,7 @@ Item
         color: "transparent";
 
         height: 30;
-        width: parent.width * 0.6;
+        width: 300;
 
         Text
         {
@@ -121,8 +121,8 @@ Item
         id: loginButton;
         color: mouseArea.pressed ? "#ed7bb4" : "black";
 
-        width: parent.width * 0.6;
-        height: 50;
+        width: 300;
+        height: 40;
         radius: 15;
 
         Text

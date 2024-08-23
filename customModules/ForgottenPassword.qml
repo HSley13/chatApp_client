@@ -73,7 +73,7 @@ Item
         anchors.top: textAboutUs.bottom;
         anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
-        width: parent.width * 0.6;
+        width: 300;
 
         spacing: 10;
 
@@ -141,7 +141,7 @@ Item
         id: loginButton;
         color: mouseArea.pressed ? "#ed7bb4" : "black";
 
-        width: parent.width * 0.6;
+        width: 300;
         height: 50;
         radius: 15;
 
@@ -160,12 +160,12 @@ Item
 
             onClicked: 
             {
-                if (clickCount === 0)
+                if (clickCount === 0 && phoneNumber.inputField !== "")
                 {
                     client_manager.retrieve_question(phoneNumber.inputField);
                     clickCount = 1;
                 }
-                else if (clickCount === 1)
+                else if (clickCount === 1 && answer.inputField !== "")
                 {
                     if (answer.inputField === contact_list_model.main_user.secret_answer)
                         clickCount = 2;
