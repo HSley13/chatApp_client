@@ -76,7 +76,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (signUpFirstName.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + signUpFirstName + "')");});
+                }
             }
         }
 
@@ -92,7 +95,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (signUpLastName.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + signUpLastName + "')");});
+                }
             }
         }
 
@@ -108,7 +114,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (signUpphone_number.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + signUpphone_number + "')");});
+                }
             }
         }
 
@@ -125,7 +134,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (signUpPassword.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + signUpPassword + "')");});
+                }
             }
         }
 
@@ -142,7 +154,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (signUpPasswordConfirmation.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + signUpPasswordConfirmation + "')");});
+                }
             }
         }
 
@@ -158,7 +173,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (secret_question.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + secret_question + "')");});
+                }
             }
         }
 
@@ -174,7 +192,10 @@ Item
 
             onFocusChanged: 
             {
-                (focus) ?  signupInfo.y -= 100 : signupInfo.y += 100;
+                if (secret_answer.focus) 
+                {
+                    Qt.callLater(function() { Qt.callJS("scrollIntoView('" + secret_answer + "')");});
+                }
             }
         }
     }
@@ -189,7 +210,7 @@ Item
         width: 300;
 
         anchors.top: signupInfo.bottom;
-        anchors.topMargin: 20;
+        anchors.topMargin: 10;
         anchors.horizontalCenter: parent.horizontalCenter;
     
         Text
@@ -276,7 +297,7 @@ Item
     {
         spacing: 10;
         anchors.top: signUpButton.bottom;
-        anchors.topMargin: 10;
+        anchors.topMargin: 5;
         anchors.horizontalCenter: parent.horizontalCenter;
         Layout.fillWidth: true;
 

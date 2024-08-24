@@ -160,10 +160,15 @@ Item
 
             onClicked: 
             {
-                if (clickCount === 0 && phoneNumber.inputField !== "")
+                if (clickCount === 0)
                 {
-                    client_manager.retrieve_question(phoneNumber.inputField);
-                    clickCount = 1;
+                    if(phoneNumber.inputField !== "")
+                    {
+                        client_manager.retrieve_question(phoneNumber.inputField);
+                        clickCount = 1;
+                    }
+                    else
+                    phoneNumber.borderColor = "red";
                 }
                 else if (clickCount === 1 && answer.inputField !== "")
                 {
