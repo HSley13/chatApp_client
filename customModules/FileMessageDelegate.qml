@@ -41,7 +41,6 @@ Item
             id: timeText;
             text: model.time;
             anchors.top: file_bubble.bottom;
-            anchors.topMargin: 5;
             anchors.right: sender ? parent.right : undefined;
             horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
 
@@ -49,35 +48,35 @@ Item
             font.pixelSize: 10;
 
             width: file_bubble.width;
-        }
 
-        MouseArea 
-        {
-            id: messageMouseArea;
-            anchors.fill: parent;
-            acceptedButtons: Qt.LeftButton | Qt.RightButton;
-
-            onClicked: (mouse) => 
+            MouseArea 
             {
-                if (mouse.button === Qt.RightButton && sender)
-                    contextMenu.popup();
-                else if (mouse.button === Qt.LeftButton)
-                    media_controller.view_file(model.file_source);
-            }
-
-            onPressAndHold: (mouse) => 
-            {
-                if (mouse.source === Qt.MouseEventNotSynthesized && sender)
-                    contextMenu.popup();
-            }
-            
-            Menu 
-            {
-                id: contextMenu;
-                Action 
-                { 
-                    text: "Delete For Both of us"; 
-                    onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+                id: messageMouseArea;
+                anchors.fill: parent;
+                acceptedButtons: Qt.LeftButton | Qt.RightButton;
+                
+                onClicked: (mouse) => 
+                {
+                    if (mouse.button === Qt.RightButton && sender)
+                        contextMenu.popup();
+                    else if (mouse.button === Qt.LeftButton)
+                        media_controller.view_file(model.file_source);
+                }
+    
+                onPressAndHold: (mouse) => 
+                {
+                    if (mouse.source === Qt.MouseEventNotSynthesized && sender)
+                        contextMenu.popup();
+                }
+                
+                Menu 
+                {
+                    id: contextMenu;
+                    Action 
+                    { 
+                        text: "Delete For Both of us"; 
+                        onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+                    }
                 }
             }
         }

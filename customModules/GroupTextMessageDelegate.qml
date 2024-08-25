@@ -50,7 +50,6 @@ Item
             text: model.time;
 
             anchors.top: bubble.bottom;
-            anchors.topMargin: 5;
             anchors.right: sender ? parent.right : undefined;
             horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
 
@@ -58,32 +57,33 @@ Item
             font.pixelSize: 10;
 
             width: bubble.width;
-        }
 
-        MouseArea 
-        {
-            anchors.fill: parent;
-            acceptedButtons: Qt.LeftButton | Qt.RightButton;
-
-            onClicked: (mouse) => 
+            MouseArea 
             {
-                if (mouse.button === Qt.RightButton && sender)
-                    contextMenu.popup()
-            }
+                id: messageMouseArea;
+                anchors.fill: parent;
+                acceptedButtons: Qt.RightButton;
 
-            onPressAndHold: (mouse) => 
-            {
-                if (mouse.source === Qt.MouseEventNotSynthesized && sender)
-                    contextMenu.popup()
-            }
+                onClicked: (mouse) => 
+                {
+                    if (sender)
+                        contextMenu.popup();
+                }
 
-            Menu 
-            {
-                id: contextMenu;
-                Action 
-                { 
-                    text: "Delete For all of us"; 
-                    onTriggered: client_manager.delete_group_message(group_list_model.active_group_chat.group_ID, model.full_time);
+                onPressAndHold: (mouse) => 
+                {
+                    if (mouse.source === Qt.MouseEventNotSynthesized && sender)
+                        contextMenu.popup();
+                }
+
+                Menu 
+                {
+                    id: contextMenu;
+                    Action 
+                    { 
+                        text: "Delete For Both of us"; 
+                        onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+                    }
                 }
             }
         }

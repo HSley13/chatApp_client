@@ -44,14 +44,7 @@ private:
 
     qint64 _record_start_time{0};
     std::shared_ptr<ClientManager> _client_manager{nullptr};
-
-    QMediaPlayer *_player{nullptr};
-    QAudioOutput *_audio_output{nullptr};
-
-    bool _is_playing{false};
-
 signals:
-    void
-    time_display_changed();
+    void time_display_changed();
     void is_recording_changed();
 };

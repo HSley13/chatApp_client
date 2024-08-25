@@ -5,10 +5,10 @@
 ---
 
 ## Prerequisites
-+ C++ 17 or later
++ C++ 20 or later
 + mongoDB
++ Qt@6.7 or later [Installation tutorial](https://doc.qt.io/qt-6/build-sources.html) 
 + QWebAssembly [Installation tutorial](https://doc.qt.io/qt-6/wasm.html)
-  + Qt@6.7 or later [Installation tutorial](https://doc.qt.io/qt-6/build-sources.html) 
   + emscripten 3.1.50 [Installation tutorial](https://emscripten.org/docs/getting_started/downloads.html)
 
 ---
@@ -38,7 +38,7 @@
     2. Upon clicked on Group Settings, it Displays group members and enables direct messaging.
     3. Notifies group members they were added to groups and by whom.
 + **Read/Unread Message Notification** : Utilizes timestamps and database integration to notify users of read/unread messages.
-+ **Message Deletion** : Right Clicked or Press and Hold on one's message to delete it.
++ **Message Deletion** : Right Clicked or Press and Hold on one's message timestamp to delete it.
 
 ---
 

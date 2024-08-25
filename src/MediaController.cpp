@@ -13,7 +13,6 @@ MediaController::MediaController(QObject *parent)
 
     _recorder->setQuality(QMediaRecorder::VeryHighQuality);
     _recorder->setEncodingMode(QMediaRecorder::ConstantQualityEncoding);
-
     connect(_recorder, &QMediaRecorder::durationChanged, this, &MediaController::on_duration_changed);
 
     _client_manager = ClientManager::instance();

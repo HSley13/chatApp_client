@@ -92,7 +92,7 @@ Item
                     let currentTime = mediaPlayer.position / 1000;
                     return `${Math.floor(currentTime / 60)}:${Math.floor(currentTime % 60).toString().padStart(2, "0")} / ${Math.floor(duration / 60)}:${Math.floor(duration % 60).toString().padStart(2, "0")}`;
                 }
-
+    
                 color: "black";
                 font.pixelSize: 10;
                 width: parent.width;
@@ -105,42 +105,40 @@ Item
             id: timeText;
             text: model.time;
             anchors.top: controlsColumn.bottom;
-            anchors.topMargin: 10;
+            anchors.topMargin: 5;
             anchors.right: sender ? parent.right : undefined;
             horizontalAlignment: sender ? Text.AlignRight : Text.AlignLeft;
 
             color: "black";
             font.pixelSize: 10;
             width: controlsColumn.width;
-        }
 
-        MouseArea 
-        {
-            id: messageMouseArea;
-            anchors.fill: parent;
-            acceptedButtons: Qt.LeftButton | Qt.RightButton;
+            MouseArea 
+            {
+                id: messageMouseArea;
+                anchors.fill: parent;
+                acceptedButtons: Qt.RightButton;
+                
+                onClicked: (mouse) => 
+                {
+                    if (sender)
+                        contextMenu.popup();
+                }
 
-            onClicked: (mouse) => 
-            {
-                if (mouse.button === Qt.RightButton && sender)
-                    contextMenu.popup();
-                else if (mouse.button === Qt.LeftButton)
-                    (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
-            }
+                onPressAndHold: (mouse) => 
+                {
+                    if (mouse.source === Qt.MouseEventNotSynthesized && sender)
+                        contextMenu.popup();
+                }
 
-            onPressAndHold: (mouse) => 
-            {
-                if (mouse.source === Qt.MouseEventNotSynthesized && sender)
-                    contextMenu.popup();
-            }
-            
-            Menu 
-            {
-                id: contextMenu;
-                Action 
-                { 
-                    text: "Delete For Both of us"; 
-                    onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+                Menu 
+                {
+                    id: contextMenu;
+                    Action 
+                    { 
+                        text: "Delete For Both of us"; 
+                        onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
+                    }
                 }
             }
         }
