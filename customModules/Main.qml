@@ -96,7 +96,7 @@ ScrollView
             Timer 
             {
                 id: timer;
-                interval: 3000;
+                interval: 5000;
                 running: true;
                 repeat: false;
                 onTriggered: popup.close();
@@ -126,7 +126,7 @@ ScrollView
                 }
             }
 
-            onOpened:  timer.start();
+            onOpened: timer.start();
         }
 
         Component.onCompleted: 
@@ -134,6 +134,11 @@ ScrollView
             contact_list_model.main_user.popup_message_changed.connect(() => {
                 popup.text = contact_list_model.main_user.popup_message;
                 popup.open();
+            });
+
+            contact_list_model.socket_disconnected_changed.connect(() => 
+            {
+                stackView.replace(loginWindow, StackView.PopTransition);
             });
         }
     }

@@ -70,6 +70,12 @@ Item
                     imageSource1: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? "qrc:/QML/ClientApp/icons/pause_icon.png" : "qrc:/QML/ClientApp/icons/play_icon.png";
                     height: 30;
                     width: 30;
+
+                    MouseArea
+                    {
+                        anchors.fill: parent;
+                        onClicked: (mediaPlayer.playbackState === MediaPlayer.PlayingState) ? mediaPlayer.pause() : mediaPlayer.play();
+                    }
                 }
 
                 Slider

@@ -3,8 +3,6 @@ import QtQuick.Controls;
 
 Rectangle
 {
-    id: root;
-
     ListView
     {
         id: contactListView;

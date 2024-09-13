@@ -19,7 +19,7 @@ Rectangle
         clip: true;
         highlightFollowsCurrentItem: true;
 
-          delegate: Item
+        delegate: Item
         {
             width: groupChatListView.width;
             height: (model.audio_source !== "" ? 75 : (model.text !== "" ? 60 : 60));

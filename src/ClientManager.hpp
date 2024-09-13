@@ -102,6 +102,8 @@ signals:
     void delete_message_received(const int &chatID, const QString &full_time);
     void delete_group_message_received(const int &groupID, const QString &full_time);
 
+    void socket_disconnected(const bool &true_or_false);
+
 public:
     static std::shared_ptr<ClientManager> instance();
 

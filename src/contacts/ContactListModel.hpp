@@ -14,6 +14,7 @@ class ContactListModel : public QAbstractListModel
     Q_PROPERTY(ContactProxyList *contact_proxy_list_chat READ contact_proxy_list_chat NOTIFY contact_proxy_list_chat_changed)
     Q_PROPERTY(ContactProxyList *contact_proxy_list READ contact_proxy_list NOTIFY contact_proxy_list_changed)
     Q_PROPERTY(QList<ContactInfo *> contacts READ contacts NOTIFY contacts_changed)
+    Q_PROPERTY(bool socket_disconnected READ socket_disconnected NOTIFY socket_disconnected_changed)
 
 public:
     ContactListModel(QAbstractListModel *parent = nullptr);
@@ -29,6 +30,9 @@ public:
     static ContactInfo *main_user();
     ContactProxyList *contact_proxy_list_chat() const;
     ContactProxyList *contact_proxy_list() const;
+
+    const bool &socket_disconnected() const;
+    void set_socket_disconnected(const bool &true_or_false);
 
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -70,6 +74,8 @@ signals:
     void contact_proxy_list_changed();
     void main_user_changed();
 
+    void socket_disconnected_changed();
+
 public:
     enum ContactRoles
     {
@@ -96,4 +102,6 @@ private:
     QList<ContactInfo *> _contacts;
     ContactProxyList *_contact_proxy_list_chat{nullptr};
     ContactProxyList *_contact_proxy_list{nullptr};
+
+    bool _socket_disconnected{false};
 };

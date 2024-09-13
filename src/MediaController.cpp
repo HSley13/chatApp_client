@@ -67,6 +67,8 @@ void MediaController::stop_recording()
 {
     _recorder->stop();
 
+    QThread::sleep(1);
+
     set_time_display("00:00");
 
     QByteArray audio_data;
@@ -80,8 +82,8 @@ void MediaController::stop_recording()
 
     QString audio_name = QString("%1_%2_%3")
                              .arg(ContactListModel::main_user()->phone_number())
-                             .arg(QDateTime::currentDateTime().toString())
-                             .arg("audio.mp3");
+                             .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss"))
+                             .arg("audio.m4a");
 
     (ContactListModel::active_chat()) ? _client_manager->send_audio(ContactListModel::active_chat()->chat_ID(), ContactListModel::active_chat()->phone_number(), audio_name, audio_data) : _client_manager->send_group_audio(GroupListModel::active_group_chat()->group_ID(), ContactListModel::main_user()->first_name(), audio_name, audio_data);
 }

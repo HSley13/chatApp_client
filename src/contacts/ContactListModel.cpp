@@ -43,6 +43,8 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
             { _main_user->set_popup_message(message); });
 
     connect(_client_manager.get(), &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
+
+    connect(_client_manager.get(), &ClientManager::socket_disconnected, this, &ContactListModel::set_socket_disconnected);
 }
 
 ContactListModel::~ContactListModel() { _contacts.clear(); }
@@ -215,6 +217,21 @@ ContactProxyList *ContactListModel::contact_proxy_list_chat() const
 ContactProxyList *ContactListModel::contact_proxy_list() const
 {
     return _contact_proxy_list;
+}
+
+const bool &ContactListModel::socket_disconnected() const
+{
+    return _socket_disconnected;
+}
+
+void ContactListModel::set_socket_disconnected(const bool &true_or_false)
+{
+    if (_socket_disconnected == true_or_false)
+        return;
+
+    _socket_disconnected = true_or_false;
+
+    emit socket_disconnected_changed();
 }
 
 void ContactListModel::on_load_my_info(QJsonObject my_info)
@@ -428,7 +445,6 @@ void ContactListModel::on_is_typing_received(const int &phone_number)
 
             QTimer::singleShot(2000, this, [=, this]()
                                {    contact->set_is_typing(QString());
-                                    QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
                                     emit dataChanged(index, index, {IsTypingRole}); });
 
             return;

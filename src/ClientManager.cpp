@@ -10,6 +10,8 @@ ClientManager::ClientManager(QObject *parent)
 
         connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
         connect(_socket, &QWebSocket::textMessageReceived, this, &ClientManager::on_text_message_received);
+        connect(_socket, &QWebSocket::errorOccurred, this, [=, this]()
+                { emit pop_message_received("Server not Connected"); });
 
         map_initialization();
 
@@ -131,6 +133,7 @@ void ClientManager::on_text_message_received(const QString &message)
 void ClientManager::on_disconnected()
 {
     emit disconnected();
+    emit socket_disconnected(true);
     qDebug() << "Disconnected Signal emitted";
 }
 
