@@ -1,0 +1,310 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "GroupListModel",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "group_name",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "members",
+                            "type": "QList<ContactInfo*>"
+                        }
+                    ],
+                    "name": "add_group",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "members",
+                            "type": "QList<ContactInfo*>"
+                        }
+                    ],
+                    "name": "remove_group_member",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "phone_number",
+                            "type": "int"
+                        },
+                        {
+                            "name": "members",
+                            "type": "QList<ContactInfo*>"
+                        }
+                    ],
+                    "name": "add_group_member",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "update_group_unread_message",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "active_group_chat",
+                    "notify": "active_group_chat_changed",
+                    "read": "active_group_chat",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "GroupInfo*",
+                    "user": false,
+                    "write": "set_active_group_chat"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "group_proxy_list",
+                    "notify": "group_proxy_list_changed",
+                    "read": "group_proxy_list",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "GroupProxyList*",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "GroupListModel",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "groups_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "active_group_chat_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_proxy_list_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "main_user_changed",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "json_array",
+                            "type": "QJsonArray"
+                        }
+                    ],
+                    "name": "on_load_groups",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_name",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "message",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_group_text_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "group_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "group_image_url",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_group_profile_image",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_name",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "file_url",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_group_file_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_name",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_group_is_typing_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "group_members",
+                            "type": "QJsonArray"
+                        }
+                    ],
+                    "name": "on_remove_group_member_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "new_group_members",
+                            "type": "QJsonArray"
+                        }
+                    ],
+                    "name": "on_add_group_member_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "on_removed_from_group",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "full_time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_delete_group_message_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "groupID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_name",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "audio_url",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_group_audio_received",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "GroupListModel.hpp",
+    "outputRevision": 68
+}

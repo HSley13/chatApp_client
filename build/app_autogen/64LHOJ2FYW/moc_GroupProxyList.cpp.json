@@ -1,0 +1,36 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "GroupProxyList",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "index",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "get",
+                    "returnType": "GroupInfo*"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "GroupProxyList",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QSortFilterProxyModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "GroupProxyList.hpp",
+    "outputRevision": 68
+}

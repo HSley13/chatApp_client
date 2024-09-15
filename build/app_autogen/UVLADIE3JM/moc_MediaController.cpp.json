@@ -1,0 +1,110 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "MediaController",
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "start_recording",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "stop_recording",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "send_file",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "file_path",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "view_file",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "time_display",
+                    "notify": "time_display_changed",
+                    "read": "time_display",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_time_display"
+                }
+            ],
+            "qualifiedClassName": "MediaController",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "time_display_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "is_recording_changed",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "new_time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "set_time_display",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "duration",
+                            "type": "qint64"
+                        }
+                    ],
+                    "name": "on_duration_changed",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "MediaController.hpp",
+    "outputRevision": 68
+}

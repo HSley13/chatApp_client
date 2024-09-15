@@ -1,0 +1,55 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.qtproject.calqlatr"
+          android:installLocation="auto"
+          android:versionCode="1" 
+          android:versionName="1.0">
+
+    <!-- Required Permissions for a Chat Application -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    
+    <!-- Optional permissions for Notifications -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <!-- Screen support settings -->
+    <supports-screens android:anyDensity="true"
+                      android:largeScreens="true"
+                      android:normalScreens="true"
+                      android:smallScreens="true"/>
+
+    <application android:name="org.qtproject.qt.android.bindings.QtApplication"
+                 android:hardwareAccelerated="true"
+                 android:label="ChatApp"
+                 android:requestLegacyExternalStorage="true"
+                 android:allowBackup="true"
+                 android:fullBackupOnly="false"
+                 android:icon="@drawable/icon">
+
+        <activity android:name="org.qtproject.qt.android.bindings.QtActivity"
+                  android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
+                  android:label="ChatApp"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="unspecified"
+                  android:exported="true">
+            
+            <!-- Intent filters define the entry point of the app -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <!-- Define the main Qt application library -->
+            <meta-data android:name="android.app.lib_name"
+                       android:value="chatapp_lib"/>
+
+            <!-- Define the style for extraction -->
+            <meta-data android:name="android.app.extract_android_style"
+                       android:value="minimal"/>
+        </activity>
+    </application>
+</manifest>

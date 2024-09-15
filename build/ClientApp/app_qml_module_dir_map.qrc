@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/QML/ClientApp">/Users/test/Documents/chat_app/build/ClientApp</file>
+
+  </qresource>
+</RCC>

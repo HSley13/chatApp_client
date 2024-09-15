@@ -1,0 +1,225 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "GroupInfo",
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "group_ID",
+                    "notify": "group_ID_changed",
+                    "read": "group_ID",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "set_group_ID"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "group_name",
+                    "notify": "group_name_changed",
+                    "read": "group_name",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_group_name"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "group_admin",
+                    "notify": "group_admin_changed",
+                    "read": "group_admin",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "set_group_admin"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "group_image_url",
+                    "notify": "group_image_url_changed",
+                    "read": "group_image_url",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_group_image_url"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "name": "group_unread_message",
+                    "notify": "group_unread_message_changed",
+                    "read": "group_unread_message",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "set_group_unread_message"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "name": "group_is_typing",
+                    "notify": "group_is_typing_changed",
+                    "read": "group_is_typing",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_group_is_typing"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 6,
+                    "name": "message_time",
+                    "notify": "message_time_changed",
+                    "read": "message_time",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_message_time"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 7,
+                    "name": "last_message_time",
+                    "notify": "last_message_time_changed",
+                    "read": "last_message_time",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_last_message_time"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 8,
+                    "name": "group_members",
+                    "notify": "group_members_changed",
+                    "read": "group_members",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QList<ContactInfo*>",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 9,
+                    "name": "group_messages",
+                    "notify": "group_messages_changed",
+                    "read": "group_messages",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "GroupChatListModel*",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "GroupInfo",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "group_name_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_members_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_image_url_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_unread_message_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_ID_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_admin_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "last_message_time_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "message_time_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_messages_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "group_is_typing_changed",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "GroupInfo.hpp",
+    "outputRevision": 68
+}

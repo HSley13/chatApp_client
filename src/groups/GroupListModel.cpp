@@ -219,7 +219,7 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
         {
             for (const QJsonValue &message : messages)
             {
-                group->add_group_message(new GroupMessageInfo(message["message"].toString(), QString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
+                group->add_group_message(new GroupMessageInfo(message["message"].toString(), message["audio_url"].toString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
                 group->set_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last());
                 group->set_last_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()));
             }

@@ -1,0 +1,339 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "ContactInfo",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "new_image_url",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "set_image_url",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "first_name",
+                    "notify": "first_name_changed",
+                    "read": "first_name",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_first_name"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "chat_ID",
+                    "notify": "chat_ID_changed",
+                    "read": "chat_ID",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "set_chat_ID"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "last_name",
+                    "notify": "last_name_changed",
+                    "read": "last_name",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_last_name"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "phone_number",
+                    "notify": "phone_number_changed",
+                    "read": "phone_number",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "set_phone_number"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "name": "status",
+                    "notify": "status_changed",
+                    "read": "status",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "set_status"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "name": "image_url",
+                    "notify": "image_url_changed",
+                    "read": "image_url",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_image_url"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 6,
+                    "name": "unread_message",
+                    "notify": "unread_message_changed",
+                    "read": "unread_message",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "set_unread_message"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 7,
+                    "name": "is_typing",
+                    "notify": "is_typing_changed",
+                    "read": "is_typing",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_is_typing"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 8,
+                    "name": "message_time",
+                    "notify": "message_time_changed",
+                    "read": "message_time",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_message_time"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 9,
+                    "name": "last_message_time",
+                    "notify": "last_message_time_changed",
+                    "read": "last_message_time",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_last_message_time"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 10,
+                    "name": "secret_question",
+                    "notify": "secret_question_changed",
+                    "read": "secret_question",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_secret_question"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 11,
+                    "name": "secret_answer",
+                    "notify": "secret_answer_changed",
+                    "read": "secret_answer",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_secret_answer"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 12,
+                    "name": "popup_message",
+                    "notify": "popup_message_changed",
+                    "read": "popup_message",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "set_popup_message"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 13,
+                    "name": "login_status",
+                    "notify": "login_status_changed",
+                    "read": "login_status",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "set_login_status"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 14,
+                    "name": "messages",
+                    "notify": "messages_changed",
+                    "read": "messages",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "ChatListModel*",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "ContactInfo",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "first_name_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "last_name_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "phone_number_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "status_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "image_url_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "unread_message_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "chat_ID_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "last_message_time_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "message_time_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "messages_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "is_typing_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "secret_question_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "secret_answer_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "popup_message_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "login_status_changed",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "ContactInfo.hpp",
+    "outputRevision": 68
+}

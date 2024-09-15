@@ -1,0 +1,12 @@
+/Users/test/Documents/chat_app/build/app_autogen/include/../64LHOJ2FYW/moc_GroupChatListModel.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../64LHOJ2FYW/moc_GroupInfo.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../64LHOJ2FYW/moc_GroupListModel.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../64LHOJ2FYW/moc_GroupMessageInfo.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../64LHOJ2FYW/moc_GroupProxyList.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../USLTOGRMV3/moc_ChatListModel.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../USLTOGRMV3/moc_ContactInfo.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../USLTOGRMV3/moc_ContactListModel.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../USLTOGRMV3/moc_ContactProxyList.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../USLTOGRMV3/moc_MessageInfo.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../UVLADIE3JM/moc_ClientManager.cpp.json
+/Users/test/Documents/chat_app/build/app_autogen/include/../UVLADIE3JM/moc_MediaController.cpp.json

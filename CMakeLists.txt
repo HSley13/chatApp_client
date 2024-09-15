@@ -4,14 +4,22 @@ project(ClientApp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Widgets Multimedia Core5Compat WebSockets)
+find_package(Qt6 REQUIRED COMPONENTS 
+                                    Quick 
+                                    Widgets 
+                                    Multimedia 
+                                    Core5Compat 
+                                    WebSockets)
 qt_standard_project_setup()
 
-qt_add_executable(app WIN32 MACOSX_BUNDLE src/main.cpp)
+qt_add_executable(app 
+                    src/main.cpp
+                    MANUAL_FINALIZATION)
 
-target_include_directories(app PRIVATE src/ 
-                                        src/contacts
-                                        src/groups)
+target_include_directories(app PRIVATE 
+                                    src/ 
+                                    src/contacts
+                                    src/groups)
 target_link_libraries(app PRIVATE 
                                 Qt6::Quick
                                 Qt6::Widgets 
@@ -22,38 +30,38 @@ target_link_libraries(app PRIVATE
 qt6_policy(SET QTP0001 NEW)
 
 set(QML_CUSTOMED_TYPES
-                customModules/Main.qml
-                customModules/LoginWindow.qml 
-                customModules/SignUpWindow.qml 
-                customModules/ForgottenPassword.qml
+                    customModules/Main.qml
+                    customModules/LoginWindow.qml 
+                    customModules/SignUpWindow.qml 
+                    customModules/ForgottenPassword.qml
 
-                customModules/ContactWindow.qml
-                customModules/ContactList.qml
-                customModules/ContactListDelegate.qml
+                    customModules/ContactWindow.qml
+                    customModules/ContactList.qml
+                    customModules/ContactListDelegate.qml
 
-                customModules/ChatWindow.qml
-                customModules/ChatList.qml
-                customModules/TextMessageDelegate.qml
-                customModules/AudioMessageDelegate.qml
-                customModules/FileMessageDelegate.qml
+                    customModules/ChatWindow.qml
+                    customModules/ChatList.qml
+                    customModules/TextMessageDelegate.qml
+                    customModules/AudioMessageDelegate.qml
+                    customModules/FileMessageDelegate.qml
 
-                customModules/GroupList.qml
-                customModules/GroupListDelegate.qml
-                    
-                customModules/GroupChatWindow.qml
-                customModules/GroupChatList.qml
-                customModules/GroupTextMessageDelegate.qml
-                customModules/GroupAudioMessageDelegate.qml
-                customModules/GroupFileMessageDelegate.qml
-                customModules/GroupMenuPanel.qml
+                    customModules/GroupList.qml
+                    customModules/GroupListDelegate.qml
 
-                customModules/InputField.qml
-                customModules/IconText.qml
-                customModules/MenuPanel.qml
-                customModules/ListDialog.qml
-                customModules/SettingWindow.qml
-                customModules/RoundedImage.qml
-                customModules/RoundedButton.qml
+                    customModules/GroupChatWindow.qml
+                    customModules/GroupChatList.qml
+                    customModules/GroupTextMessageDelegate.qml
+                    customModules/GroupAudioMessageDelegate.qml
+                    customModules/GroupFileMessageDelegate.qml
+                    customModules/GroupMenuPanel.qml
+
+                    customModules/InputField.qml
+                    customModules/IconText.qml
+                    customModules/MenuPanel.qml
+                    customModules/ListDialog.qml
+                    customModules/SettingWindow.qml
+                    customModules/RoundedImage.qml
+                    customModules/RoundedButton.qml
     )
 
 set(CPP_FILES 
@@ -137,9 +145,16 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set_target_properties(app PROPERTIES LINK_FLAGS "-lidbfs.js")
 endif()
 
-if (APPLE)
-    set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
-    set_target_properties(app PROPERTIES
-                            MACOSX_BUNDLE_INFO_PLIST ${MACOSX_BUNDLE_INFO_PLIST}
-                         )
-endif()
+set_target_properties(app PROPERTIES APPEND PROPERTY 
+                                                MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
+                                                QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/AndroidManifest.xml
+                                                QT_ANDROID_TARGET_SDK_VERSION "33" 
+                                                MACOSX_BUNDLE TRUE
+                                                WIN32_EXECUTABLE TRUE)
+
+set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
+set(ANDROID_PLATFORM android-33) 
+set(ANDROID_ABI arm64-v8a)        
+set(CMAKE_ANDROID_NDK ${ANDROID_NDK_HOME})
+
+qt_finalize_executable(app)

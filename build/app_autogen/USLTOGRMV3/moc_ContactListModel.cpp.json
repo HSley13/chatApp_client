@@ -1,0 +1,334 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "ContactListModel",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "phone_number",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "lookup_friend",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "chatID",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "update_unread_message",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "active_chat",
+                    "notify": "active_chat_changed",
+                    "read": "active_chat",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "ContactInfo*",
+                    "user": false,
+                    "write": "set_active_chat"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "main_user",
+                    "notify": "main_user_changed",
+                    "read": "main_user",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "ContactInfo*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "contact_proxy_list_chat",
+                    "notify": "contact_proxy_list_chat_changed",
+                    "read": "contact_proxy_list_chat",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "ContactProxyList*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "contact_proxy_list",
+                    "notify": "contact_proxy_list_changed",
+                    "read": "contact_proxy_list",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "ContactProxyList*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "name": "contacts",
+                    "notify": "contacts_changed",
+                    "read": "contacts",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QList<ContactInfo*>",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "name": "socket_disconnected",
+                    "notify": "socket_disconnected_changed",
+                    "read": "socket_disconnected",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "ContactListModel",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "contacts_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "active_chat_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "contact_proxy_list_chat_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "contact_proxy_list_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "main_user_changed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "socket_disconnected_changed",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "json_array",
+                            "type": "QJsonArray"
+                        }
+                    ],
+                    "name": "on_load_contacts",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "my_info",
+                            "type": "QJsonObject"
+                        }
+                    ],
+                    "name": "on_load_my_info",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "chatID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "message",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_text_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "phone_number",
+                            "type": "int"
+                        },
+                        {
+                            "name": "true_or_false",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "on_client_connected_disconnected",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "phone_number",
+                            "type": "int"
+                        },
+                        {
+                            "name": "image_url",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_client_profile_image",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "chatID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "file_url",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_file_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "chatID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "sender_ID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "audio_url",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_audio_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "phone_number",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "on_is_typing_received",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "phone_number",
+                            "type": "int"
+                        },
+                        {
+                            "name": "first_name",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "last_name",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_update_client_info",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "chatID",
+                            "type": "int"
+                        },
+                        {
+                            "name": "full_time",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "on_delete_message_received",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "ContactListModel.hpp",
+    "outputRevision": 68
+}

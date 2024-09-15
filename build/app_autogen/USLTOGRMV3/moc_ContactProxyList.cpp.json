@@ -1,0 +1,36 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "ContactProxyList",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "index",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "get",
+                    "returnType": "ContactInfo*"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "ContactProxyList",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QSortFilterProxyModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "ContactProxyList.hpp",
+    "outputRevision": 68
+}
