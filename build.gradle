@@ -1,0 +1,18 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 34 // Always use the latest stable version supported by your app
+
+    defaultConfig {
+        applicationId "org.qtproject.calqlatr" // Your application ID
+        minSdkVersion 26 // Adjust as needed for your app's audience
+        targetSdkVersion 34 // Align with the latest Android SDK version
+        versionCode 1 // Version code
+        versionName "1.0" // Version name
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8 // Set Java compatibility version
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}

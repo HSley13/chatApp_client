@@ -46,6 +46,8 @@ void ClientManager::on_text_message_received(const QString &message)
         _socket->close();
         break;
     case LoginRequest:
+        qDebug() << "Login Info Received";
+
         emit status_message(json_object["message"].toString(), json_object["status"].toBool());
 
         emit load_my_info(json_object["my_info"].toObject());

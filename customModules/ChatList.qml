@@ -52,13 +52,13 @@ Rectangle
     Component
     {
         id: textMessageDelegate
-        TextMessageDelegate { }
+        TextMessageDelegate {}
     }
 
     Component
     {
         id: audioMessageDelegate
-        AudioMessageDelegate { }
+        AudioMessageDelegate {}
     }
 
     Component

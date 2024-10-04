@@ -75,7 +75,7 @@ Item
                     id: contextMenu;
                     Action 
                     { 
-                        text: "Delete For all of us"; 
+                        text: "Delete For All"; 
                         onTriggered: client_manager.delete_group_message(group_list_model.active_group_chat.group_ID, model.full_time);
                     }
                 }

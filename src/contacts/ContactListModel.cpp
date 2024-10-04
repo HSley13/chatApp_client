@@ -16,23 +16,9 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
 
-    connect(_client_manager.get(), &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
-    connect(_client_manager.get(), &ClientManager::load_my_info, this, &ContactListModel::on_load_my_info);
-
-    connect(_client_manager.get(), &ClientManager::text_received, this, &ContactListModel::on_text_received);
-
     connect(_client_manager.get(), &ClientManager::profile_image, this, [=](const QString &image_url)
             { _main_user->set_image_url(image_url); });
-    connect(_client_manager.get(), &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
-
-    connect(_client_manager.get(), &ClientManager::client_connected_disconnected, this, &ContactListModel::on_client_connected_disconnected);
-
-    connect(_client_manager.get(), &ClientManager::file_received, this, &ContactListModel::on_file_received);
-    connect(_client_manager.get(), &ClientManager::audio_received, this, &ContactListModel::on_audio_received);
-
-    connect(_client_manager.get(), &ClientManager::is_typing_received, this, &ContactListModel::on_is_typing_received);
-    connect(_client_manager.get(), &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
-
+  
     connect(_client_manager.get(), &ClientManager::question_answer, this, [=](const QString &secret_question, const QString &secret_answer)
             { _main_user->set_secret_question(QString("%1 ????").arg(secret_question)); _main_user->set_secret_answer(secret_answer); });
 
@@ -42,9 +28,17 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
     connect(_client_manager.get(), &ClientManager::pop_message_received, this, [=](const QString &message)
             { _main_user->set_popup_message(message); });
 
-    connect(_client_manager.get(), &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
-
     connect(_client_manager.get(), &ClientManager::socket_disconnected, this, &ContactListModel::set_socket_disconnected);
+    connect(_client_manager.get(), &ClientManager::load_my_info, this, &ContactListModel::on_load_my_info);
+    connect(_client_manager.get(), &ClientManager::load_contacts, this, &ContactListModel::on_load_contacts);
+    connect(_client_manager.get(), &ClientManager::client_profile_image, this, &ContactListModel::on_client_profile_image);
+    connect(_client_manager.get(), &ClientManager::is_typing_received, this, &ContactListModel::on_is_typing_received);
+    connect(_client_manager.get(), &ClientManager::text_received, this, &ContactListModel::on_text_received);
+    connect(_client_manager.get(), &ClientManager::file_received, this, &ContactListModel::on_file_received);
+    connect(_client_manager.get(), &ClientManager::audio_received, this, &ContactListModel::on_audio_received);
+    connect(_client_manager.get(), &ClientManager::update_client_info, this, &ContactListModel::on_update_client_info);
+    connect(_client_manager.get(), &ClientManager::client_connected_disconnected, this, &ContactListModel::on_client_connected_disconnected);
+    connect(_client_manager.get(), &ClientManager::delete_message_received, this, &ContactListModel::on_delete_message_received);
 }
 
 ContactListModel::~ContactListModel() { _contacts.clear(); }
@@ -487,18 +481,20 @@ void ContactListModel::on_delete_message_received(const int &chatID, const QStri
                 MessageInfo *message = contact->messages()->at(i);
                 if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))
                 {
-                    delete message;
-                    contact->messages()->removeAt(i);
-
                     if (i == contact->messages()->count())
                     {
                         contact->set_message_time(contact->messages()->at(i - 1)->time());
                         contact->set_last_message_time(contact->messages()->at(i - 1)->full_time());
+                        emit contact->messages_changed();
 
                         QModelIndex index = createIndex(i - 1, 0);
                         emit dataChanged(index, index, {MessageTimeRole});
                         emit dataChanged(index, index, {LastMessageTimeRole});
+                        emit dataChanged(index, index, {MessagesRole});
                     }
+
+                    delete message;
+                    contact->messages()->removeAt(i);
 
                     return;
                 }

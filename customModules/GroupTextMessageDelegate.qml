@@ -81,7 +81,7 @@ Item
                     id: contextMenu;
                     Action 
                     { 
-                        text: "Delete For Both of us"; 
+                        text: "Delete For All"; 
                         onTriggered: client_manager.delete_message(contact_list_model.active_chat.phone_number, contact_list_model.active_chat.chat_ID, model.full_time);
                     }
                 }

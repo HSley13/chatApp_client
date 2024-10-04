@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.30.0)
+cmake_minimum_required(VERSION 3.29.3)
 project(ClientApp LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS 
+find_package(Qt6 REQUIRED COMPONENTS
                                     Quick 
                                     Widgets 
                                     Multimedia 
@@ -12,9 +12,7 @@ find_package(Qt6 REQUIRED COMPONENTS
                                     WebSockets)
 qt_standard_project_setup()
 
-qt_add_executable(app 
-                    src/main.cpp
-                    MANUAL_FINALIZATION)
+qt_add_executable(app src/main.cpp)
 
 target_include_directories(app PRIVATE 
                                     src/ 
@@ -147,14 +145,16 @@ endif()
 
 set_target_properties(app PROPERTIES APPEND PROPERTY 
                                                 MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
-                                                QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/AndroidManifest.xml
-                                                QT_ANDROID_TARGET_SDK_VERSION "33" 
                                                 MACOSX_BUNDLE TRUE
                                                 WIN32_EXECUTABLE TRUE)
+                                                
+set(android_apk_files "${CMAKE_SOURCE_DIR}/Android/AndroidManifest.xml")
 
-set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
-set(ANDROID_PLATFORM android-33) 
-set(ANDROID_ABI arm64-v8a)        
-set(CMAKE_ANDROID_NDK ${ANDROID_NDK_HOME})
+set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Android")
 
-qt_finalize_executable(app)
+set(ANDROID_API 21)
+
+set(ANDROID_PERMISSIONS "INTERNET")
+
+
+

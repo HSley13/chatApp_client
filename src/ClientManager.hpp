@@ -6,6 +6,7 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
+
 class ClientManager : public QObject
 {
     Q_OBJECT
