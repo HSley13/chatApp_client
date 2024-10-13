@@ -3,8 +3,7 @@
 #include <QDateTime>
 #include <QtQuick>
 
-class MessageInfo : public QObject
-{
+class MessageInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
 
@@ -14,7 +13,7 @@ class MessageInfo : public QObject
     Q_PROPERTY(QString time READ time CONSTANT)
     Q_PROPERTY(int sender_ID READ sender_ID CONSTANT)
 
-public:
+  public:
     MessageInfo(QObject *parent = nullptr);
     MessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, const QString &time, QObject *parent = nullptr);
 
@@ -25,7 +24,7 @@ public:
     const int &sender_ID();
     const QString &full_time() const;
 
-private:
+  private:
     QString _text{};
     QString _audio_source{};
     QString _file_source{};

@@ -3,8 +3,7 @@
 #include "ChatListModel.hpp"
 #include "ClientManager.hpp"
 
-class ContactInfo : public QObject
-{
+class ContactInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
 
@@ -27,7 +26,7 @@ class ContactInfo : public QObject
 
     Q_PROPERTY(ChatListModel *messages READ messages NOTIFY messages_changed)
 
-public:
+  public:
     ContactInfo(QObject *parent = nullptr);
     ContactInfo(const int &chat_ID, const QString &first_name, const QString &last_name, const int &phone_number, const bool &status, const QString &image_url, const int &unread_message, QObject *parent = nullptr);
 
@@ -76,7 +75,7 @@ public:
     QString message_time() const;
     void set_message_time(const QString &time);
 
-private:
+  private:
     int _chat_ID{0};
     QString _first_name{};
     QString _last_name{};
@@ -96,7 +95,7 @@ private:
     QString _last_message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString());
     QString _message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString()).split(" ").last();
 
-signals:
+  signals:
     void first_name_changed();
     void last_name_changed();
     void phone_number_changed();

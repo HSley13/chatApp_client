@@ -12,32 +12,26 @@ MessageInfo::MessageInfo(const QString &text, const QString &audio_source, const
       _full_time(time),
       _sender_ID(sender_ID) {}
 
-const QString &MessageInfo::text()
-{
+const QString &MessageInfo::text() {
     return _text;
 }
 
-const QString &MessageInfo::audio_source()
-{
+const QString &MessageInfo::audio_source() {
     return _audio_source;
 }
 
-const QString &MessageInfo::file_source()
-{
+const QString &MessageInfo::file_source() {
     return _file_source;
 }
 
-const QString &MessageInfo::time()
-{
+const QString &MessageInfo::time() {
     return _time;
 }
 
-const int &MessageInfo::sender_ID()
-{
+const int &MessageInfo::sender_ID() {
     return _sender_ID;
 }
 
-const QString &MessageInfo::full_time() const
-{
+const QString &MessageInfo::full_time() const {
     return _full_time;
 }

@@ -3,8 +3,7 @@
 ContactListModel::ContactListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
       _contact_proxy_list_chat(new ContactProxyList(this)),
-      _contact_proxy_list(new ContactProxyList(this))
-{
+      _contact_proxy_list(new ContactProxyList(this)) {
     _main_user = new ContactInfo(0, QString(), QString(), 0, true, QString(), 0, this);
 
     _contact_proxy_list_chat->setSourceModel(this);
@@ -16,17 +15,17 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
     _client_manager = ClientManager::instance();
 
-    connect(_client_manager.get(), &ClientManager::profile_image, this, [=](const QString &image_url)
-            { _main_user->set_image_url(image_url); });
-  
-    connect(_client_manager.get(), &ClientManager::question_answer, this, [=](const QString &secret_question, const QString &secret_answer)
-            { _main_user->set_secret_question(QString("%1 ????").arg(secret_question)); _main_user->set_secret_answer(secret_answer); });
+    connect(_client_manager.get(), &ClientManager::profile_image, this,
+            [=](const QString &image_url) { _main_user->set_image_url(image_url); });
 
-    connect(_client_manager.get(), &ClientManager::status_message, this, [=](const QString &message, const bool &true_or_false)
-            { _main_user->set_popup_message(message); _main_user->set_login_status(true_or_false); });
+    connect(_client_manager.get(), &ClientManager::question_answer, this,
+            [=](const QString &secret_question, const QString &secret_answer) { _main_user->set_secret_question(QString("%1 ????").arg(secret_question)); _main_user->set_secret_answer(secret_answer); });
 
-    connect(_client_manager.get(), &ClientManager::pop_message_received, this, [=](const QString &message)
-            { _main_user->set_popup_message(message); });
+    connect(_client_manager.get(), &ClientManager::status_message, this,
+            [=](const QString &message, const bool &true_or_false) { _main_user->set_popup_message(message); _main_user->set_login_status(true_or_false); });
+
+    connect(_client_manager.get(), &ClientManager::pop_message_received, this,
+            [=](const QString &message) { _main_user->set_popup_message(message); });
 
     connect(_client_manager.get(), &ClientManager::socket_disconnected, this, &ContactListModel::set_socket_disconnected);
     connect(_client_manager.get(), &ClientManager::load_my_info, this, &ContactListModel::on_load_my_info);
@@ -43,18 +42,15 @@ ContactListModel::ContactListModel(QAbstractListModel *parent)
 
 ContactListModel::~ContactListModel() { _contacts.clear(); }
 
-const QList<ContactInfo *> &ContactListModel::contacts() const
-{
+const QList<ContactInfo *> &ContactListModel::contacts() const {
     return _contacts;
 }
 
-ContactInfo *ContactListModel::active_chat()
-{
+ContactInfo *ContactListModel::active_chat() {
     return _active_chat;
 }
 
-void ContactListModel::set_active_chat(ContactInfo *new_chat)
-{
+void ContactListModel::set_active_chat(ContactInfo *new_chat) {
     if (_active_chat == new_chat)
         return;
 
@@ -62,27 +58,23 @@ void ContactListModel::set_active_chat(ContactInfo *new_chat)
     emit active_chat_changed();
 }
 
-ContactInfo *ContactListModel::main_user()
-{
+ContactInfo *ContactListModel::main_user() {
     return _main_user;
 }
 
-int ContactListModel::rowCount(const QModelIndex &parent) const
-{
+int ContactListModel::rowCount(const QModelIndex &parent) const {
     Q_UNUSED(parent);
 
     return _contacts.count();
 }
 
-QVariant ContactListModel::data(const QModelIndex &index, int role) const
-{
+QVariant ContactListModel::data(const QModelIndex &index, int role) const {
     if (index.row() < 0 || index.row() >= _contacts.count())
         return QVariant();
 
     ContactInfo *contact_info = _contacts[index.row()];
 
-    switch (ContactRoles(role))
-    {
+    switch (ContactRoles(role)) {
     case chat_IDRole:
         return contact_info->chat_ID();
     case FirstNameRole:
@@ -120,15 +112,13 @@ QVariant ContactListModel::data(const QModelIndex &index, int role) const
     }
 }
 
-bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
+bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
     if (index.row() < 0 || index.row() >= _contacts.count())
         return false;
 
     ContactInfo *contact_info = _contacts[index.row()];
 
-    switch (ContactRoles(role))
-    {
+    switch (ContactRoles(role)) {
     case chat_IDRole:
         contact_info->set_chat_ID(value.toInt());
         break;
@@ -179,8 +169,7 @@ bool ContactListModel::setData(const QModelIndex &index, const QVariant &value, 
     return true;
 }
 
-QHash<int, QByteArray> ContactListModel::roleNames() const
-{
+QHash<int, QByteArray> ContactListModel::roleNames() const {
     QHash<int, QByteArray> roles;
 
     roles[chat_IDRole] = "chat_ID";
@@ -203,23 +192,19 @@ QHash<int, QByteArray> ContactListModel::roleNames() const
     return roles;
 }
 
-ContactProxyList *ContactListModel::contact_proxy_list_chat() const
-{
+ContactProxyList *ContactListModel::contact_proxy_list_chat() const {
     return _contact_proxy_list_chat;
 }
 
-ContactProxyList *ContactListModel::contact_proxy_list() const
-{
+ContactProxyList *ContactListModel::contact_proxy_list() const {
     return _contact_proxy_list;
 }
 
-const bool &ContactListModel::socket_disconnected() const
-{
+const bool &ContactListModel::socket_disconnected() const {
     return _socket_disconnected;
 }
 
-void ContactListModel::set_socket_disconnected(const bool &true_or_false)
-{
+void ContactListModel::set_socket_disconnected(const bool &true_or_false) {
     if (_socket_disconnected == true_or_false)
         return;
 
@@ -228,8 +213,7 @@ void ContactListModel::set_socket_disconnected(const bool &true_or_false)
     emit socket_disconnected_changed();
 }
 
-void ContactListModel::on_load_my_info(QJsonObject my_info)
-{
+void ContactListModel::on_load_my_info(QJsonObject my_info) {
     if (my_info.isEmpty())
         return;
 
@@ -239,20 +223,17 @@ void ContactListModel::on_load_my_info(QJsonObject my_info)
     _main_user->set_image_url(my_info["image_url"].toString());
 }
 
-void ContactListModel::on_load_contacts(QJsonArray json_array)
-{
+void ContactListModel::on_load_contacts(QJsonArray json_array) {
     if (json_array.isEmpty())
         return;
 
-    for (const QJsonValue &obj : json_array)
-    {
+    for (const QJsonValue &obj : json_array) {
         QJsonObject contact_info = obj["contactInfo"].toObject();
         QJsonArray chat_messages = obj["chatMessages"].toArray();
 
         ContactInfo *contact = new ContactInfo(obj["chatID"].toInt(), contact_info["first_name"].toString(), contact_info["last_name"].toString(), contact_info["_id"].toInt(), contact_info["status"].toBool(), contact_info["image_url"].toString(), obj["unread_messages"].toInt(), this);
 
-        for (const QJsonValue &message : chat_messages)
-        {
+        for (const QJsonValue &message : chat_messages) {
             contact->add_message(new MessageInfo(message["message"].toString(), message["audio_url"].toString(), message["file_url"].toString(), message["sender"].toInt(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
             contact->set_last_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()));
             contact->set_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last());
@@ -266,16 +247,13 @@ void ContactListModel::on_load_contacts(QJsonArray json_array)
     emit contacts_changed();
 }
 
-void ContactListModel::on_client_profile_image(const int &phone_number, const QString &image_url)
-{
+void ContactListModel::on_client_profile_image(const int &phone_number, const QString &image_url) {
     if (!phone_number || image_url.isEmpty())
         return;
 
-    for (size_t i{0}; i < _contacts.size(); i++)
-    {
+    for (size_t i{0}; i < _contacts.size(); i++) {
         ContactInfo *contact = _contacts[i];
-        if (contact->phone_number() == phone_number)
-        {
+        if (contact->phone_number() == phone_number) {
             contact->set_image_url(image_url);
 
             QModelIndex index = createIndex(i, 0);
@@ -286,15 +264,12 @@ void ContactListModel::on_client_profile_image(const int &phone_number, const QS
     }
 }
 
-void ContactListModel::on_client_connected_disconnected(const int &phone_number, const bool &true_or_false)
-{
+void ContactListModel::on_client_connected_disconnected(const int &phone_number, const bool &true_or_false) {
     if (!phone_number)
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->phone_number() == phone_number)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->phone_number() == phone_number) {
             contact->set_status(true_or_false);
 
             QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
@@ -305,22 +280,18 @@ void ContactListModel::on_client_connected_disconnected(const int &phone_number,
     }
 }
 
-void ContactListModel::lookup_friend(const int &phone_number)
-{
+void ContactListModel::lookup_friend(const int &phone_number) {
     if (!phone_number)
         return;
 
-    if (phone_number == _main_user->phone_number())
-    {
+    if (phone_number == _main_user->phone_number()) {
         _main_user->set_popup_message("Can't add Yourself as a Friend");
 
         return;
     }
 
-    for (const ContactInfo *contact : _contacts)
-    {
-        if (contact->phone_number() == phone_number)
-        {
+    for (const ContactInfo *contact : _contacts) {
+        if (contact->phone_number() == phone_number) {
             _main_user->set_popup_message("Phone Number already in Your Contact");
 
             return;
@@ -330,23 +301,19 @@ void ContactListModel::lookup_friend(const int &phone_number)
     _client_manager->lookup_friend(phone_number);
 }
 
-void ContactListModel::on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time)
-{
+void ContactListModel::on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time) {
     if (!chatID || !sender_ID || message.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->chat_ID() == chatID) {
             contact->add_message(new MessageInfo(message, QString(), QString(), sender_ID, _client_manager->UTC_to_timeZone(time), this));
             contact->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
             contact->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
                 contact->set_unread_message(contact->unread_message() + 1);
-            else
-            {
+            else {
                 contact->set_unread_message(0);
                 _client_manager->update_unread_message(chatID);
             }
@@ -361,23 +328,19 @@ void ContactListModel::on_text_received(const int &chatID, const int &sender_ID,
     }
 }
 
-void ContactListModel::on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time)
-{
+void ContactListModel::on_file_received(const int &chatID, const int &sender_ID, const QString &file_url, const QString &time) {
     if (!chatID || !sender_ID || file_url.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->chat_ID() == chatID) {
             contact->add_message(new MessageInfo(QString(), QString(), file_url, sender_ID, _client_manager->UTC_to_timeZone(time), this));
             contact->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
             contact->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
                 contact->set_unread_message(contact->unread_message() + 1);
-            else
-            {
+            else {
                 contact->set_unread_message(0);
                 _client_manager->update_unread_message(chatID);
             }
@@ -392,23 +355,19 @@ void ContactListModel::on_file_received(const int &chatID, const int &sender_ID,
     }
 }
 
-void ContactListModel::on_audio_received(const int &chatID, const int &sender_ID, const QString &audio_url, const QString &time)
-{
+void ContactListModel::on_audio_received(const int &chatID, const int &sender_ID, const QString &audio_url, const QString &time) {
     if (!chatID || !sender_ID || audio_url.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->chat_ID() == chatID) {
             contact->add_message(new MessageInfo(QString(), audio_url, QString(), sender_ID, _client_manager->UTC_to_timeZone(time), this));
             contact->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
             contact->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_chat || (_active_chat && _active_chat->chat_ID() != chatID))
                 contact->set_unread_message(contact->unread_message() + 1);
-            else
-            {
+            else {
                 contact->set_unread_message(0);
                 _client_manager->update_unread_message(chatID);
             }
@@ -423,22 +382,18 @@ void ContactListModel::on_audio_received(const int &chatID, const int &sender_ID
     }
 }
 
-void ContactListModel::on_is_typing_received(const int &phone_number)
-{
+void ContactListModel::on_is_typing_received(const int &phone_number) {
     if (!phone_number)
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->phone_number() == phone_number)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->phone_number() == phone_number) {
             contact->set_is_typing("is typing...");
 
             QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {IsTypingRole});
 
-            QTimer::singleShot(2000, this, [=, this]()
-                               {    contact->set_is_typing(QString());
+            QTimer::singleShot(2000, this, [=, this]() {    contact->set_is_typing(QString());
                                     emit dataChanged(index, index, {IsTypingRole}); });
 
             return;
@@ -446,15 +401,12 @@ void ContactListModel::on_is_typing_received(const int &phone_number)
     }
 }
 
-void ContactListModel::on_update_client_info(const int &phone_number, const QString &first_name, const QString &last_name)
-{
+void ContactListModel::on_update_client_info(const int &phone_number, const QString &first_name, const QString &last_name) {
     if (!phone_number || first_name.isEmpty() || last_name.isEmpty())
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->phone_number() == phone_number)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->phone_number() == phone_number) {
             contact->set_first_name(first_name);
             contact->set_last_name(last_name);
 
@@ -467,22 +419,16 @@ void ContactListModel::on_update_client_info(const int &phone_number, const QStr
     }
 }
 
-void ContactListModel::on_delete_message_received(const int &chatID, const QString &full_time)
-{
+void ContactListModel::on_delete_message_received(const int &chatID, const QString &full_time) {
     if (!chatID)
         return;
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
-            for (size_t i{0}; i < contact->messages()->count(); i++)
-            {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->chat_ID() == chatID) {
+            for (size_t i{0}; i < contact->messages()->count(); i++) {
                 MessageInfo *message = contact->messages()->at(i);
-                if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))
-                {
-                    if (i == contact->messages()->count())
-                    {
+                if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time))) {
+                    if (i == contact->messages()->count()) {
                         contact->set_message_time(contact->messages()->at(i - 1)->time());
                         contact->set_last_message_time(contact->messages()->at(i - 1)->full_time());
                         emit contact->messages_changed();
@@ -503,14 +449,11 @@ void ContactListModel::on_delete_message_received(const int &chatID, const QStri
     }
 }
 
-void ContactListModel::update_unread_message(int chatID)
-{
+void ContactListModel::update_unread_message(int chatID) {
     _client_manager->update_unread_message(chatID);
 
-    for (ContactInfo *contact : _contacts)
-    {
-        if (contact->chat_ID() == chatID)
-        {
+    for (ContactInfo *contact : _contacts) {
+        if (contact->chat_ID() == chatID) {
             contact->set_unread_message(0);
             QModelIndex index = createIndex(_contacts.indexOf(contact), 0);
             emit dataChanged(index, index, {UnreadMessageRole});

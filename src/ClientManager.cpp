@@ -1,17 +1,15 @@
 #include "ClientManager.hpp"
 
-ClientManager::ClientManager(QObject *parent)
-    : QObject(parent)
-{
-    if (!_socket)
-    {
+ClientManager::ClientManager(QObject *parent) : QObject(parent) {
+    if (!_socket) {
         _socket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this);
-        _socket->open(QUrl(QString("wss://chatapp.hslay13.online")));
+        _socket->open(QUrl(QString(std::getenv("CHAT_APP_SERVER_LINK"))));
 
         connect(_socket, &QWebSocket::disconnected, this, &ClientManager::on_disconnected);
         connect(_socket, &QWebSocket::textMessageReceived, this, &ClientManager::on_text_message_received);
-        connect(_socket, &QWebSocket::errorOccurred, this, [=, this]()
-                { emit pop_message_received("Server not Connected"); });
+
+        connect(_socket, &QWebSocket::errorOccurred, this,
+                [=, this]() { emit pop_message_received("Server not Connected"); });
 
         map_initialization();
 
@@ -19,19 +17,16 @@ ClientManager::ClientManager(QObject *parent)
     }
 }
 
-std::shared_ptr<ClientManager> ClientManager::instance()
-{
+std::shared_ptr<ClientManager> ClientManager::instance() {
     if (!_instance)
         _instance = std::make_shared<ClientManager>();
 
     return _instance;
 }
 
-void ClientManager::on_text_message_received(const QString &message)
-{
+void ClientManager::on_text_message_received(const QString &message) {
     QJsonDocument json_doc = QJsonDocument::fromJson(message.toUtf8());
-    if (json_doc.isNull())
-    {
+    if (json_doc.isNull()) {
         qWarning() << "Invalid JSON document.";
         return;
     }
@@ -39,16 +34,15 @@ void ClientManager::on_text_message_received(const QString &message)
     QJsonObject json_object = json_doc.object();
     MessageType type = _map.value(json_object["type"].toString());
 
-    switch (type)
-    {
+    switch (type) {
     case SignUp:
-        emit status_message(json_object["message"].toString(), json_object["status"].toBool());
+        emit status_message(json_object["message"].toString(),
+                            json_object["status"].toBool());
         _socket->close();
         break;
     case LoginRequest:
-        qDebug() << "Login Info Received";
-
-        emit status_message(json_object["message"].toString(), json_object["status"].toBool());
+        emit status_message(json_object["message"].toString(),
+                            json_object["status"].toBool());
 
         emit load_my_info(json_object["my_info"].toObject());
         emit load_contacts(json_object["contacts"].toArray());
@@ -66,65 +60,98 @@ void ClientManager::on_text_message_received(const QString &message)
         emit profile_image(json_object["image_url"].toString());
         break;
     case GroupProfileImage:
-        emit group_profile_image(json_object["groupID"].toInt(), json_object["group_image_url"].toString());
+        emit group_profile_image(json_object["groupID"].toInt(),
+                                 json_object["group_image_url"].toString());
         break;
     case ClientProfileImage:
-        emit client_profile_image(json_object["phone_number"].toInt(), json_object["image_url"].toString());
+        emit client_profile_image(json_object["phone_number"].toInt(),
+                                  json_object["image_url"].toString());
         break;
     case Text:
-        emit text_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["message"].toString(), json_object["time"].toString());
+        emit text_received(json_object["chatID"].toInt(),
+                           json_object["sender_ID"].toInt(),
+                           json_object["message"].toString(),
+                           json_object["time"].toString());
         break;
     case ClientConnected:
-        emit client_connected_disconnected(json_object["phone_number"].toInt(), true);
+        emit client_connected_disconnected(json_object["phone_number"].toInt(),
+                                           true);
         break;
     case ClientDisconnected:
-        emit client_connected_disconnected(json_object["phone_number"].toInt(), false);
+        emit client_connected_disconnected(json_object["phone_number"].toInt(),
+                                           false);
         break;
     case AddedToGroup:
         emit load_groups(json_object["groups"].toArray());
         emit pop_message_received(json_object["message"].toString());
         break;
     case GroupText:
-        emit group_text_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["message"].toString(), json_object["time"].toString());
+        emit group_text_received(json_object["groupID"].toInt(),
+                                 json_object["sender_ID"].toInt(),
+                                 json_object["sender_name"].toString(),
+                                 json_object["message"].toString(),
+                                 json_object["time"].toString());
         break;
     case File:
-        emit file_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["file_url"].toString(), json_object["time"].toString());
+        emit file_received(json_object["chatID"].toInt(),
+                           json_object["sender_ID"].toInt(),
+                           json_object["file_url"].toString(),
+                           json_object["time"].toString());
         break;
     case GroupFile:
-        emit group_file_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["file_url"].toString(), json_object["time"].toString());
+        emit group_file_received(json_object["groupID"].toInt(),
+                                 json_object["sender_ID"].toInt(),
+                                 json_object["sender_name"].toString(),
+                                 json_object["file_url"].toString(),
+                                 json_object["time"].toString());
         break;
     case IsTyping:
         emit is_typing_received(json_object["sender_ID"].toInt());
         break;
     case GroupIsTyping:
-        emit group_is_typing_received(json_object["groupID"].toInt(), json_object["sender_name"].toString());
+        emit group_is_typing_received(json_object["groupID"].toInt(),
+                                      json_object["sender_name"].toString());
         break;
     case UpdateInfo:
-        emit update_client_info(json_object["phone_number"].toInt(), json_object["first_name"].toString(), json_object["last_name"].toString());
+        emit update_client_info(json_object["phone_number"].toInt(),
+                                json_object["first_name"].toString(),
+                                json_object["last_name"].toString());
         break;
     case QuestionAnswer:
-        emit question_answer(json_object["secret_question"].toString(), json_object["secret_answer"].toString());
+        emit question_answer(json_object["secret_question"].toString(),
+                             json_object["secret_answer"].toString());
         break;
     case RemoveGroupMember:
-        emit remove_group_member_received(json_object["groupID"].toInt(), json_object["group_members"].toArray());
+        emit remove_group_member_received(json_object["groupID"].toInt(),
+                                          json_object["group_members"].toArray());
         break;
     case AddGroupMember:
-        emit add_group_member_received(json_object["groupID"].toInt(), json_object["group_members"].toArray());
+        emit add_group_member_received(json_object["groupID"].toInt(),
+                                       json_object["group_members"].toArray());
         break;
     case RemovedFromGroup:
         emit removed_from_group(json_object["groupID"].toInt());
         break;
     case DeleteMessage:
-        emit delete_message_received(json_object["chatID"].toInt(), json_object["full_time"].toString());
+        emit delete_message_received(json_object["chatID"].toInt(),
+                                     json_object["full_time"].toString());
         break;
     case DeleteGroupMessage:
-        emit delete_group_message_received(json_object["groupID"].toInt(), json_object["full_time"].toString());
+        emit delete_group_message_received(json_object["groupID"].toInt(),
+                                           json_object["full_time"].toString());
         break;
     case Audio:
-        emit audio_received(json_object["chatID"].toInt(), json_object["sender_ID"].toInt(), json_object["audio_url"].toString(), json_object["time"].toString());
+        emit audio_received(json_object["chatID"].toInt(),
+                            json_object["sender_ID"].toInt(),
+                            json_object["audio_url"].toString(),
+                            json_object["time"].toString());
         break;
     case GroupAudio:
-        emit group_audio_received(json_object["groupID"].toInt(), json_object["sender_ID"].toInt(), json_object["sender_name"].toString(), json_object["audio_url"].toString(), json_object["time"].toString());
+        emit group_audio_received(json_object["groupID"].toInt(),
+                                  json_object["sender_ID"].toInt(),
+                                  json_object["sender_name"].toString(),
+                                  json_object["audio_url"].toString(),
+                                  json_object["time"].toString());
         break;
     default:
         qWarning() << "Unknown message type: " << json_object["type"].toString();
@@ -132,17 +159,15 @@ void ClientManager::on_text_message_received(const QString &message)
     }
 }
 
-void ClientManager::on_disconnected()
-{
+void ClientManager::on_disconnected() {
     emit disconnected();
     emit socket_disconnected(true);
     qDebug() << "Disconnected Signal emitted";
 }
 
-/*-------------------------------------------------------------------- Functions --------------------------------------------------------------*/
+/*-------------------------------------------------------------------- Functions * --------------------------------------------------------------*/
 
-void ClientManager::sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer)
-{
+void ClientManager::sign_up(const int &phone_number, const QString &first_name, const QString &last_name, const QString &password, const QString &password_confirmation, const QString &secret_question, const QString &secret_answer) {
     QJsonObject json_object{{"type", "sign_up"},
                             {"phone_number", phone_number},
                             {"first_name", first_name},
@@ -154,8 +179,7 @@ void ClientManager::sign_up(const int &phone_number, const QString &first_name, 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::login_request(const int &phone_number, const QString &password)
-{
+void ClientManager::login_request(const int &phone_number, const QString &password) {
     QJsonObject json_object{{"type", "login_request"},
                             {"phone_number", phone_number},
                             {"password", password},
@@ -164,16 +188,14 @@ void ClientManager::login_request(const int &phone_number, const QString &passwo
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::lookup_friend(const int &phone_number)
-{
+void ClientManager::lookup_friend(const int &phone_number) {
     QJsonObject json_object{{"type", "lookup_friend"},
                             {"phone_number", phone_number}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::update_info(const QString &first_name, const QString &last_name, const QString &password)
-{
+void ClientManager::update_info(const QString &first_name, const QString &last_name, const QString &password) {
     QJsonObject json_object{{"type", "update_info"},
                             {"first_name", first_name},
                             {"last_name", last_name},
@@ -182,8 +204,7 @@ void ClientManager::update_info(const QString &first_name, const QString &last_n
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::update_password(const int &phone_number, const QString &password)
-{
+void ClientManager::update_password(const int &phone_number, const QString &password) {
     QJsonObject json_object{{"type", "update_password"},
                             {"phone_number", phone_number},
                             {"password", password}};
@@ -191,23 +212,20 @@ void ClientManager::update_password(const int &phone_number, const QString &pass
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::retrieve_question(const int &phone_number)
-{
+void ClientManager::retrieve_question(const int &phone_number) {
     QJsonObject json_object{{"type", "retrieve_question"},
                             {"phone_number", phone_number}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::profile_image_deleted()
-{
+void ClientManager::profile_image_deleted() {
     QJsonObject json_object{{"type", "profile_image_deleted"}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::update_profile(const QString &file_name, const QByteArray &file_data)
-{
+void ClientManager::update_profile(const QString &file_name, const QByteArray &file_data) {
     QString data = QString::fromUtf8(file_data.toBase64());
 
     QJsonObject json_object{{"type", "profile_image"},
@@ -217,8 +235,7 @@ void ClientManager::update_profile(const QString &file_name, const QByteArray &f
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data)
-{
+void ClientManager::update_group_profile(const int &group_ID, const QString &file_name, const QByteArray &file_data) {
     QString data = QString::fromUtf8(file_data.toBase64());
 
     QJsonObject json_object{{"type", "group_profile_image"},
@@ -229,8 +246,7 @@ void ClientManager::update_group_profile(const int &group_ID, const QString &fil
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_text(const int &receiver, const QString &message, const int &chat_ID)
-{
+void ClientManager::send_text(const int &receiver, const QString &message, const int &chat_ID) {
     QJsonObject json_object{{"type", "text"},
                             {"receiver", receiver},
                             {"message", message},
@@ -240,8 +256,7 @@ void ClientManager::send_text(const int &receiver, const QString &message, const
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message)
-{
+void ClientManager::send_group_text(const int &groupID, QString sender_name, const QString &message) {
     QJsonObject json_object{{"type", "group_text"},
                             {"groupID", groupID},
                             {"message", message},
@@ -251,8 +266,7 @@ void ClientManager::send_group_text(const int &groupID, QString sender_name, con
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data)
-{
+void ClientManager::send_file(const int &chatID, const int &receiver, const QString &file_name, const QByteArray &file_data) {
     QString data = QString::fromUtf8(file_data.toBase64());
 
     QJsonObject json_object{{"type", "file"},
@@ -265,8 +279,7 @@ void ClientManager::send_file(const int &chatID, const int &receiver, const QStr
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data)
-{
+void ClientManager::send_group_file(const int &groupID, const QString &sender_name, const QString &file_name, const QByteArray &file_data) {
     QString data = QString::fromUtf8(file_data.toBase64());
 
     QJsonObject json_object{{"type", "group_file"},
@@ -279,8 +292,7 @@ void ClientManager::send_group_file(const int &groupID, const QString &sender_na
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::new_group(const QString &group_name, QJsonArray group_members)
-{
+void ClientManager::new_group(const QString &group_name, QJsonArray group_members) {
     QJsonObject json_object{{"type", "new_group"},
                             {"group_name", group_name},
                             {"group_members", group_members}};
@@ -288,16 +300,13 @@ void ClientManager::new_group(const QString &group_name, QJsonArray group_member
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_is_typing(const int &phone_number)
-{
-    QJsonObject json_object{{"type", "is_typing"},
-                            {"receiver", phone_number}};
+void ClientManager::send_is_typing(const int &phone_number) {
+    QJsonObject json_object{{"type", "is_typing"}, {"receiver", phone_number}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_is_typing(const int &groupID, const QString &sender_name)
-{
+void ClientManager::send_group_is_typing(const int &groupID, const QString &sender_name) {
     QJsonObject json_object{{"type", "group_is_typing"},
                             {"groupID", groupID},
                             {"sender_name", sender_name}};
@@ -305,8 +314,7 @@ void ClientManager::send_group_is_typing(const int &groupID, const QString &send
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::remove_group_member(const int &groupID, QJsonArray group_members)
-{
+void ClientManager::remove_group_member(const int &groupID, QJsonArray group_members) {
     QJsonObject json_object{{"type", "remove_group_member"},
                             {"groupID", groupID},
                             {"group_members", group_members}};
@@ -314,8 +322,7 @@ void ClientManager::remove_group_member(const int &groupID, QJsonArray group_mem
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::add_group_member(const int &groupID, QJsonArray group_members)
-{
+void ClientManager::add_group_member(const int &groupID, QJsonArray group_members) {
     QJsonObject json_object{{"type", "add_group_member"},
                             {"groupID", groupID},
                             {"group_members", group_members}};
@@ -323,8 +330,7 @@ void ClientManager::add_group_member(const int &groupID, QJsonArray group_member
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::delete_message(const int &phone_number, const int &chat_ID, const QString &full_time)
-{
+void ClientManager::delete_message(const int &phone_number, const int &chat_ID, const QString &full_time) {
     const QString &UTC_time = QDateTime::fromString(full_time, "yyyy-MM-dd HH:mm:ss")
                                   .toUTC()
                                   .toString();
@@ -337,8 +343,7 @@ void ClientManager::delete_message(const int &phone_number, const int &chat_ID, 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::delete_group_message(const int &groupID, const QString &full_time)
-{
+void ClientManager::delete_group_message(const int &groupID, const QString &full_time) {
     const QString &UTC_time = QDateTime::fromString(full_time, "yyyy-MM-dd HH:mm:ss")
                                   .toUTC()
                                   .toString();
@@ -350,31 +355,27 @@ void ClientManager::delete_group_message(const int &groupID, const QString &full
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::update_unread_message(const int &chatID)
-{
+void ClientManager::update_unread_message(const int &chatID) {
     QJsonObject json_object{{"type", "update_unread_message"},
                             {"chatID", chatID}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::update_group_unread_message(const int &groupID)
-{
+void ClientManager::update_group_unread_message(const int &groupID) {
     QJsonObject json_object{{"type", "update_group_unread_message"},
                             {"groupID", groupID}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::delete_account()
-{
+void ClientManager::delete_account() {
     QJsonObject json_object{{"type", "delete_account"}};
 
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_audio(const int &chatID, const int &receiver, const QString &audio_name, const QByteArray &audio_data)
-{
+void ClientManager::send_audio(const int &chatID, const int &receiver, const QString &audio_name, const QByteArray &audio_data) {
     QString data = QString::fromUtf8(audio_data.toBase64());
 
     QJsonObject json_object{{"type", "audio"},
@@ -387,8 +388,7 @@ void ClientManager::send_audio(const int &chatID, const int &receiver, const QSt
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::send_group_audio(const int &groupID, const QString &sender_name, const QString &audio_name, const QByteArray &audio_data)
-{
+void ClientManager::send_group_audio(const int &groupID, const QString &sender_name, const QString &audio_name, const QByteArray &audio_data) {
     QString data = QString::fromUtf8(audio_data.toBase64());
 
     QJsonObject json_object{{"type", "group_audio"},
@@ -401,8 +401,7 @@ void ClientManager::send_group_audio(const int &groupID, const QString &sender_n
     _socket->sendTextMessage(QString::fromUtf8(QJsonDocument(json_object).toJson()));
 }
 
-void ClientManager::get_user_time()
-{
+void ClientManager::get_user_time() {
 #ifdef __EMSCRIPTEN__
     char *time_zone = (char *)EM_ASM_PTR({
         var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -419,8 +418,7 @@ void ClientManager::get_user_time()
 #endif
 }
 
-void ClientManager::map_initialization()
-{
+void ClientManager::map_initialization() {
     _map["sign_up"] = SignUp;
     _map["login_request"] = LoginRequest;
     _map["lookup_friend"] = LookupFriend;
@@ -448,11 +446,9 @@ void ClientManager::map_initialization()
     _map["group_audio"] = GroupAudio;
 }
 
-QString ClientManager::UTC_to_timeZone(const QString &UTC_time)
-{
+QString ClientManager::UTC_to_timeZone(const QString &UTC_time) {
     QDateTime UTC_dateTime = QDateTime::fromString(UTC_time);
-    if (!UTC_dateTime.isValid())
-    {
+    if (!UTC_dateTime.isValid()) {
         qDebug() << "Invalid UTC time format:" << UTC_time;
         return QString();
     }
@@ -485,8 +481,7 @@ QString ClientManager::UTC_to_timeZone(const QString &UTC_time)
     return QString::fromUtf8(localTime);
 #else
     QTimeZone targetTimeZone(_time_zone.toUtf8());
-    if (!targetTimeZone.isValid())
-    {
+    if (!targetTimeZone.isValid()) {
         qDebug() << "Invalid time zone ID:" << _time_zone;
         return QString();
     }

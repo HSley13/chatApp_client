@@ -1,20 +1,18 @@
 #pragma once
 
+#include "ClientManager.hpp"
 #include "GroupInfo.hpp"
 #include "GroupProxyList.hpp"
-#include "ClientManager.hpp"
 
-class GroupListModel : public QAbstractListModel
-{
+class GroupListModel : public QAbstractListModel {
     Q_OBJECT
     QML_ELEMENT
 
     Q_PROPERTY(GroupInfo *active_group_chat READ active_group_chat WRITE set_active_group_chat NOTIFY active_group_chat_changed)
     Q_PROPERTY(GroupProxyList *group_proxy_list READ group_proxy_list NOTIFY group_proxy_list_changed)
 
-public:
-    enum GroupRoles
-    {
+  public:
+    enum GroupRoles {
         GroupIDRole = Qt::UserRole + 1,
         GroupMembersRole,
         GroupNameRole,
@@ -50,7 +48,7 @@ public:
 
     Q_INVOKABLE void update_group_unread_message(const int &groupID);
 
-private slots:
+  private slots:
     void on_load_groups(QJsonArray json_array);
     void on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time);
     void on_group_profile_image(const int &group_ID, const QString &group_image_url);
@@ -62,14 +60,14 @@ private slots:
     void on_delete_group_message_received(const int &groupID, const QString &full_time);
     void on_group_audio_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time);
 
-private:
+  private:
     QList<GroupInfo *> _groups;
     static inline GroupInfo *_active_group_chat{nullptr};
 
     GroupProxyList *_group_proxy_list{nullptr};
     std::shared_ptr<ClientManager> _client_manager{nullptr};
 
-signals:
+  signals:
     void groups_changed();
     void active_group_chat_changed();
 

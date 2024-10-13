@@ -1,21 +1,21 @@
 #pragma once
 
-#include <QMediaRecorder>
 #include <QAudioInput>
 #include <QAudioOutput>
-#include <QMediaCaptureSession>
 #include <QFileDialog>
+#include <QMediaCaptureSession>
 #include <QMediaPlayer>
+#include <QMediaRecorder>
 
 #include "ClientManager.hpp"
-class MediaController : public QObject
-{
+
+class MediaController : public QObject {
     Q_OBJECT
     QML_ELEMENT
 
     Q_PROPERTY(QString time_display READ time_display WRITE set_time_display NOTIFY time_display_changed)
 
-public:
+  public:
     MediaController(QObject *parent = nullptr);
 
     const QString &time_display() const;
@@ -29,13 +29,13 @@ public:
     Q_INVOKABLE void view_file(const QString &file_path);
 
     void ask_microphone_permission();
-public slots:
+  public slots:
     void set_time_display(QString new_time);
 
-private slots:
+  private slots:
     void on_duration_changed(qint64 duration);
 
-private:
+  private:
     QString _time_display{"00:00"};
 
     QMediaRecorder *_recorder;
@@ -44,7 +44,7 @@ private:
 
     qint64 _record_start_time{0};
     std::shared_ptr<ClientManager> _client_manager{nullptr};
-signals:
+  signals:
     void time_display_changed();
     void is_recording_changed();
 };

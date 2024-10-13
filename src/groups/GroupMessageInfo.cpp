@@ -12,37 +12,30 @@ GroupMessageInfo::GroupMessageInfo(const QString &text, const QString &audio_sou
       _sender_ID(sender_ID),
       _sender_name(sender_name) {}
 
-const QString &GroupMessageInfo::text()
-{
+const QString &GroupMessageInfo::text() {
     return _text;
 }
 
-const QString &GroupMessageInfo::audio_source()
-{
+const QString &GroupMessageInfo::audio_source() {
     return _audio_source;
 }
 
-const QString &GroupMessageInfo::file_source()
-{
+const QString &GroupMessageInfo::file_source() {
     return _file_source;
 }
 
-const QString &GroupMessageInfo::time()
-{
+const QString &GroupMessageInfo::time() {
     return _time;
 }
 
-const int &GroupMessageInfo::sender_ID()
-{
+const int &GroupMessageInfo::sender_ID() {
     return _sender_ID;
 }
 
-const QString &GroupMessageInfo::sender_name()
-{
+const QString &GroupMessageInfo::sender_name() {
     return _sender_name;
 }
 
-const QString &GroupMessageInfo::full_time() const
-{
+const QString &GroupMessageInfo::full_time() const {
     return _full_time;
 }

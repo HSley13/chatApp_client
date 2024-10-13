@@ -2,8 +2,7 @@
 
 #include <QtQuick>
 
-class GroupMessageInfo : public QObject
-{
+class GroupMessageInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
 
@@ -14,7 +13,7 @@ class GroupMessageInfo : public QObject
     Q_PROPERTY(int sender_ID READ sender_ID CONSTANT)
     Q_PROPERTY(QString sender_name READ sender_name CONSTANT)
 
-public:
+  public:
     GroupMessageInfo(QObject *parent = nullptr);
     GroupMessageInfo(const QString &text, const QString &audio_source, const QString &file_source, const int &sender_ID, const QString &sender_name, const QString &time, QObject *parent = nullptr);
 
@@ -27,7 +26,7 @@ public:
 
     const QString &full_time() const;
 
-private:
+  private:
     QString _text{};
     QString _audio_source{};
     QString _file_source{};

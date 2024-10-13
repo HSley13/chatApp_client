@@ -1,11 +1,10 @@
 #pragma once
 
+#include "ClientManager.hpp"
 #include "ContactInfo.hpp"
 #include "ContactProxyList.hpp"
-#include "ClientManager.hpp"
 
-class ContactListModel : public QAbstractListModel
-{
+class ContactListModel : public QAbstractListModel {
     Q_OBJECT
     QML_ELEMENT
 
@@ -16,7 +15,7 @@ class ContactListModel : public QAbstractListModel
     Q_PROPERTY(QList<ContactInfo *> contacts READ contacts NOTIFY contacts_changed)
     Q_PROPERTY(bool socket_disconnected READ socket_disconnected NOTIFY socket_disconnected_changed)
 
-public:
+  public:
     ContactListModel(QAbstractListModel *parent = nullptr);
     ~ContactListModel();
 
@@ -49,7 +48,7 @@ public:
 
     static inline ContactInfo *_main_user{nullptr};
 
-private slots:
+  private slots:
     void on_load_contacts(QJsonArray json_array);
     void on_load_my_info(QJsonObject my_info);
     void on_text_received(const int &chatID, const int &sender_ID, const QString &message, const QString &time);
@@ -66,7 +65,7 @@ private slots:
 
     void on_delete_message_received(const int &chatID, const QString &full_time);
 
-signals:
+  signals:
     void contacts_changed();
     void active_chat_changed();
 
@@ -76,9 +75,8 @@ signals:
 
     void socket_disconnected_changed();
 
-public:
-    enum ContactRoles
-    {
+  public:
+    enum ContactRoles {
         chat_IDRole = Qt::UserRole + 1,
         PhoneNumberRole,
         FirstNameRole,
@@ -97,7 +95,7 @@ public:
         MessageTimeRole
     };
 
-private:
+  private:
     static inline ContactInfo *_active_chat{nullptr};
     QList<ContactInfo *> _contacts;
     ContactProxyList *_contact_proxy_list_chat{nullptr};

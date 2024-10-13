@@ -1,18 +1,19 @@
 #include <QApplication>
-#include <QQuickView>
-#include <QUrl>
-#include <QQmlEngine>
 #include <QCoreApplication>
 #include <QDir>
+#include <QQmlEngine>
+#include <QQuickView>
+#include <QUrl>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
 
   QQmlEngine engine;
-  engine.addImportPath(QCoreApplication::applicationDirPath() + "/../Resources/qml");
+  engine.addImportPath(QCoreApplication::applicationDirPath() +
+                       "/../Resources/qml");
 
-  QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() + "/../PlugIns");
+  QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() +
+                                   "/../PlugIns");
 
   QQuickView view;
 

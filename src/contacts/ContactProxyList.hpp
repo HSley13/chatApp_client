@@ -2,12 +2,11 @@
 
 #include "ContactInfo.hpp"
 
-class ContactProxyList : public QSortFilterProxyModel
-{
+class ContactProxyList : public QSortFilterProxyModel {
     Q_OBJECT
     QML_ELEMENT
 
-public:
+  public:
     ContactProxyList(QObject *parent = nullptr);
 
     Q_INVOKABLE ContactInfo *get(const int &index);
@@ -16,6 +15,6 @@ public:
 
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
-private:
+  private:
     int _custom_sort_role;
 };

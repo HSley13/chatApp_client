@@ -1,18 +1,17 @@
 #pragma once
 
-#include <QtQuick>
 #include <QWebSocket>
+#include <QtQuick>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
-class ClientManager : public QObject
-{
+class ClientManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
 
-public:
+  public:
     ClientManager(QObject *parent = nullptr);
     ClientManager(const ClientManager &) = delete;
     ClientManager &operator=(const ClientManager &) = delete;
@@ -59,11 +58,11 @@ public:
     void get_user_time();
     void map_initialization();
 
-public slots:
+  public slots:
     void on_text_message_received(const QString &data);
     void on_disconnected();
 
-signals:
+  signals:
     void load_contacts(QJsonArray contacts);
     void load_groups(QJsonArray json_array);
     void load_my_info(QJsonObject my_info);
@@ -105,16 +104,15 @@ signals:
 
     void socket_disconnected(const bool &true_or_false);
 
-public:
+  public:
     static std::shared_ptr<ClientManager> instance();
 
-private:
+  private:
     static inline QWebSocket *_socket{nullptr};
     static inline QString _time_zone{};
     static inline std::shared_ptr<ClientManager> _instance{nullptr};
 
-    enum MessageType
-    {
+    enum MessageType {
         SignUp = Qt::UserRole + 1,
         Text,
         GroupText,

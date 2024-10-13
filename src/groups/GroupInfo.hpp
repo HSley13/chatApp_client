@@ -1,10 +1,9 @@
 #pragma once
 
-#include "GroupChatListModel.hpp"
 #include "ContactInfo.hpp"
+#include "GroupChatListModel.hpp"
 
-class GroupInfo : public QObject
-{
+class GroupInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
 
@@ -20,7 +19,7 @@ class GroupInfo : public QObject
     Q_PROPERTY(QList<ContactInfo *> group_members READ group_members NOTIFY group_members_changed)
     Q_PROPERTY(GroupChatListModel *group_messages READ group_messages NOTIFY group_messages_changed)
 
-public:
+  public:
     GroupInfo(QObject *parent = nullptr);
     GroupInfo(const int &group_ID, const int &group_admin, const QString &group_name, const QList<ContactInfo *> &group_members, const QString &group_image_url, const int &group_unread_message, QObject *parent = nullptr);
     ~GroupInfo();
@@ -55,7 +54,7 @@ public:
     QString message_time() const;
     void set_message_time(const QString &time);
 
-private:
+  private:
     int _group_ID{0};
     QString _group_name{};
     QList<ContactInfo *> _group_members;
@@ -67,9 +66,11 @@ private:
     GroupChatListModel *_group_messages;
 
     QString _last_message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString());
-    QString _message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString()).split(" ").last();
+    QString _message_time = ClientManager::UTC_to_timeZone(QDateTime::currentDateTimeUtc().toString())
+                                .split(" ")
+                                .last();
 
-signals:
+  signals:
     void group_name_changed();
     void group_members_changed();
     void group_image_url_changed();

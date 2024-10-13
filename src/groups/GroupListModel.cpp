@@ -3,8 +3,7 @@
 
 GroupListModel::GroupListModel(QAbstractListModel *parent)
     : QAbstractListModel(parent),
-      _group_proxy_list(new GroupProxyList(this))
-{
+      _group_proxy_list(new GroupProxyList(this)) {
     _group_proxy_list->setSourceModel(this);
 
     _client_manager = ClientManager::instance();
@@ -23,18 +22,15 @@ GroupListModel::GroupListModel(QAbstractListModel *parent)
 
 GroupListModel::~GroupListModel() { _groups.clear(); }
 
-const QList<GroupInfo *> &GroupListModel::groups() const
-{
+const QList<GroupInfo *> &GroupListModel::groups() const {
     return _groups;
 }
 
-GroupInfo *GroupListModel::active_group_chat()
-{
+GroupInfo *GroupListModel::active_group_chat() {
     return _active_group_chat;
 }
 
-void GroupListModel::set_active_group_chat(GroupInfo *new_group)
-{
+void GroupListModel::set_active_group_chat(GroupInfo *new_group) {
     if (_active_group_chat == new_group)
         return;
 
@@ -43,22 +39,19 @@ void GroupListModel::set_active_group_chat(GroupInfo *new_group)
     emit active_group_chat_changed();
 }
 
-int GroupListModel::rowCount(const QModelIndex &parent) const
-{
+int GroupListModel::rowCount(const QModelIndex &parent) const {
     Q_UNUSED(parent);
 
     return _groups.count();
 }
 
-QVariant GroupListModel::data(const QModelIndex &index, int role) const
-{
+QVariant GroupListModel::data(const QModelIndex &index, int role) const {
     if (index.row() < 0 || index.row() >= _groups.count())
         return QVariant();
 
     GroupInfo *group_info = _groups[index.row()];
 
-    switch (GroupRoles(role))
-    {
+    switch (GroupRoles(role)) {
     case GroupIDRole:
         return group_info->group_ID();
     case GroupAdminRole:
@@ -86,15 +79,13 @@ QVariant GroupListModel::data(const QModelIndex &index, int role) const
     }
 }
 
-bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
+bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
     if (index.row() < 0 || index.row() >= _groups.count())
         return false;
 
     GroupInfo *group_info = _groups[index.row()];
 
-    switch (GroupRoles(role))
-    {
+    switch (GroupRoles(role)) {
     case GroupNameRole:
         group_info->set_group_name(value.toString());
         break;
@@ -122,8 +113,7 @@ bool GroupListModel::setData(const QModelIndex &index, const QVariant &value, in
     return true;
 }
 
-QHash<int, QByteArray> GroupListModel::roleNames() const
-{
+QHash<int, QByteArray> GroupListModel::roleNames() const {
     QHash<int, QByteArray> roles{};
 
     roles[GroupIDRole] = "group_ID";
@@ -141,13 +131,11 @@ QHash<int, QByteArray> GroupListModel::roleNames() const
     return roles;
 }
 
-GroupProxyList *GroupListModel::group_proxy_list() const
-{
+GroupProxyList *GroupListModel::group_proxy_list() const {
     return _group_proxy_list;
 }
 
-void GroupListModel::add_group(const QString &group_name, const QList<ContactInfo *> members)
-{
+void GroupListModel::add_group(const QString &group_name, const QList<ContactInfo *> members) {
     if (group_name.isEmpty() || members.isEmpty())
         return;
 
@@ -160,8 +148,7 @@ void GroupListModel::add_group(const QString &group_name, const QList<ContactInf
     _client_manager->new_group(group_name, json_array);
 }
 
-void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
-{
+void GroupListModel::remove_group_member(const QList<ContactInfo *> members) {
     if (members.isEmpty())
         return;
 
@@ -172,8 +159,7 @@ void GroupListModel::remove_group_member(const QList<ContactInfo *> members)
     _client_manager->remove_group_member(_active_group_chat->group_ID(), json_array);
 }
 
-void GroupListModel::add_group_member(const int &phone_number, const QList<ContactInfo *> members)
-{
+void GroupListModel::add_group_member(const int &phone_number, const QList<ContactInfo *> members) {
     if (!phone_number && members.isEmpty())
         return;
 
@@ -187,26 +173,21 @@ void GroupListModel::add_group_member(const int &phone_number, const QList<Conta
     _client_manager->add_group_member(_active_group_chat->group_ID(), json_array);
 }
 
-void GroupListModel::on_load_groups(QJsonArray json_array)
-{
+void GroupListModel::on_load_groups(QJsonArray json_array) {
     if (json_array.isEmpty())
         return;
 
-    for (const QJsonValue &groups : json_array)
-    {
+    for (const QJsonValue &groups : json_array) {
         QJsonArray members_ID = groups["group_members"].toArray();
         QJsonArray messages = groups["group_messages"].toArray();
 
         QList<ContactInfo *> group_members;
-        for (const QJsonValue &ID : members_ID)
-        {
+        for (const QJsonValue &ID : members_ID) {
             if (ContactListModel::main_user()->phone_number() == ID.toInt())
                 continue;
 
-            for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
-            {
-                if (contact->phone_number() == ID.toInt())
-                {
+            for (ContactInfo *contact : *ContactListModel::_contacts_ptr) {
+                if (contact->phone_number() == ID.toInt()) {
                     group_members << contact;
                     break;
                 }
@@ -215,10 +196,8 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
 
         GroupInfo *group = new GroupInfo(groups["_id"].toInt(), groups["group_admin"].toInt(), groups["group_name"].toString(), group_members, groups["group_image_url"].toString(), groups["group_unread_messages"].toInt(), this);
 
-        if (!messages.isEmpty())
-        {
-            for (const QJsonValue &message : messages)
-            {
+        if (!messages.isEmpty()) {
+            for (const QJsonValue &message : messages) {
                 group->add_group_message(new GroupMessageInfo(message["message"].toString(), message["audio_url"].toString(), message["file_url"].toString(), message["sender_ID"].toInt(), message["sender_name"].toString(), _client_manager->UTC_to_timeZone(message["time"].toString()), this));
                 group->set_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()).split(" ").last());
                 group->set_last_message_time(_client_manager->UTC_to_timeZone(message["time"].toString()));
@@ -235,15 +214,12 @@ void GroupListModel::on_load_groups(QJsonArray json_array)
     emit groups_changed();
 }
 
-void GroupListModel::on_group_profile_image(const int &group_ID, const QString &group_image_url)
-{
+void GroupListModel::on_group_profile_image(const int &group_ID, const QString &group_image_url) {
     if (!group_ID || group_image_url.isEmpty())
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == group_ID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == group_ID) {
             group->set_group_image_url(group_image_url);
 
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
@@ -254,23 +230,19 @@ void GroupListModel::on_group_profile_image(const int &group_ID, const QString &
     }
 }
 
-void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time)
-{
+void GroupListModel::on_group_text_received(const int &groupID, const int &sender_ID, QString sender_name, const QString &message, const QString &time) {
     if (!groupID)
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
             group->add_group_message(new GroupMessageInfo(message, QString(), QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
             group->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
                 group->set_group_unread_message(group->group_unread_message() + 1);
-            else
-            {
+            else {
                 group->set_group_unread_message(0);
                 _client_manager->update_group_unread_message(groupID);
             }
@@ -283,23 +255,19 @@ void GroupListModel::on_group_text_received(const int &groupID, const int &sende
     }
 }
 
-void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time)
-{
+void GroupListModel::on_group_file_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time) {
     if (!groupID || audio_url.isEmpty())
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
             group->add_group_message(new GroupMessageInfo(QString(), QString(), audio_url, sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
             group->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
                 group->set_group_unread_message(group->group_unread_message() + 1);
-            else
-            {
+            else {
                 group->set_group_unread_message(0);
                 _client_manager->update_group_unread_message(groupID);
             }
@@ -312,21 +280,17 @@ void GroupListModel::on_group_file_received(const int &groupID, const int &sende
     }
 }
 
-void GroupListModel::on_group_is_typing_received(const int &groupID, const QString &sender_name)
-{
+void GroupListModel::on_group_is_typing_received(const int &groupID, const QString &sender_name) {
     if (!groupID || sender_name.isEmpty())
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
             group->set_group_is_typing(QString("%1 %2").arg(sender_name, "is typing..."));
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
             emit dataChanged(index, index, {GroupIsTypingRole});
 
-            QTimer::singleShot(2000, this, [=, this]()
-                               {    group->set_group_is_typing(QString());
+            QTimer::singleShot(2000, this, [=, this]() {    group->set_group_is_typing(QString());
                                     QModelIndex index = createIndex(_groups.indexOf(group), 0);
                                     emit dataChanged(index, index, {GroupIsTypingRole}); });
             return;
@@ -334,24 +298,19 @@ void GroupListModel::on_group_is_typing_received(const int &groupID, const QStri
     }
 }
 
-void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonArray group_members)
-{
+void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonArray group_members) {
     if (!groupID || group_members.isEmpty())
         return;
 
     QSet<int> members_to_remove;
-    for (const QJsonValue &value : group_members)
-    {
+    for (const QJsonValue &value : group_members) {
         if (value.isDouble())
             members_to_remove.insert(static_cast<int>(value.toDouble()));
     }
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
-            for (size_t i{0}; i < group->group_members().size();)
-            {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
+            for (size_t i{0}; i < group->group_members().size();) {
                 ContactInfo *contact = group->group_members().at(i);
                 if (members_to_remove.contains(contact->phone_number()))
                     group->group_members().removeAt(i);
@@ -369,21 +328,15 @@ void GroupListModel::on_remove_group_member_received(const int &groupID, QJsonAr
     }
 }
 
-void GroupListModel::on_add_group_member_received(const int &groupID, QJsonArray new_group_members)
-{
+void GroupListModel::on_add_group_member_received(const int &groupID, QJsonArray new_group_members) {
     if (!groupID || new_group_members.isEmpty())
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
-            for (const QJsonValue &ID : new_group_members)
-            {
-                for (ContactInfo *contact : *ContactListModel::_contacts_ptr)
-                {
-                    if (contact->phone_number() == ID.toInt())
-                    {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
+            for (const QJsonValue &ID : new_group_members) {
+                for (ContactInfo *contact : *ContactListModel::_contacts_ptr) {
+                    if (contact->phone_number() == ID.toInt()) {
                         group->add_group_members(contact);
                         break;
                     }
@@ -400,15 +353,12 @@ void GroupListModel::on_add_group_member_received(const int &groupID, QJsonArray
     }
 }
 
-void GroupListModel::on_removed_from_group(const int &groupID)
-{
+void GroupListModel::on_removed_from_group(const int &groupID) {
     if (!groupID)
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
             int index = _groups.indexOf(group);
             beginRemoveRows(QModelIndex(), index, index);
             _groups.removeAt(index);
@@ -421,25 +371,19 @@ void GroupListModel::on_removed_from_group(const int &groupID)
     }
 }
 
-void GroupListModel::on_delete_group_message_received(const int &groupID, const QString &full_time)
-{
+void GroupListModel::on_delete_group_message_received(const int &groupID, const QString &full_time) {
     if (!groupID)
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
-            for (size_t i{0}; i < group->group_messages()->count(); i++)
-            {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
+            for (size_t i{0}; i < group->group_messages()->count(); i++) {
                 GroupMessageInfo *message = group->group_messages()->at(i);
-                if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time)))
-                {
+                if (!message->full_time().compare(_client_manager->UTC_to_timeZone(full_time))) {
                     delete message;
                     group->group_messages()->removeAt(i);
 
-                    if (i == group->group_messages()->count())
-                    {
+                    if (i == group->group_messages()->count()) {
                         group->set_message_time(group->group_messages()->at(i - 1)->time());
                         group->set_last_message_time(group->group_messages()->at(i - 1)->full_time());
 
@@ -455,23 +399,19 @@ void GroupListModel::on_delete_group_message_received(const int &groupID, const 
     }
 }
 
-void GroupListModel::on_group_audio_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time)
-{
+void GroupListModel::on_group_audio_received(const int &groupID, const int &sender_ID, const QString &sender_name, const QString &audio_url, const QString &time) {
     if (!groupID || audio_url.isEmpty())
         return;
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
             group->add_group_message(new GroupMessageInfo(QString(), audio_url, QString(), sender_ID, sender_name, _client_manager->UTC_to_timeZone(time), this));
             group->set_message_time(_client_manager->UTC_to_timeZone(time).split(" ").last());
             group->set_last_message_time(_client_manager->UTC_to_timeZone(time));
 
             if (!_active_group_chat || (_active_group_chat && _active_group_chat->group_ID() != groupID))
                 group->set_group_unread_message(group->group_unread_message() + 1);
-            else
-            {
+            else {
                 group->set_group_unread_message(0);
                 _client_manager->update_group_unread_message(groupID);
             }
@@ -484,14 +424,11 @@ void GroupListModel::on_group_audio_received(const int &groupID, const int &send
     }
 }
 
-void GroupListModel::update_group_unread_message(const int &groupID)
-{
+void GroupListModel::update_group_unread_message(const int &groupID) {
     _client_manager->update_group_unread_message(groupID);
 
-    for (GroupInfo *group : _groups)
-    {
-        if (group->group_ID() == groupID)
-        {
+    for (GroupInfo *group : _groups) {
+        if (group->group_ID() == groupID) {
             group->set_group_unread_message(0);
 
             QModelIndex index = createIndex(_groups.indexOf(group), 0);
